@@ -3,8 +3,8 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"/>
 </head>
 <body>
-<p th:if="${param.error}">
-    Bad Credentials
+<p th:if="${param.auth_error}">
+    Bad Credentials, please try again
 </p>
 	<div class="container">
 	    <h2>Custom, Please Login</h2>

@@ -27,12 +27,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // @formatter:off
-        http.formLogin().loginPage("/login").permitAll();
+        http.formLogin().loginPage("/login").failureUrl("/login?auth_error=true").permitAll();
 /*
         http.authorizeRequests().antMatchers("/hello").permitAll(); // for OATH2
         http.requestMatchers().antMatchers("/hello").and().anonymous(); // for simple security
 */
-        http.requestMatchers().antMatchers("/login", "/oauth/authorize", "/oauth/confirm_access", "/customLogout**")
+        http.requestMatchers().antMatchers("/login**", "/oauth/authorize", "/oauth/confirm_access", "/customLogout**")
                 .and().authorizeRequests().anyRequest().authenticated();
 
         http.logout().invalidateHttpSession(true).clearAuthentication(true);
@@ -45,7 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth.inMemoryAuthentication().withUser("admin").password("admin").roles("ADMIN");
         auth.inMemoryAuthentication().withUser("dba").password("dba").roles("DBA");
         auth.inMemoryAuthentication().withUser("me").password("me").roles("DBA");
-        auth.parentAuthenticationManager(authenticationManagerBean());
+        //auth.parentAuthenticationManager(authenticationManagerBean());
     }
 
     @Override
@@ -54,10 +54,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-
     @Override
     public void configure(WebSecurity webSecurity) throws Exception {
-        webSecurity.ignoring().antMatchers("/resources/**"
+        webSecurity.ignoring().antMatchers("GET", "/resources/**"
                         , "/templates/**"
                         , "/ui/**"
                         , "/401.html"

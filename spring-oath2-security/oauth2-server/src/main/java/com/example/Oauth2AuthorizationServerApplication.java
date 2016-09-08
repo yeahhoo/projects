@@ -28,4 +28,6 @@ public class Oauth2AuthorizationServerApplication {
     }
 
 
+    // todo add error handling when password incorrect for CLIENT and server
+    // todo ADD FOR CLIENT, SERVER WORKS
 }
