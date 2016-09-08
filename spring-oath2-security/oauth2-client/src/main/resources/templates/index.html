@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<title>Demo</title>
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width" />
+<base href="/" />
+<link rel="stylesheet" type="text/css" href="/client/webjars/bootstrap/css/bootstrap.min.css" />
+<script type="text/javascript" src="/client/webjars/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="/client/webjars/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/client/resources/mylogic.js"></script>
+</head>
+<body>
+	<h1>Login</h1>
+	<div class="container">
+		With Facebook: <a href="/client/login">click here</a>
+
+
+        <h1 class="col-sm-12">Foo Details</h1>
+        <div class="col-sm-12">
+            <label class="col-sm-3">Username</label>
+            <span id="userPlaceholder"></span>
+        </div>
+
+        <div class="col-sm-12">
+            <label class="col-sm-3">Hello Msg</label>
+            <span id="helloPlaceholder"></span>
+        </div>
+
+        <div class="col-sm-12">
+            <label class="col-sm-3">Server Msg</label>
+            <span id="serverPlaceholder"></span>
+        </div>
+
+        <div class="col-sm-12">
+            <label class="col-sm-3">CORS Msg</label>
+            <span id="corsPlaceholder"></span>
+        </div>
+
+
+        <div class="col-sm-12">
+            <br/>
+            <br/>
+            <a class="btn btn-info" href="#" id="userBtn">Get username</a>
+        </div>
+
+        <div class="col-sm-12">
+            <br/>
+            <br/>
+            <a class="btn btn-info" href="#" id="helloBtn">Get hello msg</a>
+        </div>
+
+        <div class="col-sm-12">
+            <br/>
+            <br/>
+            <a class="btn btn-info" href="#" id="serverBtn">Get server msg</a>
+        </div>
+
+        <div class="col-sm-12">
+            <br/>
+            <br/>
+            <a class="btn btn-info" href="#" id="corsBtn">CORS server msg</a>
+        </div>
+
+        <!--
+        <div class="col-sm-12">
+            <br/>
+            <br/>
+            <a class="btn btn-info" href="#" id="logoutBtn">Logout</a>
+        </div>
+        -->
+        <div class="col-sm-12">
+            <br/>
+            <br/>
+            <a class="btn btn-info" href="/client/requestLogout" id="logoutServerBtn">Logout</a>
+        </div>
+
+	</div>
+
+
+
+
+</body>
+</html>

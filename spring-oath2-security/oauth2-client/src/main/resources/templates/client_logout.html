@@ -1,0 +1,22 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <title>Demo</title>
+        <meta name="description" content="" />
+        <meta name="viewport" content="width=device-width" />
+        <base href="/" />
+        <link rel="stylesheet" type="text/css" href="/client/webjars/bootstrap/css/bootstrap.min.css" />
+        <script type="text/javascript" src="/client/webjars/jquery/jquery.min.js"></script>
+        <script type="text/javascript" src="/client/webjars/bootstrap/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="/client/resources/logout.js"></script>
+    </head>
+    <body>
+        <h1>Client Logout</h1>
+        <div>You've been logged out successfully</div>
+        <div>Wait 5 sec to be redirected or press the Submit button</div>
+        <form role="form" id="logoutUserConfirm" th:action="@{/mylogout}" method="POST">
+            <button id="confirmLogoutBtn" type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </body>
+</html>
