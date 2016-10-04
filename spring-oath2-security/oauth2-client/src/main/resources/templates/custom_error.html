@@ -1,0 +1,23 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Demo</title>
+    <base href="/" />
+    <link rel="stylesheet" type="text/css" href="/client/webjars/bootstrap/css/bootstrap.min.css" />
+    <script type="text/javascript" src="/client/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/client/webjars/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/client/resources/mylogic.js"></script>
+</head>
+<body>
+<h1>Oops, something gone wrong</h1>
+<div class="container">
+    You failed it. Below are error details:
+    <div>Status: <span th:text="${status}" /></div>
+    <div>Error: <span th:text="${error}" /></div>
+    <div>Message: <span th:text="${message}" /></div>
+    <div>Timestamp: <span th:text="${timestamp}" /></div>
+    Try to <a href="/client">start over</a>
+</div>
+</body>
+</html>
