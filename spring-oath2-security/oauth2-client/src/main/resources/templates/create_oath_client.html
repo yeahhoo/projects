@@ -1,0 +1,43 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Demo</title>
+    <base href="/" />
+    <link rel="stylesheet" type="text/css" href="/client/webjars/bootstrap/css/bootstrap.min.css" />
+    <script type="text/javascript" src="/client/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/client/webjars/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/client/resources/create_oauth_client_logic.js"></script>
+</head>
+<body>
+<h1>Secured page</h1>
+<div class="container">
+    The page must be secured, only registered users can see it.
+
+    <form role="form" method="POST">
+        <div class="form-group">
+            <label for="client">Client:</label>
+            <input type="text" class="form-control" id="client" name="client"/>
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" class="form-control" id="password" name="password"/>
+        </div>
+        <div class="form-group">
+            <label for="grantTypes">Grant Types:</label>
+            <input type="text" class="form-control" id="grantTypes" name="grantTypes"/>
+        </div>
+        <div class="form-group">
+            <label for="scopes">Scopes:</label>
+            <input type="text" class="form-control" id="scopes" name="scopes"/>
+        </div>
+        <button type="submit" id="submitBtn" class="btn btn-primary">Submit</button>
+    </form>
+
+</div>
+
+
+
+
+</body>
+</html>

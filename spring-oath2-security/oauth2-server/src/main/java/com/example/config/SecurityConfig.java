@@ -45,7 +45,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth.inMemoryAuthentication().withUser("admin").password("admin").roles("ADMIN");
         auth.inMemoryAuthentication().withUser("dba").password("dba").roles("DBA");
         auth.inMemoryAuthentication().withUser("me").password("me").roles("DBA");
-        //auth.parentAuthenticationManager(authenticationManagerBean());
     }
 
     @Override
@@ -64,6 +63,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         , "/500.html"
                         , "/cors"
                         , "/hello");
+
+        //webSecurity.ignoring().antMatchers("POST", "/oauth_client/create");
     }
 
 

@@ -23,11 +23,24 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
+import java.util.Arrays;
+import java.util.List;
+
 
 @SpringBootApplication
 @EnableOAuth2Sso
 @EnableZuulProxy
 public class SocialApplication extends WebSecurityConfigurerAdapter {
+
+    public static final String[] NON_SECURED_URLS = new String[] {
+            "/",
+            "/index.html",
+            "/home.html",
+            "/login**",
+            "/webjars/**",
+            "/resources/**",
+            "/server/**"
+    };
 
     public static void main(String[] args) {
         //SpringApplication.run(SocialApplication.class, args);
@@ -40,7 +53,7 @@ public class SocialApplication extends WebSecurityConfigurerAdapter {
     public void configure(HttpSecurity http) throws Exception {
         http.logout().and()
                 .antMatcher("/**").authorizeRequests()
-                .antMatchers("/index.html", "/home.html", "/", "/login**", "/webjars/**", "/resources/**", "/server/**")
+                .antMatchers(NON_SECURED_URLS)
                 .permitAll().anyRequest().authenticated();
         http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
         http.logout().invalidateHttpSession(true).clearAuthentication(true).logoutUrl("/mylogout").logoutSuccessUrl("/");

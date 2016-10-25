@@ -18,6 +18,7 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
         registry.addViewController("/").setViewName("forward:/index");
         registry.addViewController("/index").setViewName("index");
         registry.addViewController("/clientLogout").setViewName("client_logout");
+        registry.addViewController("/createClient").setViewName("create_oath_client");
     }
 
     @Override
