@@ -10,12 +10,34 @@ $(document).ready(function() {
         });
     };
 
-    function doRequest(url, type, params, headers, contentType) {
+    function doRequest(url, type, params, contentType) {
         return $.ajax({
             type: type,
             url: url,
             data: params,
-            headers: headers,
+            contentType: contentType
+        }).done(function(data) {
+            console.log('non secured POST successful request: ' + JSON.stringify(data));
+        }).fail(function(e) {
+            console.log('non secured POST failed request: ' + JSON.stringify(e));
+        });
+    };
+
+    /*
+    the reason of sending header 'X-XSRF-TOKEN' with the same value as cookie 'XSRF-TOKEN' is to comply with authorisation mechanism:
+    1) server gets value of the token from session;
+    2) server extracts value of the header from request;
+    3) compare them to make sure that user has sent it.
+    so if to make a special filter on server side that will add the header for every request then it will compromise security.
+
+    the source: org.springframework.security.web.csrf.CsrfFilter
+    */
+    function doSecureRequest(url, type, params, contentType) {
+        return $.ajax({
+            type: type,
+            url: url,
+            data: params,
+            headers: {'X-XSRF-TOKEN': readCookie('XSRF-TOKEN')},
             contentType: contentType
         }).done(function(data) {
             console.log('non secured POST successful request: ' + JSON.stringify(data));
@@ -43,13 +65,12 @@ $(document).ready(function() {
             grantTypes: $('#grantTypes').val().split(','),
             scopes: $('#scopes').val().split(',')
         };
-        var xsrfToken = readCookie('XSRF-TOKEN');
-        var headers = {'X-XSRF-TOKEN': xsrfToken};
-        doRequest('/client/server/oauth_client/create', 'POST', JSON.stringify(params), headers, 'application/json; charset=utf-8')
+        doRequest('/client/server/oauth_client/create', 'POST', JSON.stringify(params), 'application/json; charset=utf-8')
         .done(function(data) {
             alert('client created: ' + data);
         });
         return false;
     });
+
 });
 
