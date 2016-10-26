@@ -1,13 +1,11 @@
 package com.example.dtos;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.io.Serializable;
 import java.util.List;
 
 /**
+ *
+ * http://www.jworks.nl/2013/08/21/register-a-custom-jackson-objectmapper-using-spring-javaconfig/
  * @author Aleksandr_Savchenko
  */
 //@JsonInclude(JsonInclude.Include.NON_NULL)

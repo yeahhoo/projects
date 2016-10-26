@@ -47,10 +47,7 @@ $(document).ready(function() {
         var headers = {'X-XSRF-TOKEN': xsrfToken};
         doRequest('/client/server/oauth_client/create', 'POST', JSON.stringify(params), headers, 'application/json; charset=utf-8')
         .done(function(data) {
-            console.log('result: ' + data);
-        })
-        .fail(function(e) {
-            console.log('non secured POST failed request: ' + JSON.stringify(e));
+            alert('client created: ' + data);
         });
         return false;
     });
