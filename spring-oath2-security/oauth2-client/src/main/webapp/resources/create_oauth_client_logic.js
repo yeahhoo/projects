@@ -19,7 +19,9 @@ $(document).ready(function() {
         }).done(function(data) {
             console.log('non secured POST successful request: ' + JSON.stringify(data));
         }).fail(function(e) {
-            console.log('non secured POST failed request: ' + JSON.stringify(e));
+            var data = JSON.parse(e.responseText);
+            alert('client caused: \nerror: ' + data.error + '\nexception: ' + data.exception
+                + '\nmessage: ' + data.message + '\nstatus: ' + data.status + '\ntrace: ' + data.trace);
         });
     };
 
@@ -68,6 +70,17 @@ $(document).ready(function() {
         doRequest('/client/server/oauth_client/create', 'POST', JSON.stringify(params), 'application/json; charset=utf-8')
         .done(function(data) {
             alert('client created: ' + data);
+        });
+        return false;
+    });
+
+    /* just for test reasons to show REST exception 'correctly' */
+    $('#expBtn').click(function(e) {
+        e.stopPropagation();
+        doRequest('/client/server/oauth_client/exception', 'POST', {}, 'application/json; charset=utf-8')
+        .done(function(data) {
+            alert('client caused: \nerror: ' + data.error + '\nexception: ' + data.exception
+                + '\nmessage: ' + data.message + '\nstatus: ' + data.status + '\ntrace: ' + data.trace);
         });
         return false;
     });

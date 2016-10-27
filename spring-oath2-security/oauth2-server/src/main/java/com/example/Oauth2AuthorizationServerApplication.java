@@ -12,6 +12,6 @@ public class Oauth2AuthorizationServerApplication {
         SpringApplication.run(Oauth2AuthorizationServerApplication.class, args);
     }
 
-    // todo for access error return JSON response but for denying access return html
     // todo add clients and users dynamically
+    // todo refactor client side on AngularJs or ReactJs
 }

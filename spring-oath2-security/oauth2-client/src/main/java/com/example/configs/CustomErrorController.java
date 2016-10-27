@@ -1,5 +1,6 @@
 package com.example.configs;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.web.ErrorAttributes;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import java.util.Map;
 
@@ -20,6 +22,9 @@ import javax.servlet.http.HttpServletResponse;
  */
 @Controller
 public class CustomErrorController implements ErrorController {
+
+    public static final String JSON_TYPE = "application/json";
+    public static final String CONTENT_TYPE_HEADER = "content-type";
 
     @Value("${debug}")
     private boolean debug;
@@ -33,11 +38,19 @@ public class CustomErrorController implements ErrorController {
     }
 
     @RequestMapping("/error")
-    public ModelAndView error(HttpServletRequest request, HttpServletResponse response) {
+    public Object error(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> errorAtrs = getErrorAttributes(request, debug);
-        ModelAndView model = new ModelAndView("custom_error");
-        model.addAllObjects(errorAtrs);
-        return model;
+        String contentType = request.getHeader(CONTENT_TYPE_HEADER);
+        boolean isJsonRequest = StringUtils.isNotBlank(contentType) && contentType.startsWith(JSON_TYPE) ? true : false;
+        if (isJsonRequest) {
+            MappingJackson2JsonView model = new MappingJackson2JsonView();
+            model.setAttributesMap(errorAtrs);
+            return model;
+        } else {
+            ModelAndView model = new ModelAndView("custom_error");
+            model.addAllObjects(errorAtrs);
+            return model;
+        }
     }
 
     private Map<String, Object> getErrorAttributes(HttpServletRequest request, boolean includeStackTrace) {
