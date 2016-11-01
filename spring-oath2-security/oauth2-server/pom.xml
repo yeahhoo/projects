@@ -76,6 +76,21 @@
         </dependency>
         <dependency>
             <groupId>org.webjars</groupId>
+            <artifactId>react</artifactId>
+            <version>0.13.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars.npm</groupId>
+            <artifactId>react-dom</artifactId>
+            <version>15.3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>showdown</artifactId>
+            <version>0.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
             <artifactId>jquery</artifactId>
             <version>2.1.1</version>
         </dependency>

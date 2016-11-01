@@ -14,4 +14,7 @@ public class Oauth2AuthorizationServerApplication {
 
     // todo add clients and users dynamically
     // todo refactor client side on AngularJs or ReactJs
+    // todo include maven Js building plugin
+    // todo include inmemory database
+    // todo include Docker
 }

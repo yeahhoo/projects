@@ -12,14 +12,14 @@ spring:
 security:
   oauth2:
     client:
-      accessTokenUri: http://eprupetw0604:9001/server/oauth/token
-      userAuthorizationUri: http://eprupetw0604:9001/server/oauth/authorize
+      accessTokenUri: http://localhost:9001/server/oauth/token
+      userAuthorizationUri: http://localhost:9001/server/oauth/authorize
       clientId: foo
       clientSecret: foosecret
-      serverLogoutUri: http://eprupetw0604:9001/server/customLogout
+      serverLogoutUri: http://localhost:9001/server/customLogout
       clientLogoutUri: http://localhost:8001/client/clientLogout
     resource:
-      userInfoUri: http://eprupetw0604:9001/server/auth
+      userInfoUri: http://localhost:9001/server/auth
 
 
 logging:
@@ -31,7 +31,7 @@ zuul:
   routes:
     resource:
       path: /resource/**
-      url: http://eprupetw0604:8002/resource
+      url: http://localhost:8002/resource
     server:
       path: /server/**
-      url: http://eprupetw0604:9001/server
+      url: http://localhost:9001/server
