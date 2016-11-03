@@ -5,20 +5,23 @@
     <title>Demo</title>
     <base href="/" />
     <link rel="stylesheet" type="text/css" href="/client/webjars/bootstrap/css/bootstrap.min.css" />
-    <script type="text/javascript" src="/client/webjars/jquery/jquery.min.js"></script>
-    <script type="text/javascript" src="/client/webjars/bootstrap/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/client/resources/mylogic.js"></script>
 </head>
 <body>
 <h1>Oops, something gone wrong</h1>
-<div class="container">
-    <!-- wait until the parameters are rendered and pass them to React as parameters config -->
-    You failed it. Below are error details:
-    <div>Status: <span th:text="${status}" /></div>
-    <div>Error: <span th:text="${error}" /></div>
-    <div>Message: <span th:text="${message}" /></div>
-    <div>Timestamp: <span th:text="${timestamp}" /></div>
-    Try to <a href="/client">start over</a>
-</div>
+    <div class="container">
+        <div id="react-custom-error-config" style="display: none;">
+            <span id="status" th:text="${status}" />
+            <span id="error" th:text="${error}" />
+            <span id="message" th:text="${message}" />
+            <span id="timestamp" th:text="${timestamp}" />
+        </div>
+        <div id="react-custom-error-container"></div>
+    </div>
+    <script type="text/javascript" src="/client/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/client/webjars/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/client/resources/react-15.0.0.js"></script>
+    <script type="text/javascript" src="/client/resources/react-dom-15.0.0.js"></script>
+    <script type="text/javascript" src="/client/resources/babel-core-5.8.34-browser.min.js"></script>
+    <script type="text/babel" src="/client/resources/react-custom-error.js"></script>
 </body>
 </html>

@@ -38,12 +38,12 @@
 var CreateClientForm = React.createClass({
 
     getInitialState: function () {
-        return {client: "", password: "", grantTypes: "", scopes: "", errors: {}, loading: false}
+        return {client: '', password: '', grantTypes: '', scopes: '', errors: {}, loading: false}
     },
 
     addClient: function(e) {
         e.preventDefault();
-        console.log("clicked");
+        console.log('clicked');
 
         var params = {
             client: this.state.client,
@@ -66,7 +66,7 @@ var CreateClientForm = React.createClass({
 
     processException: function(e) {
         e.preventDefault();
-        console.log("exception clicked");
+        console.log('exception clicked');
         this.createRequest('/client/server/oauth_client/exception', 'POST', {}, 'application/json; charset=utf-8')
         .fail(this.onError)
         .always(this.hideLoading);
@@ -109,27 +109,27 @@ var CreateClientForm = React.createClass({
     render: function() {
         return (
             <form role="form" method="POST" ref='user_form' onSubmit={this.addClient}>
-                <div class="form-group">
+                <div className="form-group">
                     <label for="client">Client:</label>
-                    <input name="client" type="text" class="form-control" id="client" ref="client" placeholder="client" onChange={this.onChange} />
+                    <input name="client" type="text" className="form-control" id="client" ref="client" placeholder="client" onChange={this.onChange} />
                 </div>
-                <div class="form-group">
+                <div className="form-group">
                     <label for="password">Password:</label>
-                    <input type="password" class="form-control" name="password" id="password" ref="password" placeholder="password" onChange={this.onChange}/>
+                    <input type="password" className="form-control" name="password" id="password" ref="password" placeholder="password" onChange={this.onChange}/>
                 </div>
-                <div class="form-group">
+                <div className="form-group">
                     <label for="grantTypes">Grant Types:</label>
-                    <input type="text" class="form-control" id="grantTypes" name="grantTypes" ref="grantTypes" placeholder="grantTypes" onChange={this.onChange}/>
+                    <input type="text" className="form-control" id="grantTypes" name="grantTypes" ref="grantTypes" placeholder="grantTypes" onChange={this.onChange}/>
                 </div>
-                <div class="form-group">
+                <div className="form-group">
                     <label for="scopes">Scopes:</label>
-                    <input type="text" class="form-control" id="scopes" name="scopes" ref="scopes" placeholder="scopes" onChange={this.onChange}/>
+                    <input type="text" className="form-control" id="scopes" name="scopes" ref="scopes" placeholder="scopes" onChange={this.onChange}/>
                 </div>
-                <button type="submit" id="submitBtn" class="btn btn-primary" disabled={this.state.loading}>
+                <button type="submit" id="submitBtn" className="btn btn-primary" disabled={this.state.loading}>
                     Submit
                 </button>
                 <br/>
-                <button type="button" id="expBtn" class="btn btn-primary" onClick={this.processException}>Exception</button>
+                <button type="button" id="expBtn" className="btn btn-primary" onClick={this.processException}>Exception</button>
             </form>
         )
     }
