@@ -1,10 +1,8 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html>
 <head>
     <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Demo</title>
-    <base href="/" />
-    <link rel="stylesheet" type="text/css" href="/client/webjars/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/client/libs/css/bootstrap-3.3.2.css" />
     <script>
         function submitWithTimeout() {
             console.log('Triggered page load listener');
@@ -18,8 +16,9 @@
     <h1>Client Logout</h1>
     <div>You've been logged out successfully</div>
     <div>Wait 5 sec to be redirected or press the Submit button</div>
-    <form role="form" id="logoutUserConfirm" th:action="@{/mylogout}" method="POST">
+    <form role="form" id="logoutUserConfirm" action="/client/mylogout" method="POST">
         <button id="confirmLogoutBtn" type="submit" class="btn btn-primary">Submit</button>
+        <input type="hidden" id="csrf_token" name="${_csrf.parameterName}" value="${_csrf.token}"/>
     </form>
 </body>
 </html>

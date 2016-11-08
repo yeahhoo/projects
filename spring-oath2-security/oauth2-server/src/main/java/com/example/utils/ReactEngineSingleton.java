@@ -11,6 +11,7 @@ import javax.script.ScriptException;
 
 /**
  *
+ * NashornScriptEngine looks stateless so there are chances it's thread-safe, if not then refactor it using pool of objects.
  * @author Aleksandr_Savchenko
  */
 public class ReactEngineSingleton {
@@ -29,6 +30,7 @@ public class ReactEngineSingleton {
         }
     }
 
+    // seems it's not closed after eval, possible memory leak.
     private Reader read(String path) {
         InputStream in = getClass().getClassLoader().getResourceAsStream(path);
         return new InputStreamReader(in);
