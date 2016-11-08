@@ -56,6 +56,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity webSecurity) throws Exception {
         webSecurity.ignoring().antMatchers("GET", "/resources/**"
+                        , "/libs/**.js"
+                        , "/libs-css/**.css"
                         , "/templates/**"
                         , "/ui/**"
                         , "/401.html"

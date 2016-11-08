@@ -1,5 +1,8 @@
 package com.example.config;
 
+import com.example.utils.React;
+
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.core.Authentication;
@@ -8,6 +11,9 @@ import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.security.web.csrf.CsrfToken;
+import org.springframework.security.web.csrf.DefaultCsrfToken;
+import org.springframework.security.web.csrf.LazyCsrfTokenRepository;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -39,6 +45,9 @@ public class RestConfig {
         return user;
     }
 
+    private React react = new React();
+
+    private ObjectMapper mapper = new ObjectMapper();
 
     @RequestMapping(value = "/customLogout", method = {RequestMethod.GET, RequestMethod.POST})
     public ModelAndView logoutPage(HttpServletRequest request, HttpServletResponse response, Principal principal) throws Exception {
@@ -46,6 +55,12 @@ public class RestConfig {
         modelAndView.addObject("token", request.getParameter("token"));
         modelAndView.addObject("urlToReturn", request.getParameter("urlToReturn"));
         modelAndView.addObject("user", request.getParameter("user"));
+        CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
+        modelAndView.addObject("csrfToken", csrfToken.getToken());
+        String data = mapper.writeValueAsString(modelAndView.getModel());
+        String content = react.renderServerLogoutForm(request.getParameter("user"), request.getParameter("token"), request.getParameter("urlToReturn"), csrfToken.getToken());
+        modelAndView.addObject("content", content);
+        modelAndView.addObject("data", data);
         return modelAndView;
     }
 
