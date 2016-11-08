@@ -36,8 +36,8 @@ public class SocialApplication extends WebSecurityConfigurerAdapter {
 
     public static final String[] NON_SECURED_URLS = new String[] {
             "/",
-            "/index.ftl",
-            "/home.ftl",
+            "/index",
+            "/createUser",
             "/login**",
             "/resources/**",
             "/libs/**",

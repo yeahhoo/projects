@@ -66,7 +66,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         , "/cors"
                         , "/hello");
 
-        //webSecurity.ignoring().antMatchers("POST", "/oauth_client/create");
+        webSecurity.ignoring().antMatchers("POST", "/oauth_user/create");
     }
 
 

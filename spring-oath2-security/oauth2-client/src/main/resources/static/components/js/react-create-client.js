@@ -110,19 +110,19 @@ var CreateClientForm = React.createClass({
         return (
             <form role="form" method="POST" ref='user_form' onSubmit={this.addClient}>
                 <div className="form-group">
-                    <label for="client">Client:</label>
+                    <label htmlFor="client">Client:</label>
                     <input name="client" type="text" className="form-control" id="client" ref="client" placeholder="client" onChange={this.onChange} />
                 </div>
                 <div className="form-group">
-                    <label for="password">Password:</label>
+                    <label htmlFor="password">Password:</label>
                     <input type="password" className="form-control" name="password" id="password" ref="password" placeholder="password" onChange={this.onChange}/>
                 </div>
                 <div className="form-group">
-                    <label for="grantTypes">Grant Types:</label>
+                    <label htmlFor="grantTypes">Grant Types:</label>
                     <input type="text" className="form-control" id="grantTypes" name="grantTypes" ref="grantTypes" placeholder="grantTypes" onChange={this.onChange}/>
                 </div>
                 <div className="form-group">
-                    <label for="scopes">Scopes:</label>
+                    <label htmlFor="scopes">Scopes:</label>
                     <input type="text" className="form-control" id="scopes" name="scopes" ref="scopes" placeholder="scopes" onChange={this.onChange}/>
                 </div>
                 <button type="submit" id="submitBtn" className="btn btn-primary" disabled={this.state.loading}>

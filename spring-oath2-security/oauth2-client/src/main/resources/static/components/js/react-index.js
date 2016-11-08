@@ -117,6 +117,12 @@ var IndexPage = React.createClass({
                 <div className="col-sm-12">
                     <br/>
                     <br/>
+                    <a className="btn btn-info" href="/client/createUser" id="createUser">Create User</a>
+                </div>
+
+                <div className="col-sm-12">
+                    <br/>
+                    <br/>
                     <a className="btn btn-info" href="/client/requestLogout" id="logoutServerBtn">Logout</a>
                 </div>
             </div>

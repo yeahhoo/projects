@@ -12,7 +12,6 @@ public class Oauth2AuthorizationServerApplication {
         SpringApplication.run(Oauth2AuthorizationServerApplication.class, args);
     }
 
-    // todo refactor on FreeMarker
     // todo add clients and users dynamically
     // todo refactor client side on AngularJs or ReactJs
     // todo include maven Js building plugin
