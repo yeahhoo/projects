@@ -1,5 +1,8 @@
 package com.example.config;
 
+import com.example.repositories.UserRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -9,6 +12,10 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 /**
  * @author Aleksandr_Savchenko
@@ -19,6 +26,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @Order(-20)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+
+    @Autowired
+    private UserRepository userRepository;
 
     // http://localhost:8001/client/
     // http://localhost:9001/server/hello
@@ -38,7 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.logout().invalidateHttpSession(true).clearAuthentication(true);
     }
 
-
+/*
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication().withUser("user").password("user").roles("USER");
@@ -46,7 +56,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth.inMemoryAuthentication().withUser("dba").password("dba").roles("DBA");
         auth.inMemoryAuthentication().withUser("me").password("me").roles("DBA");
     }
-
+*/
     @Override
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
@@ -71,23 +81,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     // TODO CHANGE FOR BASE AUTHORISATION
-/*
+
     @Autowired
     protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(new UserDetailsService() {
             @Override
             public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-                User user = userRepository.findOneByUsername(s);
-
+                UserDetails user = userRepository.loadUserByUsername(s);
                 if (null == user) {
                     // leave that to be handled by log listener
                     throw new UsernameNotFoundException("The user with email " + s + " was not found");
                 }
 
-                return (UserDetails) user;
+                return user;
             }
-        }).passwordEncoder(passwordEncoder);
+        })/*.passwordEncoder(passwordEncoder)*/;
     }
-*/
+
 
 }

@@ -7,3 +7,12 @@ logging:
 server:
     port: 9001
     context-path: /server
+
+database:
+    inMemoryDatabaseTcpPort: 9002
+    inMemoryDatabaseWebServerPort: 9003
+    driverClass: org.h2.Driver
+    url: jdbc:h2:tcp://localhost:9002/~/mydb
+    user: sa
+    password:
+
