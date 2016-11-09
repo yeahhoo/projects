@@ -1,5 +1,7 @@
 package com.example.config;
 
+import com.example.repositories.ClientRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +19,9 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
+import org.springframework.security.oauth2.provider.ClientRegistrationException;
 import org.springframework.security.oauth2.provider.approval.ApprovalStore;
 import org.springframework.security.oauth2.provider.approval.UserApprovalHandler;
 import org.springframework.security.oauth2.provider.token.AccessTokenConverter;
@@ -50,12 +54,11 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
     private ApprovalStore approvalStore;
 
     @Autowired
-    private ClientDetailsService clientDetailsService;
+    private ClientRepository clientRepository;
 
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-        endpoints.authenticationManager(authenticationManager).accessTokenConverter(accessTokenConverter());
         endpoints.authenticationManager(authenticationManager).accessTokenConverter(accessTokenConverter());
         endpoints.userApprovalHandler(userApprovalHandler);
         endpoints.tokenStore(tokenStore);
@@ -83,12 +86,17 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
     }
 */
 
-
+/*
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients.inMemory().withClient("foo")
                 .secret("foosecret").authorizedGrantTypes("authorization_code", "refresh_token", "password")
                 .scopes("openid", "create");
+    }
+*/
+    @Autowired
+    public void configureGlobal(ClientDetailsServiceConfigurer clients) throws Exception {
+        clients.withClientDetails(clientRepository);
     }
 
     @Override

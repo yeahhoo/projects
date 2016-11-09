@@ -12,10 +12,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 /**
  * @author Aleksandr_Savchenko
@@ -48,15 +44,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.logout().invalidateHttpSession(true).clearAuthentication(true);
     }
 
-/*
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication().withUser("user").password("user").roles("USER");
-        auth.inMemoryAuthentication().withUser("admin").password("admin").roles("ADMIN");
-        auth.inMemoryAuthentication().withUser("dba").password("dba").roles("DBA");
-        auth.inMemoryAuthentication().withUser("me").password("me").roles("DBA");
-    }
-*/
     @Override
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
@@ -80,22 +67,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
 
-    // TODO CHANGE FOR BASE AUTHORISATION
+    /*
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.inMemoryAuthentication().withUser("user").password("user").roles("USER");
+        auth.inMemoryAuthentication().withUser("admin").password("admin").roles("ADMIN");
+        auth.inMemoryAuthentication().withUser("dba").password("dba").roles("DBA");
+        auth.inMemoryAuthentication().withUser("me").password("me").roles("DBA");
+    }
+    */
 
     @Autowired
     protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(new UserDetailsService() {
-            @Override
-            public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-                UserDetails user = userRepository.loadUserByUsername(s);
-                if (null == user) {
-                    // leave that to be handled by log listener
-                    throw new UsernameNotFoundException("The user with email " + s + " was not found");
-                }
-
-                return user;
-            }
-        })/*.passwordEncoder(passwordEncoder)*/;
+        auth.userDetailsService(userRepository)/*.passwordEncoder(passwordEncoder)*/;
     }
 
 

@@ -46,17 +46,17 @@ var CreateClientForm = React.createClass({
         console.log('clicked');
 
         var params = {
-            client: this.state.client,
-            secret: this.state.password,
-            grantTypes: this.state.grantTypes.split(','),
-            scopes: this.state.scopes.split(',')
+            client_id: this.state.client,
+            client_secret: this.state.password,
+            authorized_grant_types: this.state.grantTypes,
+            scope: this.state.scopes
         };
 
         var request = this.createRequest('/client/server/oauth_client/create', 'POST', JSON.stringify(params), 'application/json; charset=utf-8');
         request.done(function(data) {
             this.refs.user_form.reset();
             this.setState(this.getInitialState());
-            alert('client created: ' + data);
+            alert('client created: ' + JSON.stringify(data));
         }.bind(this))
         .fail(this.onError)
         .always(this.hideLoading);

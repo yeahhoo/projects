@@ -17,7 +17,7 @@ var CreateUserForm = React.createClass({
         request.done(function(data) {
             this.refs.user_form.reset();
             this.setState(this.getInitialState());
-            alert('user created: ' + data);
+            alert('user created: ' + JSON.stringify(data));
         }.bind(this))
         .fail(this.onError)
         .always(this.hideLoading);
