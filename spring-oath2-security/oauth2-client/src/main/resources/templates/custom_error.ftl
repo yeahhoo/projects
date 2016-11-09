@@ -9,10 +9,7 @@
     <div class="container">
         <div id="react-custom-error-config" style="display: none;">
             <!-- refactor using server-rendering reactJs -->
-            <span id="status">${status}</span>
-            <span id="error">${error}</span>
-            <span id="message">${message}</span>
-            <span id="timestamp">${timestamp?datetime}</span>
+            <span id="jsonError">${jsonError}</span>
         </div>
         <div id="react-custom-error-container"></div>
     </div>

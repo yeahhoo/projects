@@ -12,6 +12,8 @@ public class Oauth2AuthorizationServerApplication {
         SpringApplication.run(Oauth2AuthorizationServerApplication.class, args);
     }
 
+    // todo port other token services on JDBC
+    // todo write JUnits
     // todo refactor client side on AngularJs or ReactJs
     // todo include maven Js building plugin
     // todo include Docker

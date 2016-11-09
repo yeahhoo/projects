@@ -3,20 +3,23 @@ var CustomErrorForm = React.createClass({
 
     getInitialState: function () {
         return {
-            status: document.getElementById('status').innerHTML,
-            error: document.getElementById('error').innerHTML,
-            message: document.getElementById('message').innerHTML,
-            timestamp: document.getElementById('timestamp').innerHTML
+            errorJson: JSON.parse(document.getElementById('jsonError').innerHTML)
         }
     },
 
+    printDate: function(timeLong) {
+        var timeStr = new Date(timeLong).toString();
+        return timeStr;
+    },
+
     render: function() {
+        const timeStamp = this.state.errorJson.timestamp;
         return (
             <div>
-                <div>Status: <span>{this.state.status}</span></div>
-                <div>Error: <span>{this.state.error}</span></div>
-                <div>Message: <span>{this.state.message}</span></div>
-                <div>Timestamp: <span>{this.state.timestamp}</span></div>
+                <div>Status: <span>{this.state.errorJson.status}</span></div>
+                <div>Error: <span>{this.state.errorJson.error}</span></div>
+                <div>Message: <span>{this.state.errorJson.message}</span></div>
+                <div>Timestamp: <span>{this.printDate(timeStamp)}</span></div>
                 Try to <a href="/client">start over</a>
             </div>
         )

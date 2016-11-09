@@ -16,13 +16,6 @@ import javax.sql.DataSource;
 @Repository
 @Import({DataSourceConfig.class})
 public class UserRepository extends JdbcUserDetailsManager {
-
-    /*
-    SELECT u.*, r.role FROM USERS u
-LEFT JOIN ROLES r ON u.username = r.username
-WHERE u.USERNAME = 'me'
-    * */
-
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
