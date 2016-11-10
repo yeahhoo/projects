@@ -2,18 +2,21 @@
 var CustomErrorForm = React.createClass({
 
     getInitialState: function () {
+        'use strict';
         return {
             errorJson: JSON.parse(document.getElementById('jsonError').innerHTML)
         }
     },
 
     printDate: function(timeLong) {
+        'use strict';
         var timeStr = new Date(timeLong).toString();
         return timeStr;
     },
 
     render: function() {
-        const timeStamp = this.state.errorJson.timestamp;
+        'use strict';
+        var timeStamp = this.state.errorJson.timestamp;
         return (
             <div>
                 <div>Status: <span>{this.state.errorJson.status}</span></div>

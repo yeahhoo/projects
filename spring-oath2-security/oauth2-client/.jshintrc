@@ -1,0 +1,15 @@
+{
+    "unused": true,
+    "strict": true,
+    "es3": true,
+    "browser": true,
+    "jquery": true,
+
+    "globals": {
+        "console": true,
+        "React": true,
+        "ReactDOM": true,
+        "JSON": true,
+        "alert": true
+    }
+}

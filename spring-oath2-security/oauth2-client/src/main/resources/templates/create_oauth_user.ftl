@@ -13,7 +13,6 @@
     <script type="text/javascript" src="/client/webjars/jquery/jquery.min.js"></script>
     <script type="text/javascript" src="/client/libs/js/react-15.3.2.js"></script>
     <script type="text/javascript" src="/client/libs/js/react-dom-15.3.2.js"></script>
-    <script type="text/javascript" src="/client/libs/js/babel-core-5.8.34-browser.min.js"></script>
-    <script type="text/babel" src="/client/components/js/react-create-user.js"></script>
+    <script type="text/javascript" src="/client/components/js/compiled/react-create-user.js"></script>
 </body>
 </html>

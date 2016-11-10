@@ -1,10 +1,12 @@
 var IndexPage = React.createClass({
 
     getInitialState: function () {
+        'use strict';
         return {username: '', helloMsg: '', serverMsg: '', corsMsg: ''}
     },
 
     getUsername: function(e) {
+        'use strict';
         e.preventDefault();
         console.log('getUsername clicked');
         var request = this.createRequest('/client/server/user', 'GET');
@@ -15,6 +17,7 @@ var IndexPage = React.createClass({
     },
 
     getHelloMsg: function(e) {
+        'use strict';
         e.preventDefault();
         console.log('getHelloMsg clicked');
         var request = this.createRequest('/client/server/hello', 'GET');
@@ -25,6 +28,7 @@ var IndexPage = React.createClass({
     },
 
     getServerMsg: function(e) {
+        'use strict';
         e.preventDefault();
         console.log('getServerMsg clicked');
         var request = this.createRequest('/client/server/hellouser', 'GET');
@@ -35,6 +39,7 @@ var IndexPage = React.createClass({
     },
 
     getCorsMsg: function(e) {
+        'use strict';
         e.preventDefault();
         console.log('getCorsMsg clicked');
         var request = this.createRequest('http://localhost:9001/server/cors', 'GET');
@@ -45,6 +50,7 @@ var IndexPage = React.createClass({
     },
 
     createRequest: function (url, type, data, contentType) {
+        'use strict';
         return $.ajax({
             url: url,
             type: type,
@@ -56,10 +62,12 @@ var IndexPage = React.createClass({
     },
 
     onError: function (e) {
+        'use strict';
         console.log('request failed: ' + JSON.stringify(e));
     },
 
     render: function() {
+        'use strict';
         return (
             <div>
                 <div>With Facebook: <a href="/client/login">click here</a></div>

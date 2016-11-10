@@ -34,14 +34,15 @@
     }
 */
 
-
 var CreateClientForm = React.createClass({
 
     getInitialState: function () {
+        'use strict';
         return {client: '', password: '', grantTypes: '', scopes: '', errors: {}, loading: false}
     },
 
     addClient: function(e) {
+        'use strict';
         e.preventDefault();
         console.log('clicked');
 
@@ -65,6 +66,7 @@ var CreateClientForm = React.createClass({
     },
 
     processException: function(e) {
+        'use strict';
         e.preventDefault();
         console.log('exception clicked');
         this.createRequest('/client/server/oauth_client/exception', 'POST', {}, 'application/json; charset=utf-8')
@@ -74,6 +76,7 @@ var CreateClientForm = React.createClass({
     },
 
     createRequest: function (url, type, data, contentType) {
+        'use strict';
         return $.ajax({
             url: url,
             type: type,
@@ -86,6 +89,7 @@ var CreateClientForm = React.createClass({
     },
 
     onError: function (e) {
+        'use strict';
         var data = JSON.parse(e.responseText);
         alert('client caused: \nerror: ' + data.error + '\nexception: ' + data.exception
             + '\nmessage: ' + data.message + '\nstatus: ' + data.status + '\ntrace: ' + data.trace);
@@ -97,16 +101,19 @@ var CreateClientForm = React.createClass({
     },
 
     hideLoading: function () {
+        'use strict';
         this.setState({loading: false});
     },
 
     onChange: function (e) {
+        'use strict';
         var state = {};
         state[e.target.name] = $.trim(e.target.value);
         this.setState(state);
     },
 
     render: function() {
+        'use strict';
         return (
             <form role="form" method="POST" ref='user_form' onSubmit={this.addClient}>
                 <div className="form-group">

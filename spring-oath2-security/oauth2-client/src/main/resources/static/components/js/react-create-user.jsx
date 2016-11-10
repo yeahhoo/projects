@@ -1,10 +1,12 @@
 var CreateUserForm = React.createClass({
 
     getInitialState: function () {
+        'use strict';
         return {user: '', password: '', errors: {}, loading: false}
     },
 
     addUser: function(e) {
+        'use strict';
         e.preventDefault();
         console.log('clicked');
 
@@ -26,6 +28,7 @@ var CreateUserForm = React.createClass({
     },
 
     createRequest: function (url, type, data, contentType) {
+        'use strict';
         return $.ajax({
             url: url,
             type: type,
@@ -38,6 +41,7 @@ var CreateUserForm = React.createClass({
     },
 
     onError: function (e) {
+        'use strict';
         var data = JSON.parse(e.responseText);
         alert('client caused: \nerror: ' + data.error + '\nexception: ' + data.exception
             + '\nmessage: ' + data.message + '\nstatus: ' + data.status + '\ntrace: ' + data.trace);
@@ -49,16 +53,19 @@ var CreateUserForm = React.createClass({
     },
 
     hideLoading: function () {
+        'use strict';
         this.setState({loading: false});
     },
 
     onChange: function (e) {
+        'use strict';
         var state = {};
         state[e.target.name] = $.trim(e.target.value);
         this.setState(state);
     },
 
     render: function() {
+        'use strict';
         return (
             <form role="form" method="POST" ref='user_form' onSubmit={this.addUser}>
                 <div className="form-group">
