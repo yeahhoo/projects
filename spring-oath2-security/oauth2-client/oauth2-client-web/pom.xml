@@ -27,7 +27,6 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-oauth2</artifactId>
         </dependency>
-
     </dependencies>
 
 
@@ -70,13 +69,23 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>run-spring-boot</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <inherited>false</inherited>
+                    </execution>
+                </executions>
                 <configuration>
                     <jvmArguments>
                         -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=9081
                     </jvmArguments>
+                    <fork>true</fork>
                 </configuration>
             </plugin>
-
 		</plugins>
 	</build>
 
