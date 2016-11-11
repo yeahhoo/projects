@@ -24,7 +24,7 @@ public class ReactEngineSingleton {
             nashornScriptEngine.eval(read("static/libs/react-15.3.2.js"));
             nashornScriptEngine.eval(read("static/libs/react-dom-15.3.2.js"));
             nashornScriptEngine.eval(read("static/libs/react-dom-server-15.3.2.js"));
-            nashornScriptEngine.eval(read("static/libs/server-logout-form.js"));
+            nashornScriptEngine.eval(read("static/components/js/server-logout-form.js"));
         } catch (ScriptException e) {
             throw new RuntimeException(e);
         }

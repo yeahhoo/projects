@@ -12,11 +12,9 @@ public class Oauth2AuthorizationServerApplication {
         SpringApplication.run(Oauth2AuthorizationServerApplication.class, args);
     }
 
-    // todo create maven UI module
     // todo find a way to optimize 'use strict'
     // todo port other token services on JDBC
     // todo write JUnits
     // todo refactor client side on AngularJs or ReactJs
-    // todo include maven Js building plugin
     // todo include Docker
 }

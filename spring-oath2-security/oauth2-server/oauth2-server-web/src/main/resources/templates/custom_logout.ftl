@@ -10,7 +10,7 @@
     <script type="text/javascript" src="/server/libs/react-15.3.2.js"></script>
     <script type="text/javascript" src="/server/libs/react-dom-15.3.2.js"></script>
     <script type="text/javascript" src="/server/libs/react-dom-server-15.3.2.js"></script>
-    <script type="text/javascript" src="/server/libs/server-logout-form.js"></script>
+    <script type="text/javascript" src="/server/components/js/server-logout-form.js"></script>
     <script type="text/javascript">
         $(function () {
             renderClientLogoutForm(${data});

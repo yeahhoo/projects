@@ -54,6 +54,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity webSecurity) throws Exception {
         webSecurity.ignoring().antMatchers("GET", "/resources/**"
                         , "/libs/**.js"
+                        , "/components/**/**.js"
                         , "/libs-css/**.css"
                         , "/templates/**"
                         , "/ui/**"
@@ -81,6 +82,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userRepository)/*.passwordEncoder(passwordEncoder)*/;
     }
-
 
 }
