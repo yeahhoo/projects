@@ -5,7 +5,6 @@
 
 	<groupId>com.example</groupId>
 	<artifactId>oauth2-client-web</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 
     <parent>
@@ -18,7 +17,7 @@
         <dependency>
             <groupId>com.example</groupId>
             <artifactId>oauth2-client-service</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -73,7 +72,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <jvmArguments>
-                        -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=9081
+                        -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=9081
                     </jvmArguments>
                 </configuration>
             </plugin>
