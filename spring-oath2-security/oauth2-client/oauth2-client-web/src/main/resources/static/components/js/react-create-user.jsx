@@ -1,90 +1,89 @@
-var CreateUserForm = React.createClass({
+(function() {
 
-    getInitialState: function () {
-        'use strict';
-        return {user: '', password: '', errors: {}, loading: false}
-    },
+    'use strict';
 
-    addUser: function(e) {
-        'use strict';
-        e.preventDefault();
-        console.log('clicked');
+    var CreateUserForm = React.createClass({
 
-        var params = {
-            user: this.state.user,
-            password: this.state.password
-        };
+        getInitialState: function () {
+            return {user: '', password: '', errors: {}, loading: false}
+        },
 
-        var request = this.createRequest('/client/server/oauth_user/create', 'POST', JSON.stringify(params), 'application/json; charset=utf-8');
-        request.done(function(data) {
-            this.refs.user_form.reset();
-            this.setState(this.getInitialState());
-            alert('user created: ' + JSON.stringify(data));
-        }.bind(this))
-        .fail(this.onError)
-        .always(this.hideLoading);
+        addUser: function(e) {
+            e.preventDefault();
+            console.log('clicked');
 
-        return false;
-    },
+            var params = {
+                user: this.state.user,
+                password: this.state.password
+            };
 
-    createRequest: function (url, type, data, contentType) {
-        'use strict';
-        return $.ajax({
-            url: url,
-            type: type,
-            data: data,
-            contentType: contentType,
-            beforeSend: function () {
-                this.setState({loading: true});
-            }.bind(this)
-        });
-    },
+            var request = this.createRequest('/client/server/oauth_user/create', 'POST', JSON.stringify(params), 'application/json; charset=utf-8');
+            request.done(function(data) {
+                this.refs.user_form.reset();
+                this.setState(this.getInitialState());
+                alert('user created: ' + JSON.stringify(data));
+            }.bind(this))
+            .fail(this.onError)
+            .always(this.hideLoading);
 
-    onError: function (e) {
-        'use strict';
-        var data = JSON.parse(e.responseText);
-        alert('client caused: \nerror: ' + data.error + '\nexception: ' + data.exception
-            + '\nmessage: ' + data.message + '\nstatus: ' + data.status + '\ntrace: ' + data.trace);
-        if (data) {
-            this.setState({
-                errors: data
+            return false;
+        },
+
+        createRequest: function (url, type, data, contentType) {
+            return $.ajax({
+                url: url,
+                type: type,
+                data: data,
+                contentType: contentType,
+                beforeSend: function () {
+                    this.setState({loading: true});
+                }.bind(this)
             });
+        },
+
+        onError: function (e) {
+            var data = JSON.parse(e.responseText);
+            alert('client caused: \nerror: ' + data.error + '\nexception: ' + data.exception
+                + '\nmessage: ' + data.message + '\nstatus: ' + data.status + '\ntrace: ' + data.trace);
+            if (data) {
+                this.setState({
+                    errors: data
+                });
+            }
+        },
+
+        hideLoading: function () {
+            this.setState({loading: false});
+        },
+
+        onChange: function (e) {
+            var state = {};
+            state[e.target.name] = $.trim(e.target.value);
+            this.setState(state);
+        },
+
+        render: function() {
+            return (
+                <form role="form" method="POST" ref='user_form' onSubmit={this.addUser}>
+                    <div className="form-group">
+                        <label htmlFor="user">User:</label>
+                        <input name="user" type="text" className="form-control" id="user" ref="user" placeholder="user" onChange={this.onChange} />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="password">Password:</label>
+                        <input type="password" className="form-control" name="password" id="password" ref="password" placeholder="password" onChange={this.onChange}/>
+                    </div>
+                    <button type="submit" id="submitBtn" className="btn btn-primary" disabled={this.state.loading}>
+                        Create User
+                    </button>
+                </form>
+            )
         }
-    },
+    });
 
-    hideLoading: function () {
-        'use strict';
-        this.setState({loading: false});
-    },
+    ReactDOM.render(
+        <CreateUserForm/>,
+        document.getElementById('react-create-client-container')
+    );
 
-    onChange: function (e) {
-        'use strict';
-        var state = {};
-        state[e.target.name] = $.trim(e.target.value);
-        this.setState(state);
-    },
-
-    render: function() {
-        'use strict';
-        return (
-            <form role="form" method="POST" ref='user_form' onSubmit={this.addUser}>
-                <div className="form-group">
-                    <label htmlFor="user">User:</label>
-                    <input name="user" type="text" className="form-control" id="user" ref="user" placeholder="user" onChange={this.onChange} />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="password">Password:</label>
-                    <input type="password" className="form-control" name="password" id="password" ref="password" placeholder="password" onChange={this.onChange}/>
-                </div>
-                <button type="submit" id="submitBtn" className="btn btn-primary" disabled={this.state.loading}>
-                    Create User
-                </button>
-            </form>
-        )
-    }
-});
-
-ReactDOM.render(
-    <CreateUserForm/>,
-    document.getElementById('react-create-client-container')
-);
+})();

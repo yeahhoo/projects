@@ -34,115 +34,113 @@
     }
 */
 
-var CreateClientForm = React.createClass({
+(function() {
 
-    getInitialState: function () {
-        'use strict';
-        return {client: '', password: '', grantTypes: '', scopes: '', errors: {}, loading: false}
-    },
+    'use strict';
 
-    addClient: function(e) {
-        'use strict';
-        e.preventDefault();
-        console.log('clicked');
+    var CreateClientForm = React.createClass({
 
-        var params = {
-            client_id: this.state.client,
-            client_secret: this.state.password,
-            authorized_grant_types: this.state.grantTypes,
-            scope: this.state.scopes
-        };
+        getInitialState: function () {
+            return {client: '', password: '', grantTypes: '', scopes: '', errors: {}, loading: false}
+        },
 
-        var request = this.createRequest('/client/server/oauth_client/create', 'POST', JSON.stringify(params), 'application/json; charset=utf-8');
-        request.done(function(data) {
-            this.refs.user_form.reset();
-            this.setState(this.getInitialState());
-            alert('client created: ' + JSON.stringify(data));
-        }.bind(this))
-        .fail(this.onError)
-        .always(this.hideLoading);
+        addClient: function(e) {
+            e.preventDefault();
+            console.log('clicked');
 
-        return false;
-    },
+            var params = {
+                client_id: this.state.client,
+                client_secret: this.state.password,
+                authorized_grant_types: this.state.grantTypes,
+                scope: this.state.scopes
+            };
 
-    processException: function(e) {
-        'use strict';
-        e.preventDefault();
-        console.log('exception clicked');
-        this.createRequest('/client/server/oauth_client/exception', 'POST', {}, 'application/json; charset=utf-8')
-        .fail(this.onError)
-        .always(this.hideLoading);
-        return false;
-    },
+            var request = this.createRequest('/client/server/oauth_client/create', 'POST', JSON.stringify(params), 'application/json; charset=utf-8');
+            request.done(function(data) {
+                this.refs.user_form.reset();
+                this.setState(this.getInitialState());
+                alert('client created: ' + JSON.stringify(data));
+            }.bind(this))
+            .fail(this.onError)
+            .always(this.hideLoading);
 
-    createRequest: function (url, type, data, contentType) {
-        'use strict';
-        return $.ajax({
-            url: url,
-            type: type,
-            data: data,
-            contentType: contentType,
-            beforeSend: function () {
-                this.setState({loading: true});
-            }.bind(this)
-        });
-    },
+            return false;
+        },
 
-    onError: function (e) {
-        'use strict';
-        var data = JSON.parse(e.responseText);
-        alert('client caused: \nerror: ' + data.error + '\nexception: ' + data.exception
-            + '\nmessage: ' + data.message + '\nstatus: ' + data.status + '\ntrace: ' + data.trace);
-        if (data) {
-            this.setState({
-                errors: data
+        processException: function(e) {
+            e.preventDefault();
+            console.log('exception clicked');
+            this.createRequest('/client/server/oauth_client/exception', 'POST', {}, 'application/json; charset=utf-8')
+            .fail(this.onError)
+            .always(this.hideLoading);
+            return false;
+        },
+
+        createRequest: function (url, type, data, contentType) {
+            return $.ajax({
+                url: url,
+                type: type,
+                data: data,
+                contentType: contentType,
+                beforeSend: function () {
+                    this.setState({loading: true});
+                }.bind(this)
             });
+        },
+
+        onError: function (e) {
+            var data = JSON.parse(e.responseText);
+            alert('client caused: \nerror: ' + data.error + '\nexception: ' + data.exception
+                + '\nmessage: ' + data.message + '\nstatus: ' + data.status + '\ntrace: ' + data.trace);
+            if (data) {
+                this.setState({
+                    errors: data
+                });
+            }
+        },
+
+        hideLoading: function () {
+            this.setState({loading: false});
+        },
+
+        onChange: function (e) {
+            var state = {};
+            state[e.target.name] = $.trim(e.target.value);
+            this.setState(state);
+        },
+
+        render: function() {
+            return (
+                <form role="form" method="POST" ref='user_form' onSubmit={this.addClient}>
+                    <div className="form-group">
+                        <label htmlFor="client">Client:</label>
+                        <input name="client" type="text" className="form-control" id="client" ref="client" placeholder="client" onChange={this.onChange} />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="password">Password:</label>
+                        <input type="password" className="form-control" name="password" id="password" ref="password" placeholder="password" onChange={this.onChange}/>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="grantTypes">Grant Types:</label>
+                        <input type="text" className="form-control" id="grantTypes" name="grantTypes" ref="grantTypes" placeholder="grantTypes" onChange={this.onChange}/>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="scopes">Scopes:</label>
+                        <input type="text" className="form-control" id="scopes" name="scopes" ref="scopes" placeholder="scopes" onChange={this.onChange}/>
+                    </div>
+                    <button type="submit" id="submitBtn" className="btn btn-primary" disabled={this.state.loading}>
+                        Submit
+                    </button>
+                    <br/>
+                    <button type="button" id="expBtn" className="btn btn-primary" onClick={this.processException}>Exception</button>
+                </form>
+            )
         }
-    },
+    });
 
-    hideLoading: function () {
-        'use strict';
-        this.setState({loading: false});
-    },
+    ReactDOM.render(
+        <CreateClientForm/>,
+        document.getElementById('react-create-client-container')
+    );
 
-    onChange: function (e) {
-        'use strict';
-        var state = {};
-        state[e.target.name] = $.trim(e.target.value);
-        this.setState(state);
-    },
-
-    render: function() {
-        'use strict';
-        return (
-            <form role="form" method="POST" ref='user_form' onSubmit={this.addClient}>
-                <div className="form-group">
-                    <label htmlFor="client">Client:</label>
-                    <input name="client" type="text" className="form-control" id="client" ref="client" placeholder="client" onChange={this.onChange} />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="password">Password:</label>
-                    <input type="password" className="form-control" name="password" id="password" ref="password" placeholder="password" onChange={this.onChange}/>
-                </div>
-                <div className="form-group">
-                    <label htmlFor="grantTypes">Grant Types:</label>
-                    <input type="text" className="form-control" id="grantTypes" name="grantTypes" ref="grantTypes" placeholder="grantTypes" onChange={this.onChange}/>
-                </div>
-                <div className="form-group">
-                    <label htmlFor="scopes">Scopes:</label>
-                    <input type="text" className="form-control" id="scopes" name="scopes" ref="scopes" placeholder="scopes" onChange={this.onChange}/>
-                </div>
-                <button type="submit" id="submitBtn" className="btn btn-primary" disabled={this.state.loading}>
-                    Submit
-                </button>
-                <br/>
-                <button type="button" id="expBtn" className="btn btn-primary" onClick={this.processException}>Exception</button>
-            </form>
-        )
-    }
-});
-
-ReactDOM.render(
-    <CreateClientForm/>,
-    document.getElementById('react-create-client-container')
-);
+})();
