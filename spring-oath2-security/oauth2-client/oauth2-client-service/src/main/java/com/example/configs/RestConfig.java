@@ -25,6 +25,9 @@ public class RestConfig {
     @Value("${security.oauth2.client.clientLogoutUri}")
     private String clientLogoutUri;
 
+    @Value("${security.oauth2.client.clientId}")
+    private String clientName;
+
     @RequestMapping({"/requestLogout"})
     public void requestLogout(HttpServletRequest request, HttpServletResponse response, Principal principal) throws Exception {
         // todo find a way to pass parameters more secure
@@ -32,6 +35,7 @@ public class RestConfig {
         OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) securityContext.getAuthentication().getDetails();
         StringBuilder url = new StringBuilder(serverLogoutUri);
         url.append("?user=").append(securityContext.getAuthentication().getName())
+                .append("&client=").append(clientName)
                 .append("&token=").append(details.getTokenValue())
                 .append("&urlToReturn=").append(clientLogoutUri);
 

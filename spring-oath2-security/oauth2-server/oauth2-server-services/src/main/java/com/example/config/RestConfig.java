@@ -4,11 +4,14 @@ import com.example.utils.React;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
+import org.springframework.security.oauth2.provider.approval.Approval;
+import org.springframework.security.oauth2.provider.approval.ApprovalStore;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.csrf.CsrfToken;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.security.Principal;
+import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,11 +37,15 @@ import javax.servlet.http.HttpServletResponse;
 @Import({InnerConfig.class})
 public class RestConfig {
 
+    // @RequestMapping("/oauth/error")
     private static final String BEARER_AUTHENTICATION = "bearer ";
     private static final String HEADER_AUTHORIZATION = "authorization";
 
     @Autowired
     private TokenStore tokenStore;
+
+    @Autowired
+    public ApprovalStore approvalStore;
 
     @RequestMapping("/auth")
     @ResponseBody
@@ -55,10 +63,17 @@ public class RestConfig {
         modelAndView.addObject("token", request.getParameter("token"));
         modelAndView.addObject("urlToReturn", request.getParameter("urlToReturn"));
         modelAndView.addObject("user", request.getParameter("user"));
+        modelAndView.addObject("client", request.getParameter("client"));
         CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
         modelAndView.addObject("csrfToken", csrfToken.getToken());
         String data = mapper.writeValueAsString(modelAndView.getModel());
-        String content = react.renderServerLogoutForm(request.getParameter("user"), request.getParameter("token"), request.getParameter("urlToReturn"), csrfToken.getToken());
+        String content = react.renderServerLogoutForm(
+                request.getParameter("user"),
+                request.getParameter("client"),
+                request.getParameter("token"),
+                request.getParameter("urlToReturn"),
+                csrfToken.getToken()
+        );
         modelAndView.addObject("content", content);
         modelAndView.addObject("data", data);
         return modelAndView;
@@ -76,6 +91,8 @@ public class RestConfig {
                 Authentication auth = SecurityContextHolder.getContext().getAuthentication();
                 if (auth != null) {
                     new SecurityContextLogoutHandler().logout(request, response, auth);
+                    Collection<Approval> approvs = approvalStore.getApprovals(principal.getName(), request.getParameter("client"));
+                    approvalStore.revokeApprovals(approvs);
                 }
                 return Boolean.TRUE;
             }

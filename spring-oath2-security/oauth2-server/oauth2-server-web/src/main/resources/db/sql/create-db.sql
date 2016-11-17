@@ -68,7 +68,8 @@ create table oauth_refresh_token (
 );
 
 create table oauth_code (
-  code VARCHAR(256), authentication LONGVARBINARY
+  code VARCHAR(256),
+  authentication LONGVARBINARY
 );
 
 create table oauth_approvals (
