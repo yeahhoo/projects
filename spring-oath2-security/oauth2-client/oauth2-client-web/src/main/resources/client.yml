@@ -8,30 +8,24 @@ spring:
   aop:
     proxy-target-class: true
 
-
-security:
-  oauth2:
-    client:
-      accessTokenUri: http://localhost:9001/server/oauth/token
-      userAuthorizationUri: http://localhost:9001/server/oauth/authorize
-      clientId: foo
-      clientSecret: foosecret
-      serverLogoutUri: http://localhost:9001/server/customLogout
-      clientLogoutUri: http://localhost:8001/client/clientLogout
-    resource:
-      userInfoUri: http://localhost:9001/server/auth
-
-
 logging:
   level:
     org.springframework.security: DEBUG
 
+security:
+  oauth2:
+    client:
+      accessTokenUri: @serverHost@:9001/server/oauth/token
+      userAuthorizationUri: @serverHost@:9001/server/oauth/authorize
+      clientId: foo
+      clientSecret: foosecret
+      serverLogoutUri: @serverHost@:9001/server/customLogout
+      clientLogoutUri: http://localhost:8001/client/clientLogout
+    resource:
+      userInfoUri: @serverHost@:9001/server/auth
 
 zuul:
   routes:
-    resource:
-      path: /resource/**
-      url: http://localhost:8002/resource
     server:
       path: /server/**
-      url: http://localhost:9001/server
+      url: @serverHost@:9001/server

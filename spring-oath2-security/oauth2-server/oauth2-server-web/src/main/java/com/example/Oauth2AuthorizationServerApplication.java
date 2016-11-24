@@ -15,5 +15,4 @@ public class Oauth2AuthorizationServerApplication {
     // todo port other token services on JDBC
     // todo write JUnits
     // todo refactor client side on AngularJs or ReactJs
-    // todo include Docker
 }

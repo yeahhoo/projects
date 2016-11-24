@@ -5,7 +5,7 @@
 
 	<groupId>com.example</groupId>
 	<artifactId>oauth2-client-web</artifactId>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 
     <parent>
         <groupId>com.example</groupId>
@@ -31,6 +31,13 @@
 
 
     <build>
+        <finalName>${artifactId}</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
 		<plugins>
             <!-- http://blog.trifork.com/2014/10/07/setting-up-maven-to-use-gruntnodejs/ -->
             <plugin>
@@ -65,7 +72,6 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -86,7 +92,41 @@
                     <fork>true</fork>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>0.4.11</version>
+                <configuration>
+                    <imageName>${artifactId}</imageName>
+                    <dockerDirectory>docker</dockerDirectory>
+                    <resources>
+                        <resource>
+                            <targetPath>/</targetPath>
+                            <directory>${project.build.directory}</directory>
+                            <include>${project.build.finalName}.jar</include>
+                        </resource>
+                    </resources>
+                </configuration>
+            </plugin>
 		</plugins>
 	</build>
+
+    <profiles>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <serverHost>http://localhost</serverHost>
+            </properties>
+        </profile>
+        <profile>
+            <id>docker</id>
+            <properties>
+                <serverHost>http://192.168.99.100</serverHost>
+            </properties>
+        </profile>
+    </profiles>
 
 </project>
