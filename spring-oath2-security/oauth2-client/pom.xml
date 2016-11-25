@@ -95,4 +95,22 @@
         </repository>
     </repositories>
 
+    <profiles>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <serverHost>http://localhost</serverHost>
+            </properties>
+        </profile>
+        <profile>
+            <id>docker</id>
+            <properties>
+                <serverHost>http://192.168.99.100</serverHost>
+            </properties>
+        </profile>
+    </profiles>
+
 </project>
