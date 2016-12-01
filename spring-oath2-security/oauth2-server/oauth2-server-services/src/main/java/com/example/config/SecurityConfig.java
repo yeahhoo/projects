@@ -62,7 +62,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         , "/404.html"
                         , "/500.html"
                         , "/cors"
-                        , "/hello");
+                        , "/hello"
+                        , "/v2/api-docs"
+                        , "/configuration/security"
+                        , "/swagger-resources"
+                        , "/configuration/ui"
+                        , "/api/swagger-ui.html"
+                        , "/swagger-ui.html");
 
         webSecurity.ignoring().antMatchers("POST", "/oauth_user/create");
     }

@@ -4,6 +4,8 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.annotations.Api;
+
 import java.security.Principal;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -12,6 +14,7 @@ import java.util.Map;
  * @author Aleksandr_Savchenko
  */
 @RestController
+@Api(value = "commonController")
 public class CommonRestController {
 
     @RequestMapping({"/user", "/me"})

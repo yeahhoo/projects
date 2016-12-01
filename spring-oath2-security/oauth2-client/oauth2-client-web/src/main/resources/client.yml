@@ -20,7 +20,7 @@ security:
       clientId: foo
       clientSecret: foosecret
       serverLogoutUri: @serverHost@:9001/server/customLogout
-      clientLogoutUri: http://localhost:8001/client/clientLogout
+      clientLogoutUri: @serverHost@:8001/client/clientLogout
     resource:
       userInfoUri: @serverHost@:9001/server/auth
 

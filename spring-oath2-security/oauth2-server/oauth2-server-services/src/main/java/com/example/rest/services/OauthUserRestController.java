@@ -13,12 +13,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.annotations.Api;
+
 import java.util.Arrays;
 
 /**
  * @author Aleksandr_Savchenko
  */
 @RestController
+@Api(value = "userController")
 public class OauthUserRestController {
 
     @Autowired

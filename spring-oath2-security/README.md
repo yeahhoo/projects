@@ -12,10 +12,14 @@ After the projects start hit the URL and try to authorize: http://localhost:8001
 credentials: me/me, dba/dba, user/user, admin/admin
 
 **DOCKER USAGE:**
-1) Have Docker installed  
-2) Don't forget to forward ports 8001, 9001, 9003 on your Virtual Machine 
+1) Have Docker installed
+2) Don't forget to forward ports 8001, 9001, 9003 on your Virtual Machine
 3) navigate to the project folder (web-module: oauth2-server/oauth2-server-web) with Docker Bash Terminal;
-4) Create image: mvn clean package docker:build
+4) Create image: 
+```sh
+cd oauth2-server/oauth2-server-web
+mvn clean package docker:build
+```
 5) run container for server: docker run -it -p 9001:9001 -p 9003:9003 oauth2-server-web
 
 if you want to run both server and client under docker then:
@@ -23,7 +27,7 @@ if you want to run both server and client under docker then:
 ```sh
 mvn clean package docker:build
 ```
-2) start server container: 
+2) start server container:
 ```sh
 docker run -d -p 9001:9001 -p 9003:9003 --name secserver --net=secnetwork oauth2-server-web
 ```
@@ -31,15 +35,12 @@ docker run -d -p 9001:9001 -p 9003:9003 --name secserver --net=secnetwork oauth2
 ```sh
 cd ../../oauth2-client/oauth2-client-web
 ```
-4) Create client container:
+4) Create client container and start it:
 ```sh
 mvn clean package -Pdocker docker:build
-```
-5) start the client container: 
-```sh
 docker run -d -p 8001:8001 --name secclient --net=secnetwork oauth2-client-web
-mvn clean package -Pdocker docker:build
 ```
+
 to stop the containers:
 1) stop server container: docker stop secserver
 2) stop client container: docker stop secclient

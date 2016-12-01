@@ -22,6 +22,7 @@
 		<java.version>1.8</java.version>
         <js.jquery.version>2.1.1</js.jquery.version>
         <spring-jdbc.version>4.1.7.RELEASE</spring-jdbc.version>
+        <swagger.version>2.4.0</swagger.version>
 	</properties>
 
     <modules>
@@ -81,6 +82,16 @@
             <groupId>org.webjars</groupId>
             <artifactId>jquery</artifactId>
             <version>${js.jquery.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>${swagger.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>${swagger.version}</version>
         </dependency>
     </dependencies>
 

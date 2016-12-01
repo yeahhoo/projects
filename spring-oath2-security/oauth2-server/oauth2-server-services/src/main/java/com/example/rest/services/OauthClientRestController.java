@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.annotations.Api;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -19,6 +21,7 @@ import java.util.List;
  * @author Aleksandr_Savchenko
  */
 @RestController
+@Api(value = "clientController")
 public class OauthClientRestController {
 
     @Autowired
