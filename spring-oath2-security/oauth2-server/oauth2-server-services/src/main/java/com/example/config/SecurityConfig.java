@@ -63,7 +63,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         , "/500.html"
                         , "/cors"
                         , "/hello"
-                        , "/v2/api-docs"
+                        , "/v2/api-docs"                // swagger urls
                         , "/configuration/security"
                         , "/swagger-resources"
                         , "/configuration/ui"

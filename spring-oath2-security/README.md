@@ -13,14 +13,14 @@ credentials: me/me, dba/dba, user/user, admin/admin
 
 **DOCKER USAGE:**
 1) Have Docker installed
-2) Don't forget to forward ports 8001, 9001, 9003 on your Virtual Machine
+2) Don't forget to forward ports 8001, 9001, 9003, 9005 on your Virtual Machine
 3) navigate to the project folder (web-module: oauth2-server/oauth2-server-web) with Docker Bash Terminal;
 4) Create image: 
 ```sh
 cd oauth2-server/oauth2-server-web
 mvn clean package docker:build
 ```
-5) run container for server: docker run -it -p 9001:9001 -p 9003:9003 oauth2-server-web
+5) run container for server: docker run -it -p 9001:9001 -p 9003:9003 -p 9005:9005 oauth2-server-web
 
 if you want to run both server and client under docker then:
 1) rebuild server image with: 

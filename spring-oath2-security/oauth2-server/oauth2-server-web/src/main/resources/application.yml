@@ -6,6 +6,7 @@ logging:
 
 server:
     port: 9001
+    wsdl-port: 9005
     context-path: /server
 
 database:

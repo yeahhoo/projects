@@ -13,6 +13,7 @@ public class Oauth2AuthorizationServerApplication {
     }
 
     // todo port other token services on JDBC
+    // todo route all logs to file
     // todo write JUnits
     // todo refactor client side on AngularJs or ReactJs
 }
