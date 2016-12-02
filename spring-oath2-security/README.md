@@ -13,8 +13,11 @@ credentials: me/me, dba/dba, user/user, admin/admin
 
 **DOCKER USAGE:**
 1) Have Docker installed
+
 2) Don't forget to forward ports 8001, 9001, 9003, 9005 on your Virtual Machine
+
 3) navigate to the project folder (web-module: oauth2-server/oauth2-server-web) with Docker Bash Terminal;
+
 4) Create image: 
 ```sh
 cd oauth2-server/oauth2-server-web
@@ -43,6 +46,7 @@ docker run -d -p 8001:8001 --name secclient --net=secnetwork oauth2-client-web
 
 to stop the containers:
 1) stop server container: docker stop secserver
+
 2) stop client container: docker stop secclient
 
 optionally remove the containers:

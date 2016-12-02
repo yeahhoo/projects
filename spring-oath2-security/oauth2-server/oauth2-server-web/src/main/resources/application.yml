@@ -1,8 +1,7 @@
 debug: true
 
 logging:
-  level:
-    org.springframework.security: DEBUG
+    file: log4j2-spring.xml
 
 server:
     port: 9001
