@@ -23,6 +23,7 @@
         <js.jquery.version>2.1.1</js.jquery.version>
         <spring-jdbc.version>4.1.7.RELEASE</spring-jdbc.version>
         <swagger.version>2.4.0</swagger.version>
+        <spring-starter-security.version>1.2.5.RELEASE</spring-starter-security.version>
 	</properties>
 
     <modules>
@@ -30,17 +31,23 @@
         <module>oauth2-server-web</module>
     </modules>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-security</artifactId>
+                <version>${spring-starter-security.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>ch.qos.logback</groupId>
+                        <artifactId>logback-classic</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>ch.qos.logback</groupId>
-                    <artifactId>logback-classic</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-jwt</artifactId>
@@ -106,7 +113,7 @@
             <version>${swagger.version}</version>
         </dependency>
 
-
+        <!-- SLF4j logging -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -132,7 +139,6 @@
             <artifactId>log4j-jcl</artifactId>
             <version>2.5</version>
         </dependency>
-
     </dependencies>
 
     <build>
