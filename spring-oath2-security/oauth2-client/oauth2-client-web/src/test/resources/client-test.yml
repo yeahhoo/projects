@@ -29,3 +29,8 @@ zuul:
     server:
       path: /server/**
       url: http://localhost:9001/server
+
+test:
+  username: me
+  password: me
+  user-url: http://localhost:9001/server/user

@@ -10,7 +10,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
-@TestPropertySource(properties = {"spring.config.location = classpath:client.yml"})
+@TestPropertySource(properties = {"spring.config.location = classpath:client-test.yml"})
 public class SocialApplicationTests {
 
     private static final Logger logger = LoggerFactory.getLogger(SocialApplicationTests.class);

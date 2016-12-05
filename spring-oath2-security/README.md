@@ -11,6 +11,17 @@ After the projects start hit the URL and try to authorize: http://localhost:8001
 
 credentials: me/me, dba/dba, user/user, admin/admin
 
+**INTEGRATION TESTS:**
+
+To run integration tests do the following:
+
+1) Have oauth2-server launched;
+
+2) Run client build with param: it.skip=false
+```sh
+mvn clean install -Dit.skip=false
+```
+
 **DOCKER USAGE:**
 
 1) Have Docker installed

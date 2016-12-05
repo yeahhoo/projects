@@ -12,6 +12,5 @@ public class Oauth2AuthorizationServerApplication {
         SpringApplication.run(Oauth2AuthorizationServerApplication.class, args);
     }
 
-    // todo write JUnits
     // todo refactor client side on AngularJs or ReactJs
 }
