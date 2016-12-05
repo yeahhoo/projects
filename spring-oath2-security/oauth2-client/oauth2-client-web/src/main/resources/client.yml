@@ -9,6 +9,7 @@ spring:
     proxy-target-class: true
 
 logging:
+  file: log4j2-spring.xml
   level:
     org.springframework.security: DEBUG
 

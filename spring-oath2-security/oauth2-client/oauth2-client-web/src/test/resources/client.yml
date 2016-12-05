@@ -1,0 +1,31 @@
+server:
+  port: 8001
+  context-path: /client
+
+debug: true
+
+spring:
+  aop:
+    proxy-target-class: true
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+
+security:
+  oauth2:
+    client:
+      accessTokenUri: http://localhost:9001/server/oauth/token
+      userAuthorizationUri: http://localhost:9001/server/oauth/authorize
+      clientId: foo
+      clientSecret: foosecret
+      serverLogoutUri: http://localhost:9001/server/customLogout
+      clientLogoutUri: http://localhost:8001/client/clientLogout
+    resource:
+      userInfoUri: http://localhost:9001/server/auth
+
+zuul:
+  routes:
+    server:
+      path: /server/**
+      url: http://localhost:9001/server
