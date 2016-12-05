@@ -45,12 +45,6 @@ public class InnerConfig {
         return new JdbcApprovalStore(dataSource);
     }
 
-    // set-it up
-    @Bean
-    public ClientTokenServices clientTokenServices() throws Exception {
-        return new JdbcClientTokenServices(dataSource);
-    }
-
     // removes codes automatically while processing authentication
     @Bean
     public AuthorizationCodeServices authorizationCodeServices() {

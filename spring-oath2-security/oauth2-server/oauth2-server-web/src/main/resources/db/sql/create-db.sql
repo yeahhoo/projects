@@ -22,7 +22,6 @@ CREATE SEQUENCE user_sequence;
 
 -- structure for clients
 DROP TABLE oauth_client_details IF EXISTS;
-DROP TABLE oauth_client_token IF EXISTS;
 DROP TABLE oauth_access_token IF EXISTS;
 DROP TABLE oauth_refresh_token IF EXISTS;
 DROP TABLE oauth_code IF EXISTS;
@@ -41,14 +40,6 @@ create table oauth_client_details (
   refresh_token_validity INTEGER,
   additional_information VARCHAR(4096),
   autoapprove VARCHAR(256)
-);
-
-create table oauth_client_token (
-  token_id VARCHAR(256),
-  token LONGVARBINARY,
-  authentication_id VARCHAR(256) PRIMARY KEY,
-  user_name VARCHAR(256),
-  client_id VARCHAR(256)
 );
 
 create table oauth_access_token (
