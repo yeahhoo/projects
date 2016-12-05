@@ -12,6 +12,7 @@ After the projects start hit the URL and try to authorize: http://localhost:8001
 credentials: me/me, dba/dba, user/user, admin/admin
 
 **DOCKER USAGE:**
+
 1) Have Docker installed
 
 2) Don't forget to forward ports 8001, 9001, 9003, 9005 on your Virtual Machine
@@ -26,6 +27,7 @@ mvn clean package docker:build
 5) run container for server: docker run -it -p 9001:9001 -p 9003:9003 -p 9005:9005 oauth2-server-web
 
 if you want to run both server and client under docker then:
+
 1) rebuild server image with: 
 ```sh
 mvn clean package docker:build
@@ -45,6 +47,7 @@ docker run -d -p 8001:8001 --name secclient --net=secnetwork oauth2-client-web
 ```
 
 to stop the containers:
+
 1) stop server container: docker stop secserver
 
 2) stop client container: docker stop secclient
