@@ -10,7 +10,6 @@ public class ConcurrencyLaunch {
 
         new Thread(new Dryer(car)).start();
         new Thread(new Washer(car)).start();
-
     }
 
 }

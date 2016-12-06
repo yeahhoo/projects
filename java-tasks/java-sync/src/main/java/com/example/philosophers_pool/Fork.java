@@ -5,35 +5,28 @@ package com.example.philosophers_pool;
  */
 public class Fork {
 
-    private Philosopher owner;
     private int number;
+
+    private boolean taken;
 
     public Fork(int number) {
         this.number = number;
     }
 
-    public boolean isTaken() {
-        return owner != null;
-    }
-
-    public synchronized boolean tryTake(Philosopher candidate) throws Exception {
-        if (owner == null) {
-            owner = candidate;
+    public synchronized boolean tryTake() throws Exception {
+        if (!taken) {
+            taken = true;
             return true;
         }
         return false;
     }
 
-    public synchronized boolean drop(Philosopher candidate) throws Exception {
-        if (owner == candidate) {
-            owner = null;
+    public synchronized boolean drop() throws Exception {
+        if (taken) {
+            taken = false;
             return true;
         }
         return false;
-    }
-
-    public String getFullInfo() {
-        return "Fork {" + number + "}" + " owner: " + owner;
     }
 
     @Override

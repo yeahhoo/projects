@@ -15,7 +15,6 @@ public class ForkPool {
             forks[i] = new Fork(i);
         }
         freeForksCounter = forks.length;
-
     }
 
     public boolean takeForks(Philosopher philosopher) throws Exception {

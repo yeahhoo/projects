@@ -7,10 +7,11 @@ public class PhilosophyPoolLaunch {
 
     public static void main(String[] args) {
 
-        int number = 5;
-        ForkPool forkPool = new ForkPool(2);
+        int philosophersNumber = 5;
+        int forksInPoolNumber = 2;
+        ForkPool forkPool = new ForkPool(forksInPoolNumber);
 
-        Philosopher[] philosophers = new Philosopher[number];
+        Philosopher[] philosophers = new Philosopher[philosophersNumber];
         for (int i = 0; i <= philosophers.length - 1; i++) {
             philosophers[i] = new Philosopher(forkPool, i);
         }
@@ -18,6 +19,6 @@ public class PhilosophyPoolLaunch {
         for (Philosopher philosopher : philosophers) {
             philosopher.start();
         }
-
     }
+
 }

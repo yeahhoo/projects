@@ -10,10 +10,9 @@ public class Philosopher extends Thread {
     private Fork leftFork;
     private Fork rightFork;
     private int number;
-    private long timeInterval;
 
-    private static final long TIME_TO_THINK = TimeUnit.SECONDS.toMillis(2l);
-    private static final long TIME_TO_EAT = TimeUnit.SECONDS.toMillis(1l);
+    private static final long TIME_TO_THINK = TimeUnit.MILLISECONDS.toMillis(40l);
+    private static final long TIME_TO_EAT = TimeUnit.MILLISECONDS.toMillis(20l);
 
     private ForkPool forkPool;
 
@@ -40,7 +39,7 @@ public class Philosopher extends Thread {
     }
 
     public boolean tryTakeLeft(Fork fork) throws Exception {
-        if (leftFork == null && fork.tryTake(this)) {
+        if (leftFork == null && fork.tryTake()) {
             leftFork = fork;
             return true;
         }
@@ -48,45 +47,36 @@ public class Philosopher extends Thread {
     }
 
     public boolean tryTakeRight(Fork fork) throws Exception {
-        if (rightFork == null && fork.tryTake(this)) {
+        if (rightFork == null && fork.tryTake()) {
             rightFork = fork;
             return true;
         }
         return false;
     }
 
-    public boolean dropLeftFork() throws Exception {
-        if (leftFork != null) {
-            if (leftFork.drop(this)) {
+    public boolean dropFork(Fork fork) throws Exception {
+        if (fork != null && fork.drop()) {
+            if (fork == leftFork) {
                 leftFork = null;
-                return true;
+            } else {
+                rightFork = null;
             }
+            return true;
         }
         return false;
     }
 
+    public boolean dropLeftFork() throws Exception {
+        return dropFork(leftFork);
+    }
+
     public boolean dropRightFork() throws Exception {
-        if (rightFork != null) {
-            if (rightFork.drop(this)) {
-                rightFork = null;
-                return true;
-            }
-        }
-        return false;
+        return dropFork(rightFork);
     }
 
     private int startEating(int i) throws Exception {
         System.out.println("Philosopher " + number + " started eating: " + i);
         sleep(TIME_TO_EAT);
-        if (timeInterval == 0) {
-            timeInterval = System.currentTimeMillis();
-        } else {
-            long currentTime = System.currentTimeMillis();
-            if (currentTime - timeInterval < TIME_TO_EAT) {
-                throw new RuntimeException("it's impossible");
-            }
-            timeInterval = currentTime;
-        }
         return ++i;
     }
 

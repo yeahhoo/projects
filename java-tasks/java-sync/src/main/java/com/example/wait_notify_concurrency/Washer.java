@@ -24,7 +24,6 @@ public class Washer implements Runnable {
                     }
                 }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -9,10 +9,6 @@ public class MyCyclicBarrier {
 
     private CyclicBarrier cyclicBarrier;
 
-    public MyCyclicBarrier(int threadNumber) {
-        cyclicBarrier = new CyclicBarrier(threadNumber);
-    }
-
     public MyCyclicBarrier(int threadNumber, Runnable action) {
         cyclicBarrier = new CyclicBarrier(threadNumber, action);
     }

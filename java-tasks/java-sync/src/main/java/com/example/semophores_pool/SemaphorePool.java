@@ -3,7 +3,7 @@ package com.example.semophores_pool;
 import java.util.concurrent.Semaphore;
 
 /**
- * Created by Aleksandr_Savchenko on 7/25/2016.
+ * @author Aleksandr_Savchenko
  */
 public class SemaphorePool {
 
