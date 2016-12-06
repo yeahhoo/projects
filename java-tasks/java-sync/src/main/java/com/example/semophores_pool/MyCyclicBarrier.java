@@ -1,4 +1,4 @@
-package semophores_pool;
+package com.example.semophores_pool;
 
 import java.util.concurrent.CyclicBarrier;
 

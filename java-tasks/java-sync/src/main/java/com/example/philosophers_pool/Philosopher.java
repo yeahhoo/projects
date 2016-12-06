@@ -1,4 +1,4 @@
-package philosophers_pool;
+package com.example.philosophers_pool;
 
 import java.util.concurrent.TimeUnit;
 

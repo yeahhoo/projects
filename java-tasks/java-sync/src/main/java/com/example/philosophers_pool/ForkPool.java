@@ -1,4 +1,4 @@
-package philosophers_pool;
+package com.example.philosophers_pool;
 
 /**
  * @author Aleksandr_Savchenko

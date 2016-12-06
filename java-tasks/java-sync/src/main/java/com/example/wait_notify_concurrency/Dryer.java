@@ -1,4 +1,4 @@
-package wait_notify_concurrency;
+package com.example.wait_notify_concurrency;
 
 /**
  * Created by Aleksandr_Savchenko on 6/14/2016.

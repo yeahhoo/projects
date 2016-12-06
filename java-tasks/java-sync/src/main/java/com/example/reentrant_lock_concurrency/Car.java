@@ -1,4 +1,4 @@
-package reentrant_lock_concurrency;
+package com.example.reentrant_lock_concurrency;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;

@@ -1,4 +1,4 @@
-package wait_notify_concurrency;
+package com.example.wait_notify_concurrency;
 
 
 /**

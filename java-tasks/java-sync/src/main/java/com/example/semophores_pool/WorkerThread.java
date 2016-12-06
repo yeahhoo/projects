@@ -1,4 +1,4 @@
-package semophores_pool;
+package com.example.semophores_pool;
 
 /**
  * @author Aleksandr_Savchenko
