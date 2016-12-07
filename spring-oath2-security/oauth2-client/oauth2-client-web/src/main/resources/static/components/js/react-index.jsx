@@ -5,7 +5,7 @@
     var IndexPage = React.createClass({
 
         getInitialState: function () {
-            return {username: '', helloMsg: '', serverMsg: '', corsMsg: ''}
+            return {username: '', helloMsg: '', serverMsg: '', corsMsg: '', serverJson: JSON.parse(document.getElementById('jsonResponse').innerHTML)}
         },
 
         getUsername: function(e) {
@@ -63,71 +63,78 @@
             console.log('request failed: ' + JSON.stringify(e));
         },
 
+        /* Example from: https://getbootstrap.com/examples/navbar-fixed-top/ */
         render: function() {
             return (
                 <div>
-                    <div>With Facebook: <a href="/client/login">click here</a></div>
-                        <h1 className="col-sm-12">Foo Details</h1>
-                        <div className="col-sm-12">
-                        <label className="col-sm-3">Username</label>
-                        <span id="userPlaceholder">{this.state.username}</span>
-                    </div>
+                    <nav className="navbar navbar-default navbar-fixed-top">
+                        <div className="container">
+                            <div className="navbar-header">
+                                <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                                    <span className="sr-only">Toggle navigation</span>
+                                    <span className="icon-bar"></span>
+                                    <span className="icon-bar"></span>
+                                    <span className="icon-bar"></span>
+                                </button>
+                                <div className="navbar-brand" href="#">Oauth2 client</div>
+                            </div>
 
-                    <div className="col-sm-12">
-                        <label className="col-sm-3">Hello Msg</label>
-                        <span id="helloPlaceholder">{this.state.helloMsg}</span>
-                    </div>
+                            <div id="navbar" className="navbar-collapse collapse">
+                                <ul className="nav navbar-nav">
+                                    <li className="active"><a href="#">Home</a></li>
+                                    <li><a href="#about">About</a></li>
+                                    <li><a href="#contact">Contact</a></li>
+                                    <li className="dropdown">
+                                        <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                            Actions <span className="caret"></span>
+                                        </a>
+                                        <ul className="dropdown-menu">
+                                            <li><a href="#hello" onClick={this.getHelloMsg}>Hello Message</a></li>
+                                            <li><a href="#cors" onClick={this.getCorsMsg}>CORS Message</a></li>
+                                            <li><a href="/client/createClient">Create OAuth Client</a></li>
+                                            <li role="separator" className="divider"></li>
+                                            <li className="dropdown-header">Secured Actions</li>
+                                            <li><a href="#userName" onClick={this.getUsername}>Get Username</a></li>
+                                            <li><a href="/client/createClient">Create OAuth Client</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                                <ul className="nav navbar-nav navbar-right">
+                                    <li>
+                                        {this.state.serverJson.isLogined
+                                            ? <a href="/client/requestLogout" id="logoutServerBtn">Logout as {this.state.serverJson.username}</a>
+                                            : <a href="/client/login">Login</a>
+                                        }
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+            	    </nav>
 
-                    <div className="col-sm-12">
-                        <label className="col-sm-3">Server Msg</label>
-                        <span id="serverPlaceholder">{this.state.serverMsg}</span>
-                    </div>
+                    <div className="container">
+                        <div className="jumbotron">
+                            <h1>OAuth2 Spring Example</h1>
 
-                    <div className="col-sm-12">
-                        <label className="col-sm-3">CORS Msg</label>
-                        <span id="corsPlaceholder">{this.state.corsMsg}</span>
-                    </div>
+                            <div className="col-sm-12">
+                                <label className="col-sm-3">Username</label>
+                                <span id="userPlaceholder">{this.state.username}</span>
+                            </div>
 
-                    <div className="col-sm-12">
-                        <br/>
-                        <br/>
-                        <button type="button" id="userBtn" className="btn btn-info" onClick={this.getUsername}>Get username</button>
-                    </div>
+                            <div className="col-sm-12">
+                                <label className="col-sm-3">Hello Msg</label>
+                                <span id="helloPlaceholder">{this.state.helloMsg}</span>
+                            </div>
 
-                    <div className="col-sm-12">
-                        <br/>
-                        <br/>
-                        <button type="button" id="helloBtn" className="btn btn-info" onClick={this.getHelloMsg}>Get hello msg</button>
-                    </div>
+                            <div className="col-sm-12">
+                                <label className="col-sm-3">Server Msg</label>
+                                <span id="serverPlaceholder">{this.state.serverMsg}</span>
+                            </div>
 
-                    <div className="col-sm-12">
-                        <br/>
-                        <br/>
-                        <button type="button" id="serverBtn" className="btn btn-info" onClick={this.getServerMsg}>Get server msg</button>
-                    </div>
-
-                    <div className="col-sm-12">
-                        <br/>
-                        <br/>
-                        <button type="button" id="corsBtn" className="btn btn-info" onClick={this.getCorsMsg}>CORS server msg</button>
-                    </div>
-
-                    <div className="col-sm-12">
-                        <br/>
-                        <br/>
-                        <a className="btn btn-info" href="/client/createClient" id="createClient">Create OAuth Client</a>
-                    </div>
-
-                    <div className="col-sm-12">
-                        <br/>
-                        <br/>
-                        <a className="btn btn-info" href="/client/createUser" id="createUser">Create User</a>
-                    </div>
-
-                    <div className="col-sm-12">
-                        <br/>
-                        <br/>
-                        <a className="btn btn-info" href="/client/requestLogout" id="logoutServerBtn">Logout</a>
+                            <div className="col-sm-12">
+                                <label className="col-sm-3">CORS Msg</label>
+                                <span id="corsPlaceholder">{this.state.corsMsg}</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             )
