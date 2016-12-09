@@ -1,10 +1,9 @@
 {
     "unused": true,
     "strict": true,
-    "es3": true,
     "browser": true,
     "jquery": true,
-
+    "esversion": 6,
     "globals": {
         "console": true,
         "React": true,
