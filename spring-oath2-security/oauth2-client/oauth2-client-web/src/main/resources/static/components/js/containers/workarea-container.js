@@ -1,3 +1,6 @@
+import { connect } from 'react-redux';
+import WorkAreaComponent from '../react-workarea-component';
+
 const mapWorkareaStateToProps = (state, ownProps) => {
     return {
         helloMsg: state.menuReducer.helloMsg,
@@ -5,6 +8,7 @@ const mapWorkareaStateToProps = (state, ownProps) => {
         serverMsg: state.menuReducer.serverMsg,
         usernameMsg: state.menuReducer.usernameMsg
     }
-}
+};
 
-const WorkArea = ReactRedux.connect(mapWorkareaStateToProps) (WorkAreaComponent)
+const WorkArea = connect(mapWorkareaStateToProps) (WorkAreaComponent);
+export default WorkArea;

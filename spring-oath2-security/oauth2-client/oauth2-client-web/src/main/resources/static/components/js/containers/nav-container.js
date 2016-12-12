@@ -1,11 +1,14 @@
+import { connect } from 'react-redux';
+import NavigationMenuComponent from '../react-nav-component';
 
+const mapNavigationStateToProps = (state/*, ownProps*/) => {
 
-    const mapNavigationStateToProps = (state/*, ownProps*/) => {
-        return {
-            isLogined: state.menuReducer.isLogined,
-            username: state.menuReducer.username
-        };
+    'use strict';
+    return {
+        isLogined: state.menuReducer.isLogined,
+        username: state.menuReducer.username
     };
+};
     /*
     const mapDispatchToProps = (dispatch, ownProps) => {
         return {
@@ -24,5 +27,9 @@
         }
     }
     */
-    /* jshint unused:false */
-    const NavigationMenu = ReactRedux.connect(mapNavigationStateToProps/*, mapDispatchToProps*/) (NavigationMenuComponent);
+const NavigationMenu = connect(mapNavigationStateToProps/*, mapDispatchToProps*/) (NavigationMenuComponent);
+export default NavigationMenu;
+
+
+
+

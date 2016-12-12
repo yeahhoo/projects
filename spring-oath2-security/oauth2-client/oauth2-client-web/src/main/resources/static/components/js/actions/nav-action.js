@@ -1,6 +1,4 @@
 
-
-
     function createRequest(url, type, data, contentType) {
         return $.ajax({
             url: url,
@@ -13,13 +11,14 @@
             console.log('request failed: ' + e);
         });
     }
-    // helloMsg
-    function requestHelloMsg() {
+
+    function wrapDispatchAction(actionName) {
         return {
-            type: 'HELLO_MSG'
+            type: actionName
         };
     }
 
+    // helloMsg
     function receiveHelloMsg(txtData) {
         return {
             type: 'RECEIVE_HELLO_MSG',
@@ -28,10 +27,9 @@
         };
     }
 
-     /*jshint unused:false*/
-    function fetchHelloMsg() {
+    export const fetchHelloMsg = function() {
         return dispatch => {
-            dispatch(requestHelloMsg());
+            dispatch(wrapDispatchAction('HELLO_MSG'));
             return createRequest('/client/server/hello', 'GET')
                 //.then(response => response.json())
                 .then(txt => dispatch(receiveHelloMsg(txt)));
@@ -39,12 +37,6 @@
     }
 
     // corsMsg
-    function requestCorsMsg() {
-        return {
-            type: 'CORS_MSG'
-        };
-    }
-
     function receiveCorsMsg(txtData) {
         return {
             type: 'RECEIVE_CORS_MSG',
@@ -53,10 +45,9 @@
         };
     }
 
-    /* jshint unused:false */
-    function fetchCorsMsg() {
+    export const fetchCorsMsg = function() {
         return dispatch => {
-            dispatch(requestCorsMsg());
+            dispatch(wrapDispatchAction('CORS_MSG'));
             return createRequest('http://localhost:9001/server/cors', 'GET')
                 //.then(response => response.json())
                 .then(txt => dispatch(receiveCorsMsg(txt)));
@@ -64,12 +55,6 @@
     }
 
     // usernameMsg
-    function requestUsernameMsg() {
-        return {
-            type: 'USERNAME_MSG'
-        };
-    }
-
     function receiveUsernameMsg(data) {
         return {
             type: 'RECEIVE_USERNAME_MSG',
@@ -78,10 +63,9 @@
         };
     }
 
-    /* jshint unused:false */
-    function fetchUsernameMsg() {
+    export const fetchUsernameMsg = function() {
         return dispatch => {
-            dispatch(requestUsernameMsg());
+            dispatch(wrapDispatchAction('USERNAME_MSG'));
             return createRequest('/client/server/user', 'GET')
                 //.then(response => response.json())
                 .then(json => dispatch(receiveUsernameMsg(json)));
@@ -89,12 +73,6 @@
     }
 
     // serverMsg
-    function requestServerMsg() {
-        return {
-            type: 'SERVER_MSG'
-        };
-    }
-
     function receiveServerMsg(data) {
         return {
             type: 'RECEIVE_SERVER_MSG',
@@ -103,10 +81,9 @@
         };
     }
 
-    /* jshint unused:false */
-    function fetchServerMsg() {
+    export const fetchServerMsg = function() {
         return dispatch => {
-            dispatch(requestServerMsg());
+            dispatch(wrapDispatchAction('SERVER_MSG'));
             return createRequest('/client/server/hellouser', 'GET')
                 //.then(response => response.json())
                 .then(json => dispatch(receiveServerMsg(json)));

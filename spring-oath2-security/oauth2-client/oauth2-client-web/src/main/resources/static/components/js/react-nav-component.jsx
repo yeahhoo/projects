@@ -1,5 +1,8 @@
-/*jshint unused:false*/
-class NavigationMenuComponent extends React.Component {
+import React, { Component, PropTypes } from 'react';
+import { fetchHelloMsg, fetchCorsMsg, fetchUsernameMsg, fetchServerMsg } from './actions/nav-action';
+
+
+class NavigationMenuComponent extends Component {
 
     // https://github.com/reactjs/redux/blob/master/docs/advanced/ExampleRedditAPI.md
     constructor(props) {
@@ -61,7 +64,7 @@ class NavigationMenuComponent extends React.Component {
                                 <ul className="dropdown-menu">
                                     <li><a href="#hello" onClick={this.getHelloMsg}>Hello Message</a></li>
                                     <li><a href="#cors" onClick={this.getCorsMsg}>CORS Message</a></li>
-                                    <li><a href="/client/createClient">Create OAuth Client</a></li>
+                                    <li><a href="/client/createUser">Create OAuth User</a></li>
                                     <li role="separator" className="divider"></li>
                                     <li className="dropdown-header">Secured Actions</li>
                                     <li><a href="#userName" onClick={this.getUsername}>Get Username</a></li>
@@ -87,7 +90,9 @@ class NavigationMenuComponent extends React.Component {
 }
 
 NavigationMenuComponent.propTypes = {
-    username: React.PropTypes.string.isRequired,
-    isLogined: React.PropTypes.bool.isRequired,
-    dispatch: React.PropTypes.func.isRequired
+    username: PropTypes.string.isRequired,
+    isLogined: PropTypes.bool.isRequired,
+    dispatch: PropTypes.func.isRequired
 }
+
+export default NavigationMenuComponent

@@ -1,3 +1,4 @@
+import { combineReducers } from 'redux'
 
 function menuReducer(state, action) {
 
@@ -37,6 +38,6 @@ function menuReducer(state, action) {
     }
 }
 
-var appReducer = Redux.combineReducers({
-    menuReducer
-});
+const appReducer = combineReducers({menuReducer})
+
+export default appReducer

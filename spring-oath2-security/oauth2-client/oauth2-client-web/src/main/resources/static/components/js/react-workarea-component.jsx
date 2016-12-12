@@ -1,5 +1,6 @@
-/*jshint unused:false*/
-class WorkAreaComponent extends React.Component {
+import React, { Component, PropTypes } from 'react';
+
+class WorkAreaComponent extends Component {
 
     constructor(props) {
         super(props);
@@ -37,9 +38,11 @@ class WorkAreaComponent extends React.Component {
 }
 
 WorkAreaComponent.propTypes = {
-    helloMsg: React.PropTypes.string.isRequired,
-    corsMsg: React.PropTypes.string.isRequired,
-    serverMsg: React.PropTypes.string.isRequired,
-    usernameMsg: React.PropTypes.string.isRequired,
-    dispatch: React.PropTypes.func.isRequired
+    helloMsg: PropTypes.string.isRequired,
+    corsMsg: PropTypes.string.isRequired,
+    serverMsg: PropTypes.string.isRequired,
+    usernameMsg: PropTypes.string.isRequired,
+    dispatch: PropTypes.func.isRequired
 }
+
+export default WorkAreaComponent

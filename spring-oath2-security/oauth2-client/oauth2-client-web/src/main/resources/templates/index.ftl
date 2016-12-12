@@ -13,21 +13,7 @@
     <#-- libraries -->
     <script type="text/javascript" src="/client/webjars/jquery/jquery.min.js"></script>
     <script type="text/javascript" src="/client/libs/js/bootstrap-3.3.2.js"></script>
-    <script type="text/javascript" src="/client/libs/js/react-15.3.2.js"></script>
-    <script type="text/javascript" src="/client/libs/js/react-dom-15.3.2.js"></script>
-    <script type="text/javascript" src="/client/libs/js/react-redux-4.4.6.js"></script>
-    <script type="text/javascript" src="/client/libs/js/redux-3.6.0.js"></script>
-    <script type="text/javascript" src="/client/libs/js/redux-thunk-2.1.0.js"></script>
-    <#-- components files -->
-    <script type="text/javascript" src="/client/components/js/compiled/react-nav-component.js"></script>
-    <script type="text/javascript" src="/client/components/js/compiled/react-workarea-component.js"></script>
-    <script type="text/javascript" src="/client/components/js/actions/nav-action.js"></script>
-    <script type="text/javascript" src="/client/components/js/reducers/nav-reducer.js"></script>
-    <script type="text/javascript" src="/client/components/js/containers/workarea-container.js"></script>
-    <script type="text/javascript" src="/client/components/js/containers/nav-container.js"></script>
-    <script type="text/javascript" src="/client/components/js/compiled/react-app.js"></script>
-    <script type="text/javascript" src="/client/components/js/compiled/react-main.js"></script>
-
-
+    <#-- webpack bundle file -->
+    <script type="text/javascript" src="/client/components/js/webpack/bundle.js"></script>
 </body>
 </html>
