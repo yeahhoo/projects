@@ -1,5 +1,6 @@
 //todo replace jshint with jslint
 //https://medium.com/@dan_abramov/lint-like-it-s-2015-6987d44c5b48#.xe8xpdapq
+//https://github.com/quidmonkey/elisse/tree/feature/webpack
 
 module.exports = function(grunt) {
     'use strict';
@@ -11,12 +12,13 @@ module.exports = function(grunt) {
 
     // configure tasks
     grunt.initConfig({
+
         jshint: {
              files: [
                  'Gruntfile.js',
-                 'src/main/resources/static/components/js/containers/nav-container.js',
-                 //'src/main/resources/static/components/js/**/*.js',
-                 'src/main/resources/static/components/**/*.jsx'
+                 'src/main/resources/static/components/js/react-create-client.jsx',
+                 'src/main/resources/static/components/js/react-create-user.jsx',
+                 'src/main/resources/static/components/js/react-custom-error.jsx'
             ],
             options: {
                 jshintrc: '.jshintrc',
@@ -25,6 +27,7 @@ module.exports = function(grunt) {
                 ]
             }
         },
+
         babel: {
            options: {
                plugins: ['transform-react-jsx', 'transform-strict-mode'],
@@ -34,8 +37,12 @@ module.exports = function(grunt) {
                files: [{
                    expand: true,
                    cwd: 'src/main/resources/static/components/js',
-                   src: ['*.jsx'],
-                   dest: 'target/classes/static/components/js/compiled',
+                   src: [
+                       'react-create-client.jsx',
+                       'react-create-user.jsx',
+                       'react-custom-error.jsx'
+                   ],
+                   dest: 'target/classes/static/components/js',
                    ext: '.js'
                }]
            }

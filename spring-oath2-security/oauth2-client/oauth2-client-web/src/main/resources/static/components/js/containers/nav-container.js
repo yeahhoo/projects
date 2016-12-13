@@ -3,7 +3,6 @@ import NavigationMenuComponent from '../react-nav-component';
 
 const mapNavigationStateToProps = (state/*, ownProps*/) => {
 
-    'use strict';
     return {
         isLogined: state.menuReducer.isLogined,
         username: state.menuReducer.username

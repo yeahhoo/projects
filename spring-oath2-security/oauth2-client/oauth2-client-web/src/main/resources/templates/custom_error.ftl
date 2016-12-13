@@ -16,6 +16,6 @@
     <script type="text/javascript" src="/client/webjars/jquery/jquery.min.js"></script>
     <script type="text/javascript" src="/client/libs/js/react-15.3.2.js"></script>
     <script type="text/javascript" src="/client/libs/js/react-dom-15.3.2.js"></script>
-    <script type="text/javascript" src="/client/components/js/compiled/react-custom-error.js"></script>
+    <script type="text/javascript" src="/client/components/js/react-custom-error.js"></script>
 </body>
 </html>

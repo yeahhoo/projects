@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import WorkAreaComponent from '../react-workarea-component';
 
-const mapWorkareaStateToProps = (state, ownProps) => {
+const mapWorkareaStateToProps = (state/*, ownProps*/) => {
     return {
         helloMsg: state.menuReducer.helloMsg,
         corsMsg: state.menuReducer.corsMsg,

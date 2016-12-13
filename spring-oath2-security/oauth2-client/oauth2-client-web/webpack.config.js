@@ -16,6 +16,10 @@ module.exports = {
     },
 
 	module: {
+	    preLoaders: [
+	        // Javascript
+            { test: /\.js[x]?$/, loader: 'eslint', exclude: /node_modules/ }
+        ],
 		loaders: [
             {
                 test: /.jsx?$/,
@@ -27,5 +31,10 @@ module.exports = {
             }
 		]
 	},
+	eslint: {
+	    configFile: 'jsconfs/.eslintrc.js',
+	    failOnWarning: false,
+        failOnError: true
+    },
 	debug: true
 };
