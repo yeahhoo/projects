@@ -21,7 +21,7 @@ module.exports = function(grunt) {
                  'src/main/resources/static/components/js/react-custom-error.jsx'
             ],
             options: {
-                jshintrc: '.jshintrc',
+                jshintrc: 'jsconfs/.jshintrc',
                 ignores: [
                    'src/main/resources/static/libs/**/*.js'
                 ]
@@ -48,7 +48,7 @@ module.exports = function(grunt) {
            }
         },
         webpack: {
-            someTarget: require("./webpack.config.js")
+            someTarget: require("./jsconfs/webpack.config.js")
         }
    });
 
