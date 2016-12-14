@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import NavigationMenu from './containers/nav-container'
-import WorkArea from './containers/workarea-container'
+import NavigationMenu from './containers/menu-container'
+import WorkArea from './containers/nav-container'
 
 class App extends Component {
 

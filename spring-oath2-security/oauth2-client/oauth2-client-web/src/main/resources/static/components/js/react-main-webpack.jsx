@@ -1,11 +1,15 @@
 import React from 'react'
 import { render } from 'react-dom'
-import { createStore, applyMiddleware } from 'redux'
+import { createStore, applyMiddleware, combineReducers } from 'redux'
 import { Provider } from 'react-redux'
 import thunk from 'redux-thunk'
-import appReducer from './reducers/nav-reducer'
+import menuReducer from './reducers/menu-reducer'
+import userCreatingReducer from './reducers/createuser-reducer'
+import clientCreatingReducer from './reducers/createclient-reducer'
+import navReducer from './reducers/nav-reducer'
 import App from './react-app'
 
+let appReducer = combineReducers({navReducer, menuReducer, userCreatingReducer, clientCreatingReducer});
 let store = applyMiddleware(thunk)(createStore)(appReducer);
 
 render(

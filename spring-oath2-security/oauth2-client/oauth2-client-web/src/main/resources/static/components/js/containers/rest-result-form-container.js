@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
-import WorkAreaComponent from '../react-workarea-component';
+import RestResultFormComponent from '../react-rest-result-form-component';
 
-const mapWorkareaStateToProps = (state/*, ownProps*/) => {
+const mapResultFormStateToProps = (state) => {
     return {
         helloMsg: state.menuReducer.helloMsg,
         corsMsg: state.menuReducer.corsMsg,
@@ -10,5 +10,5 @@ const mapWorkareaStateToProps = (state/*, ownProps*/) => {
     }
 };
 
-const WorkArea = connect(mapWorkareaStateToProps) (WorkAreaComponent);
-export default WorkArea;
+const RestResultForm = connect(mapResultFormStateToProps) (RestResultFormComponent);
+export default RestResultForm;

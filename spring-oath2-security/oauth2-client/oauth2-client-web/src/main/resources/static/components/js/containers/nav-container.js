@@ -1,34 +1,18 @@
 import { connect } from 'react-redux';
-import NavigationMenuComponent from '../react-nav-component';
+import WorkAreaComponent from '../react-workarea-component';
 
-const mapNavigationStateToProps = (state/*, ownProps*/) => {
-
+const mapNavigationStateToProps = (state) => {
+    // resetting values if it's not home page
+    if (state.navReducer.activeComponent !== 'SHOW_HOME') {
+        state.menuReducer.helloMsg = '';
+        state.menuReducer.corsMsg = '';
+        state.menuReducer.serverMsg = '';
+        state.menuReducer.usernameMsg = '';
+    }
     return {
-        isLogined: state.menuReducer.isLogined,
-        username: state.menuReducer.username
+        activeComponent: state.navReducer.activeComponent
     };
 };
-    /*
-    const mapDispatchToProps = (dispatch, ownProps) => {
-        return {
-            getUsername: () => {
-                dispatch({ type: 'USERNAME_MSG' })
-            },
-            getHelloMsg: () => {
-                dispatch({ type: 'HELLO_MSG' })
-            },
-            getServerMsg: () => {
-                dispatch({ type: 'SERVER_MSG' })
-            },
-            getCorsMsg: () => {
-                dispatch({ type: 'CORS_MSG' })
-            }
-        }
-    }
-    */
-const NavigationMenu = connect(mapNavigationStateToProps/*, mapDispatchToProps*/) (NavigationMenuComponent);
-export default NavigationMenu;
 
-
-
-
+const WorkArea = connect(mapNavigationStateToProps) (WorkAreaComponent);
+export default WorkArea;

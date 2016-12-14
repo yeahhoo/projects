@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { fetchHelloMsg, fetchCorsMsg, fetchUsernameMsg, fetchServerMsg } from './actions/nav-action';
+import { fetchHelloMsg, fetchCorsMsg, fetchUsernameMsg, fetchServerMsg } from './actions/menu-action';
 
 
 class NavigationMenuComponent extends Component {
@@ -11,12 +11,15 @@ class NavigationMenuComponent extends Component {
         this.getCorsMsg = this.getCorsMsg.bind(this);
         this.getUsername = this.getUsername.bind(this);
         this.getServerMsg = this.getServerMsg.bind(this);
+        this.showCreateUserForm = this.showCreateUserForm.bind(this);
+        this.showCreateClientForm = this.showCreateClientForm.bind(this);
         this.sendRequest = this.sendRequest.bind(this);
     }
 
     sendRequest(e, func) {
         e.preventDefault();
-        const { dispatch } = this.props
+        const { dispatch } = this.props;
+        dispatch({type: 'SHOW_HOME'});
         dispatch(func());
         return false;
     }
@@ -35,6 +38,23 @@ class NavigationMenuComponent extends Component {
 
     getServerMsg(e) {
         this.sendRequest(e, fetchServerMsg);
+    }
+
+    //https://github.com/reactjs/redux/blob/master/docs/basics/ExampleTodoList.md
+    showCreateUserForm(e) {
+        e.preventDefault();
+        console.log('showing user_create_form');
+        const { dispatch } = this.props;
+        dispatch({type: 'SHOW_CREATE_USER_FORM'});
+        return false;
+    }
+
+    showCreateClientForm(e) {
+        e.preventDefault();
+        console.log('showing client_create_form');
+        const { dispatch } = this.props;
+        dispatch({type: 'SHOW_CREATE_CLIENT_FORM'});
+        return false;
     }
 
     /* Example from: https://getbootstrap.com/examples/navbar-fixed-top/ */
@@ -64,11 +84,15 @@ class NavigationMenuComponent extends Component {
                                 <ul className="dropdown-menu">
                                     <li><a href="#hello" onClick={this.getHelloMsg}>Hello Message</a></li>
                                     <li><a href="#cors" onClick={this.getCorsMsg}>CORS Message</a></li>
-                                    <li><a href="/client/createUser">Create OAuth User</a></li>
+                                    <li><a href="#createUserForm" onClick={this.showCreateUserForm}>Create OAuth User</a></li>
+                                    <li><a href="#createClientForm" onClick={this.showCreateClientForm}>Create OAuth Client</a></li>
                                     <li role="separator" className="divider"></li>
                                     <li className="dropdown-header">Secured Actions</li>
                                     <li><a href="#userName" onClick={this.getUsername}>Get Username</a></li>
                                     <li><a href="#serverMsg" onClick={this.getServerMsg}>Get User Message</a></li>
+                                    <li role="separator" className="divider"></li>
+                                    <li className="dropdown-header">Open In New Pages</li>
+                                    <li><a href="/client/createUser">Create OAuth User</a></li>
                                     <li><a href="/client/createClient">Create OAuth Client</a></li>
                                 </ul>
                             </li>

@@ -1,4 +1,7 @@
 import React, { Component, PropTypes } from 'react';
+import CreateUserForm from './containers/createuser-container'
+import CreateClientForm from './containers/createclient-container'
+import RestResultFormComponent from './containers/rest-result-form-container'
 
 class WorkAreaComponent extends Component {
 
@@ -11,26 +14,9 @@ class WorkAreaComponent extends Component {
             <div className="container">
                 <div className="jumbotron">
                     <h1>OAuth2 Spring Example</h1>
-
-                    <div className="col-sm-12">
-                        <label className="col-sm-3">Username</label>
-                        <span id="userPlaceholder">{this.props.usernameMsg}</span>
-                    </div>
-
-                    <div className="col-sm-12">
-                        <label className="col-sm-3">Hello Msg</label>
-                        <span id="helloPlaceholder">{this.props.helloMsg}</span>
-                    </div>
-
-                    <div className="col-sm-12">
-                        <label className="col-sm-3">Server Msg</label>
-                        <span id="serverPlaceholder">{this.props.serverMsg}</span>
-                    </div>
-
-                    <div className="col-sm-12">
-                        <label className="col-sm-3">CORS Msg</label>
-                        <span id="corsPlaceholder">{this.props.corsMsg}</span>
-                    </div>
+                    {this.props.activeComponent === 'SHOW_CREATE_USER_FORM' && <CreateUserForm />}
+                    {this.props.activeComponent === 'SHOW_CREATE_CLIENT_FORM' && <CreateClientForm />}
+                    {this.props.activeComponent === 'SHOW_HOME' && <RestResultFormComponent />}
                 </div>
             </div>
         );
@@ -38,11 +24,7 @@ class WorkAreaComponent extends Component {
 }
 
 WorkAreaComponent.propTypes = {
-    helloMsg: PropTypes.string.isRequired,
-    corsMsg: PropTypes.string.isRequired,
-    serverMsg: PropTypes.string.isRequired,
-    usernameMsg: PropTypes.string.isRequired,
-    dispatch: PropTypes.func.isRequired
+    activeComponent: PropTypes.string.isRequired
 }
 
-export default WorkAreaComponent
+export default WorkAreaComponent;

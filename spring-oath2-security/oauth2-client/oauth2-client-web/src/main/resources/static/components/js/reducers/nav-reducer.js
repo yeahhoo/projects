@@ -1,43 +1,19 @@
-import { combineReducers } from 'redux'
-
-function menuReducer(state, action) {
+function navReducer(state, action) {
 
     if (typeof state === 'undefined') {
-        console.log('Reading server config from: #jsonResponse');
-        let serverJson = JSON.parse(document.getElementById('jsonResponse').innerHTML);
-        return {isLogined: serverJson.isLogined, username: serverJson.username, helloMsg: '', corsMsg: '', serverMsg: '', usernameMsg: '', isFetching: false, didInvalidate: false};
+        return {activeComponent: 'SHOW_HOME'};
     }
 
-    var requestState = Object.assign({}, state, {
-        isFetching: true,
-        didInvalidate: false
-    });
-    var responseState = Object.assign({}, state, {
-        isFetching: false,
-        didInvalidate: false
-    });
     switch (action.type) {
-        case 'HELLO_MSG':
-            return requestState;
-        case 'RECEIVE_HELLO_MSG':
-            return Object.assign({}, responseState, {helloMsg: action.data});
-        case 'CORS_MSG':
-            return requestState;
-        case 'RECEIVE_CORS_MSG':
-            return Object.assign({}, responseState, {corsMsg: action.data});
-        case 'USERNAME_MSG':
-            return requestState;
-        case 'RECEIVE_USERNAME_MSG':
-            return Object.assign({}, responseState, {usernameMsg: action.data});
-        case 'SERVER_MSG':
-            return requestState;
-        case 'RECEIVE_SERVER_MSG':
-            return Object.assign({}, responseState, {serverMsg: action.data});
+        case 'SHOW_HOME':
+            return Object.assign({}, {activeComponent: 'SHOW_HOME'});
+        case 'SHOW_CREATE_USER_FORM':
+            return Object.assign({}, {activeComponent: 'SHOW_CREATE_USER_FORM'});
+        case 'SHOW_CREATE_CLIENT_FORM':
+            return Object.assign({}, {activeComponent: 'SHOW_CREATE_CLIENT_FORM'});
         default:
-            return state
+            return state;
     }
 }
 
-const appReducer = combineReducers({menuReducer})
-
-export default appReducer
+export default navReducer
