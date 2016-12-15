@@ -7,6 +7,7 @@ import menuReducer from './reducers/menu-reducer'
 import userCreatingReducer from './reducers/createuser-reducer'
 import clientCreatingReducer from './reducers/createclient-reducer'
 import navReducer from './reducers/nav-reducer'
+import { findFirstView } from './server-client-dispatch-map'
 import App from './react-app'
 
 let appReducer = combineReducers({navReducer, menuReducer, userCreatingReducer, clientCreatingReducer});
@@ -18,3 +19,7 @@ render(
     </Provider>,
     document.getElementById('react-index-container')
 )
+
+store.dispatch({type: findFirstView()});
+
+// todo replace about and contact with helloMsg and corsMsg

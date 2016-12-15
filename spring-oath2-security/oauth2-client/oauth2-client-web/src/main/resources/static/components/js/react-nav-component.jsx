@@ -74,7 +74,7 @@ class NavigationMenuComponent extends Component {
 
                     <div id="navbar" className="navbar-collapse collapse">
                         <ul className="nav navbar-nav">
-                            <li className="active"><a href="#">Home</a></li>
+                            <li className="active"><a href="/client">Home</a></li>
                             <li><a href="#about">About</a></li>
                             <li><a href="#contact">Contact</a></li>
                             <li className="dropdown">

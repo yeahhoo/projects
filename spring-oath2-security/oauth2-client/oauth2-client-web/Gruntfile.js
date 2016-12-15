@@ -6,52 +6,15 @@ module.exports = function(grunt) {
     'use strict';
 
     // tell grunt to load jshint task plugin.
-    grunt.loadNpmTasks('grunt-jsxhint');
-    grunt.loadNpmTasks('grunt-babel');
     grunt.loadNpmTasks('grunt-webpack');
 
     // configure tasks
     grunt.initConfig({
-
-        jshint: {
-             files: [
-                 'Gruntfile.js',
-                 'src/main/resources/static/components/js/react-create-client.jsx',
-                 'src/main/resources/static/components/js/react-create-user.jsx',
-                 'src/main/resources/static/components/js/react-custom-error.jsx'
-            ],
-            options: {
-                jshintrc: 'jsconfs/.jshintrc',
-                ignores: [
-                   'src/main/resources/static/libs/**/*.js'
-                ]
-            }
-        },
-
-        babel: {
-           options: {
-               plugins: ['transform-react-jsx', 'transform-strict-mode'],
-               presets: ['es2015', 'react']
-           },
-           jsx: {
-               files: [{
-                   expand: true,
-                   cwd: 'src/main/resources/static/components/js',
-                   src: [
-                       'react-create-client.jsx',
-                       'react-create-user.jsx',
-                       'react-custom-error.jsx'
-                   ],
-                   dest: 'target/classes/static/components/js',
-                   ext: '.js'
-               }]
-           }
-        },
         webpack: {
             someTarget: require("./jsconfs/webpack.config.js")
         }
    });
 
-   grunt.registerTask('default', ['jshint', 'babel', 'webpack']);
+   grunt.registerTask('default', ['webpack']);
 
 };

@@ -21,7 +21,6 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * @author Alexander Savchenko
  */
-
 @RestController
 public class RestConfig {
 
@@ -54,15 +53,41 @@ public class RestConfig {
 
     @RequestMapping({"/index"})
     public ModelAndView home() throws Exception {
-        LOG.info("/index requested");
-        ModelAndView model = new ModelAndView("index");
+        LOG.info("/index page requested");
+        return createModelViewForPage("index", "home");
+    }
+
+    @RequestMapping({"/createClient"})
+    public ModelAndView createClientPage() throws Exception {
+        LOG.info("/createClient Page requested");
+        return createModelViewForPage("create_oath_client", "createClient");
+    }
+
+    @RequestMapping({"/createUser"})
+    public ModelAndView createUserPage() throws Exception {
+        LOG.info("/createUser Page requested");
+        return createModelViewForPage("create_oauth_user", "createUser");
+    }
+
+    /**
+     * builds ModelAndView object filled with base attributes needed by UI.
+     * @param pageName - name of server page (*.ftl name).
+     * @param viewName - client view to associate initial state.
+     * */
+    private ModelAndView createModelViewForPage(String pageName, String viewName) {
+        ModelAndView model = new ModelAndView(pageName);
         Map<String, Object> responseMap = new HashMap<>();
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
         responseMap.put("username", userName);
         responseMap.put("isLogined", !"anonymousUser".equals(userName));
-        model.addObject("jsonResponse", mapper.writeValueAsString(responseMap));
+        responseMap.put("viewName", viewName);
+        try {
+            model.addObject("jsonResponse", mapper.writeValueAsString(responseMap));
+        } catch (Exception e) {
+            LOG.error("Error occurred while serialization", e);
+            throw new RuntimeException("Error occurred while serializing parameters for client", e);
+        }
         return model;
     }
-
 
 }

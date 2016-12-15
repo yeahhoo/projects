@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.web.ErrorAttributes;
 import org.springframework.boot.autoconfigure.web.ErrorController;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.RequestAttributes;
@@ -15,7 +16,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
-import java.io.IOException;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -57,10 +57,19 @@ public class CustomErrorController implements ErrorController {
         } else {
             ModelAndView model = new ModelAndView("custom_error");
             model.addAllObjects(errorAtrs);
+            if (SecurityContextHolder.getContext().getAuthentication() == null) {
+                model.addObject("isLogined", false);
+                model.addObject("username", StringUtils.EMPTY);
+            } else {
+                model.addObject("isLogined", !"anonymousUser".equals(SecurityContextHolder.getContext().getAuthentication().getName()));
+                model.addObject("username", SecurityContextHolder.getContext().getAuthentication().getName());
+            }
+            model.addObject("viewName", "error");
             try {
-                model.addObject("jsonError", mapper.writeValueAsString(errorAtrs));
-            } catch (IOException e) {
-                LOG.debug("JSON not translated into String", e);
+                model.addObject("jsonResponse", mapper.writeValueAsString(model.getModel()));
+            } catch (Exception e) {
+                LOG.error("Error occurred while serialization in CustomErrorController", e);
+                throw new RuntimeException("Error occurred while serializing parameters for client", e);
             }
             return model;
         }

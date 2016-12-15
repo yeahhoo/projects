@@ -16,10 +16,7 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/").setViewName("forward:/index");
-        registry.addViewController("/index").setViewName("index");
         registry.addViewController("/clientLogout").setViewName("client_logout");
-        registry.addViewController("/createClient").setViewName("create_oath_client");
-        registry.addViewController("/createUser").setViewName("create_oauth_user");
     }
 
     @Override
@@ -30,7 +27,6 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
     @Bean
     public InternalResourceViewResolver getInternalResourceViewResolver() {
         InternalResourceViewResolver resolver = new InternalResourceViewResolver();
-        //resolver.setPrefix("/templates/");
         resolver.setSuffix(".html");
         return resolver;
     }
