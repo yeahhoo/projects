@@ -11,6 +11,10 @@ function navReducer(state, action) {
             return Object.assign({}, {activeComponent: 'SHOW_CREATE_USER_FORM'});
         case 'SHOW_CREATE_CLIENT_FORM':
             return Object.assign({}, {activeComponent: 'SHOW_CREATE_CLIENT_FORM'});
+        case 'SHOW_CONTACT_PAGE':
+            return Object.assign({}, {activeComponent: 'SHOW_CONTACT_PAGE'});
+        case 'SHOW_ABOUT_PAGE':
+            return Object.assign({}, {activeComponent: 'SHOW_ABOUT_PAGE'});
         case 'SHOW_ERROR_PAGE':
             return Object.assign({}, {activeComponent: 'SHOW_ERROR_PAGE'});
         default:

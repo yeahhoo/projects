@@ -18,6 +18,8 @@ class WorkAreaComponent extends Component {
                     {this.props.activeComponent === 'SHOW_CREATE_USER_FORM' && <CreateUserForm />}
                     {this.props.activeComponent === 'SHOW_CREATE_CLIENT_FORM' && <CreateClientForm />}
                     {this.props.activeComponent === 'SHOW_HOME' && <RestResultFormComponent />}
+                    {this.props.activeComponent === 'SHOW_CONTACT_PAGE' && <RestResultFormComponent />}
+                    {this.props.activeComponent === 'SHOW_ABOUT_PAGE' && <RestResultFormComponent />}
                     {this.props.activeComponent === 'SHOW_ERROR_PAGE' && <CustomErrorComponent />}
                 </div>
             </div>

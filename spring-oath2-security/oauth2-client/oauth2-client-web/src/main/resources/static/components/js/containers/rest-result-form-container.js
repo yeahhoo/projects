@@ -3,8 +3,8 @@ import RestResultFormComponent from '../react-rest-result-form-component';
 
 const mapResultFormStateToProps = (state) => {
     return {
-        helloMsg: state.menuReducer.helloMsg,
-        corsMsg: state.menuReducer.corsMsg,
+        aboutMsg: state.menuReducer.aboutMsg,
+        contactMsg: state.menuReducer.contactMsg,
         serverMsg: state.menuReducer.serverMsg,
         usernameMsg: state.menuReducer.usernameMsg
     }

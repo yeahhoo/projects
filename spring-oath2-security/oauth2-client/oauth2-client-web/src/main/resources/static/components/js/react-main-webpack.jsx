@@ -21,5 +21,3 @@ render(
 )
 
 store.dispatch({type: findFirstView()});
-
-// todo replace about and contact with helloMsg and corsMsg

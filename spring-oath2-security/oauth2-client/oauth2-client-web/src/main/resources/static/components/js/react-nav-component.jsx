@@ -1,14 +1,15 @@
 import React, { Component, PropTypes } from 'react';
-import { fetchHelloMsg, fetchCorsMsg, fetchUsernameMsg, fetchServerMsg } from './actions/menu-action';
+import { fetchAboutMsg, fetchContactMsg, fetchUsernameMsg, fetchServerMsg } from './actions/menu-action';
 
 
 class NavigationMenuComponent extends Component {
 
     // https://github.com/reactjs/redux/blob/master/docs/advanced/ExampleRedditAPI.md
+    // https://github.com/reactjs/redux/blob/master/docs/basics/ExampleTodoList.md
     constructor(props) {
         super(props);
-        this.getHelloMsg = this.getHelloMsg.bind(this);
-        this.getCorsMsg = this.getCorsMsg.bind(this);
+        this.showAboutPage = this.showAboutPage.bind(this);
+        this.showContactPage = this.showContactPage.bind(this);
         this.getUsername = this.getUsername.bind(this);
         this.getServerMsg = this.getServerMsg.bind(this);
         this.showCreateUserForm = this.showCreateUserForm.bind(this);
@@ -16,31 +17,30 @@ class NavigationMenuComponent extends Component {
         this.sendRequest = this.sendRequest.bind(this);
     }
 
-    sendRequest(e, func) {
+    sendRequest(e, func, viewName) {
         e.preventDefault();
         const { dispatch } = this.props;
-        dispatch({type: 'SHOW_HOME'});
+        dispatch({type: viewName});
         dispatch(func());
         return false;
     }
 
-    getHelloMsg(e) {
-        this.sendRequest(e, fetchHelloMsg);
-    }
-
-    getCorsMsg(e) {
-        this.sendRequest(e, fetchCorsMsg);
-    }
-
     getUsername(e) {
-        this.sendRequest(e, fetchUsernameMsg);
+        this.sendRequest(e, fetchUsernameMsg, 'SHOW_HOME');
     }
 
     getServerMsg(e) {
-        this.sendRequest(e, fetchServerMsg);
+        this.sendRequest(e, fetchServerMsg, 'SHOW_HOME');
     }
 
-    //https://github.com/reactjs/redux/blob/master/docs/basics/ExampleTodoList.md
+    showAboutPage(e) {
+        this.sendRequest(e, fetchAboutMsg, 'SHOW_ABOUT_PAGE');
+    }
+
+    showContactPage(e) {
+        this.sendRequest(e, fetchContactMsg, 'SHOW_CONTACT_PAGE');
+    }
+
     showCreateUserForm(e) {
         e.preventDefault();
         console.log('showing user_create_form');
@@ -75,15 +75,13 @@ class NavigationMenuComponent extends Component {
                     <div id="navbar" className="navbar-collapse collapse">
                         <ul className="nav navbar-nav">
                             <li className="active"><a href="/client">Home</a></li>
-                            <li><a href="#about">About</a></li>
-                            <li><a href="#contact">Contact</a></li>
+                            <li><a href="#about" onClick={this.showAboutPage}>About</a></li>
+                            <li><a href="#contact" onClick={this.showContactPage}>Contact</a></li>
                             <li className="dropdown">
                                 <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                                     Actions <span className="caret"></span>
                                 </a>
                                 <ul className="dropdown-menu">
-                                    <li><a href="#hello" onClick={this.getHelloMsg}>Hello Message</a></li>
-                                    <li><a href="#cors" onClick={this.getCorsMsg}>CORS Message</a></li>
                                     <li><a href="#createUserForm" onClick={this.showCreateUserForm}>Create OAuth User</a></li>
                                     <li><a href="#createClientForm" onClick={this.showCreateClientForm}>Create OAuth Client</a></li>
                                     <li role="separator" className="divider"></li>

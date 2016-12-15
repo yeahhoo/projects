@@ -25,14 +25,18 @@ public class CommonRestController {
     }
 
     //@CrossOrigin(origins = {"http://localhost:8001"})
-    @RequestMapping({"cors"})
-    public String myCors() {
-        return "Hey, cors works, wah";
+    @RequestMapping({"contact"})
+    public String contact() {
+        return "Contact me in case of any problems or don't contact, as you wish."
+               + "\nHere is my fake email sending messages to you will reach nobody: buddy@coolcompany.com"
+               + "\nPlease note that the contact request work via use of CORS, cool, ha.";
     }
 
-    @RequestMapping({"hello"})
-    public String hello() {
-        return "Hello buddy";
+    @RequestMapping({"about"})
+    public String about() {
+        return "This application is about learning something new and doesn't bring any sense."
+               + "\nThe mission was to create application with use of Spring OAuth2 and React."
+               + "\nOn my mind result is not so bad. At least it contains some solutions and cheat sheets developers need in everyday life.";
     }
 
     @RequestMapping({"hellouser"})

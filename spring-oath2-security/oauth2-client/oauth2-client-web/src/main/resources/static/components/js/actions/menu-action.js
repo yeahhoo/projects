@@ -1,38 +1,38 @@
 import { createRequest, wrapDispatchAction } from './util';
 
-// helloMsg
-function receiveHelloMsg(txtData) {
+// aboutMsg
+function receiveAboutMsg(txtData) {
     return {
-        type: 'RECEIVE_HELLO_MSG',
-        data: txtData,
+        type: 'RECEIVE_ABOUT_MSG',
+        data: txtData.replace(/(?:\r\n|\r|\n)/g, '<br />'),
         receivedAt: Date.now()
     };
 }
 
-const fetchHelloMsg = function() {
+const fetchAboutMsg = function() {
     return dispatch => {
-        dispatch(wrapDispatchAction('HELLO_MSG'));
-        return createRequest('/client/server/hello', 'GET')
+        dispatch(wrapDispatchAction('REQUEST_ABOUT_MSG'));
+        return createRequest('/client/server/about', 'GET')
             //.then(response => response.json())
-            .then(txt => dispatch(receiveHelloMsg(txt)));
+            .then(txt => dispatch(receiveAboutMsg(txt)));
     };
 }
 
-// corsMsg
-function receiveCorsMsg(txtData) {
+// contactMsg
+function receiveContactMsg(txtData) {
     return {
-        type: 'RECEIVE_CORS_MSG',
-        data: txtData,
+        type: 'RECEIVE_CONTACT_MSG',
+        data: txtData.replace(/(?:\r\n|\r|\n)/g, '<br />'),
         receivedAt: Date.now()
     };
 }
 
-const fetchCorsMsg = function() {
+const fetchContactMsg = function() {
     return dispatch => {
-        dispatch(wrapDispatchAction('CORS_MSG'));
-        return createRequest('http://localhost:9001/server/cors', 'GET')
+        dispatch(wrapDispatchAction('REQUEST_CONTACT_MSG'));
+        return createRequest('http://localhost:9001/server/contact', 'GET')
             //.then(response => response.json())
-            .then(txt => dispatch(receiveCorsMsg(txt)));
+            .then(txt => dispatch(receiveContactMsg(txt)));
     };
 }
 
@@ -47,7 +47,7 @@ function receiveUsernameMsg(data) {
 
 const fetchUsernameMsg = function() {
     return dispatch => {
-        dispatch(wrapDispatchAction('USERNAME_MSG'));
+        dispatch(wrapDispatchAction('REQUEST_USERNAME_MSG'));
         return createRequest('/client/server/user', 'GET')
             //.then(response => response.json())
             .then(json => dispatch(receiveUsernameMsg(json)));
@@ -65,11 +65,11 @@ function receiveServerMsg(data) {
 
 const fetchServerMsg = function() {
     return dispatch => {
-        dispatch(wrapDispatchAction('SERVER_MSG'));
+        dispatch(wrapDispatchAction('REQUEST_SERVER_MSG'));
         return createRequest('/client/server/hellouser', 'GET')
             //.then(response => response.json())
             .then(json => dispatch(receiveServerMsg(json)));
     };
 }
 
-export { fetchHelloMsg, fetchCorsMsg, fetchUsernameMsg, fetchServerMsg };
+export { fetchAboutMsg, fetchContactMsg, fetchUsernameMsg, fetchServerMsg };
