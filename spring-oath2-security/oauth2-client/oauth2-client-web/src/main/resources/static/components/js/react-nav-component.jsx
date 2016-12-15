@@ -84,10 +84,14 @@ class NavigationMenuComponent extends Component {
                                 <ul className="dropdown-menu">
                                     <li><a href="#createUserForm" onClick={this.showCreateUserForm}>Create OAuth User</a></li>
                                     <li><a href="#createClientForm" onClick={this.showCreateClientForm}>Create OAuth Client</a></li>
-                                    <li role="separator" className="divider"></li>
-                                    <li className="dropdown-header">Secured Actions</li>
-                                    <li><a href="#userName" onClick={this.getUsername}>Get Username</a></li>
-                                    <li><a href="#serverMsg" onClick={this.getServerMsg}>Get User Message</a></li>
+                                    {this.props.isLogined &&
+                                        <div>
+                                            <li role="separator" className="divider"></li>
+                                            <li className="dropdown-header">Secured Actions</li>
+                                            <li><a href="#userName" onClick={this.getUsername}>Get Username</a></li>
+                                            <li><a href="#serverMsg" onClick={this.getServerMsg}>Get User Message</a></li>
+                                        </div>
+                                    }
                                     <li role="separator" className="divider"></li>
                                     <li className="dropdown-header">Open In New Pages</li>
                                     <li><a href="/client/createUser">Create OAuth User</a></li>
