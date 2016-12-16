@@ -42,6 +42,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests().anyRequest().authenticated();
 
         http.logout().invalidateHttpSession(true).clearAuthentication(true);
+        http.sessionManagement().maximumSessions(1);
     }
 
     @Override
