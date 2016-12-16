@@ -27,6 +27,8 @@
 	</properties>
 
     <modules>
+        <module>oauth2-server-domain</module>
+        <module>oauth2-server-repositories</module>
         <module>oauth2-server-services</module>
         <module>oauth2-server-web</module>
     </modules>

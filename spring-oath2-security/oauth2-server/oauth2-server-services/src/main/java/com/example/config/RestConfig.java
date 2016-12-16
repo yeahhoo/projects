@@ -4,8 +4,6 @@ import com.example.utils.React;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
@@ -15,8 +13,6 @@ import org.springframework.security.oauth2.provider.approval.ApprovalStore;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.csrf.CsrfToken;
-import org.springframework.security.web.csrf.DefaultCsrfToken;
-import org.springframework.security.web.csrf.LazyCsrfTokenRepository;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -34,10 +30,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 @RestController
 @EnableResourceServer
-@Import({InnerConfig.class})
 public class RestConfig {
 
-    // @RequestMapping("/oauth/error")
     private static final String BEARER_AUTHENTICATION = "bearer ";
     private static final String HEADER_AUTHORIZATION = "authorization";
 

@@ -4,11 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
     <groupId>com.example</groupId>
-    <artifactId>oauth2-server-services</artifactId>
+    <artifactId>oauth2-server-repositories</artifactId>
 	<packaging>jar</packaging>
 
-	<name>social-auth-server-services</name>
-	<description>Services of Demo project</description>
+	<name>social-auth-server-repositories</name>
+	<description>Repository of Demo project</description>
 
 	<parent>
         <groupId>com.example</groupId>
@@ -19,12 +19,16 @@
     <dependencies>
         <dependency>
             <groupId>com.example</groupId>
-            <artifactId>oauth2-server-repositories</artifactId>
+            <artifactId>oauth2-server-domain</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-jwt</artifactId>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
         </dependency>
     </dependencies>
 

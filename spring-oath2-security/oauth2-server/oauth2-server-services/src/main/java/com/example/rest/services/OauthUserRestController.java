@@ -1,11 +1,10 @@
 package com.example.rest.services;
 
 import com.example.dtos.OauthUserDto;
-import com.example.repositories.UserRepository;
+import com.example.repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.RequestBody;

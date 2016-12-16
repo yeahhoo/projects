@@ -1,6 +1,6 @@
 package com.example.rest.services;
 
-import com.example.repositories.ClientRepository;
+import com.example.repository.ClientRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;

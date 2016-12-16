@@ -1,4 +1,4 @@
-package com.example.repositories;
+package com.example.repository;
 
 import com.example.config.DataSourceConfig;
 
