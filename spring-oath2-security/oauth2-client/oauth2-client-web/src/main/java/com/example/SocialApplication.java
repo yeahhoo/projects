@@ -64,6 +64,7 @@ public class SocialApplication extends WebSecurityConfigurerAdapter {
                 .addFilterBefore(csrfHeaderFilter(), CsrfFilter.class);
 
         http.logout().invalidateHttpSession(true).clearAuthentication(true).logoutUrl("/mylogout").logoutSuccessUrl("/");
+        http.sessionManagement().maximumSessions(1);
     }
 
 
