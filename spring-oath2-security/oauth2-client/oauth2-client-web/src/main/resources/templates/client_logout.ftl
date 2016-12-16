@@ -1,17 +1,5 @@
 <html>
-<head>
-    <meta charset="utf-8" />
-    <title>Demo</title>
-    <link rel="stylesheet" type="text/css" href="/client/libs/css/bootstrap-3.3.2.css" />
-    <script>
-        function submitWithTimeout() {
-            console.log('Triggered page load listener');
-            setTimeout(function() {
-                document.forms['logoutUserConfirm'].submit();
-            }, 5000);
-        }
-    </script>
-</head>
+    <#include "/head-template.ftl">
 <body onload="submitWithTimeout()">
     <h1>Client Logout</h1>
     <div>You've been logged out successfully</div>
@@ -21,4 +9,12 @@
         <input type="hidden" id="csrf_token" name="${_csrf.parameterName}" value="${_csrf.token}"/>
     </form>
 </body>
+<script>
+    function submitWithTimeout() {
+        console.log('Triggered page load listener');
+        setTimeout(function() {
+            document.forms['logoutUserConfirm'].submit();
+        }, 5000);
+    }
+</script>
 </html>

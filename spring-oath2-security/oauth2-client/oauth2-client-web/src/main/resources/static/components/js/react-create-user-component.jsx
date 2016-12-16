@@ -17,10 +17,14 @@ class CreateUserComponent extends Component {
             user: this.state.user,
             password: this.state.password
         };
-        const { dispatch } = this.props
-        dispatch(createUser(params)).then(function() {
+        const { dispatch } = this.props;
+        dispatch(createUser(params)).then((json => {
+            alert('user created: ' + JSON.stringify(json.data));
             this.refs.user_form.reset();
-        }.bind(this));
+        }).bind(this)).fail(e => {
+            var data = JSON.parse(e.responseText);
+            alert('user caused: \nerror: ' + data.error + '\nexception: ' + data.exception + '\nmessage: ' + data.message + '\nstatus: ' + data.status + '\ntrace: ' + data.trace);
+        });
         return false;
     }
 

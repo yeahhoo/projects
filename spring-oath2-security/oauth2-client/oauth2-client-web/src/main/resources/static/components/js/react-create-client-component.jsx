@@ -20,9 +20,14 @@ class CreateClientComponent extends Component {
             scope: this.state.scopes
         };
         const { dispatch } = this.props;
-        dispatch(createClient(params)).then(function() {
+        dispatch(createClient(params)).then((json => {
+            alert('client created: ' + JSON.stringify(json.data));
             this.refs.client_form.reset();
-        }.bind(this));
+        }).bind(this)).fail(e => {
+            var data = JSON.parse(e.responseText);
+            alert('client caused: \nerror: ' + data.error + '\nexception: ' + data.exception + '\nmessage: ' + data.message + '\nstatus: ' + data.status + '\ntrace: ' + data.trace);
+
+        });
         return false;
     }
 
@@ -30,7 +35,10 @@ class CreateClientComponent extends Component {
         e.preventDefault();
         console.log('client exception button pressed');
         const { dispatch } = this.props;
-        dispatch(requestException());
+        dispatch(requestException()).fail(e => {
+            var data = JSON.parse(e.responseText);
+            alert('client caused: \nerror: ' + data.error + '\nexception: ' + data.exception + '\nmessage: ' + data.message + '\nstatus: ' + data.status + '\ntrace: ' + data.trace);
+        });
         return false;
     }
 

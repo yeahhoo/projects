@@ -1,6 +1,27 @@
-
-
-const createRequest = function(url, type, data, contentType) {
+function wrapPreRequestDispatchAction(actionName, params) {
+    return {
+        type: actionName,
+        params: params
+    };
+}
+/*
+function doRequest(url, type, contentType, data) {
+    return fetch(url, {
+        method: type,
+        body: data,
+        headers: new Headers({
+            'Content-Type': contentType
+        })
+    }).then((response) => {
+        console.log('request succeeded: ' + url);
+        return response;
+    }).catch(error => {
+        console.log('request failed: ' + error);
+        return error;
+    });
+}
+*/
+function doRequest(url, type, contentType, data) {
     return $.ajax({
         url: url,
         type: type,
@@ -13,22 +34,12 @@ const createRequest = function(url, type, data, contentType) {
     });
 }
 
-const wrapDispatchAction = function(actionName, params) {
+function wrapAfterRequestDispatchAction(type, data) {
     return {
-        type: actionName,
-        params: params
+        type: type,
+        data: data,
+        receivedAt: Date.now()
     };
 }
 
-    /*
-    function fetchHelloMsg() {
-        return dispatch => {
-            dispatch(requestHelloMsg())
-            return fetch('/client/server/hello')
-                //.then(response => response.json())
-                .then(txt => dispatch(receiveHelloMsg(txt)))
-        }
-    }
-    */
-
-export { createRequest, wrapDispatchAction };
+export { doRequest, wrapPreRequestDispatchAction, wrapAfterRequestDispatchAction };
