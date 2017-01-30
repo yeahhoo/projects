@@ -1,5 +1,5 @@
 FROM ubuntu:14.04
-MAINTAINER me2 <me@me.com>
+MAINTAINER me <me@me.com>
 
 # Installation:
 # Import MongoDB public GPG key AND create a MongoDB list file

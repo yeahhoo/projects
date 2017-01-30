@@ -70,7 +70,25 @@ docker rm -f secclient
 ```
 
 
-**useful commands:**
+**NODE USAGE:**
+After building the application Node.js installs as local utility with possibility to run it. 
+```sh
+cd oauth2-client/oauth2-client-web/node
+$ node
+# inside the node.js console run the following script:
+
+var grunt = require('grunt');
+
+grunt.initConfig({ 
+        webpack: { 
+            someTarget: require("../jsconfs/webpack.config.js") 
+        } 
+   });
+   
+grunt.tasks("default");
+```
+
+**USEFUL COMMANDS:**
 ```sh
 connect to virtual machine: docker-machine ssh default
 list containers: docker ps
