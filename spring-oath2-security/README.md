@@ -71,6 +71,7 @@ docker rm -f secclient
 
 
 **NODE USAGE:**
+
 After building the application Node.js installs as local utility with possibility to run it. 
 ```sh
 cd oauth2-client/oauth2-client-web/node

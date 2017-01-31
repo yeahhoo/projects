@@ -21,7 +21,7 @@ docker run -d -p 30003:27017 --name mongo3 --net my-mongo-cluster docker-mongo
 
 4) Add Primary Node and initialize replica:
 ```sh
-docker run -d -p 30001:27017 -e IS_REPL_INIT='yes' -v /d/data/logs:/data/db/logs --privileged --name mongo1 --net my-mongo-cluster docker-mongo
+docker run -d -p 30001:27017 -e IS_REPL_INIT='yes' -v /d/data/logs:/data/logs --privileged --name mongo1 --net my-mongo-cluster docker-mongo
 ```
 
 5) If you have mongo installed on your local machine then you can connect with the following way:

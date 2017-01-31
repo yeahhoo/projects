@@ -11,7 +11,6 @@ public class SearchTask implements Runnable {
     private String taskName;
     private volatile boolean isWorking = false;
     private boolean isFinished = false;
-    private volatile Object monitor = new Object();
 
     public SearchTask(String taskName) {
         this.taskName = taskName;
@@ -20,14 +19,9 @@ public class SearchTask implements Runnable {
     @Override
     public void run() {
         while (!isFinished) {
-            File folderToProcess = null;
-            synchronized (monitor) {
-                folderToProcess = DataStorage.getTask();
-                if (folderToProcess != null) {
-                    setWorkingStatus(true);
-                }
-            }
+            File folderToProcess = DataStorage.getTask(); // protected by double-check mechanism of TaskManager
             if (folderToProcess != null) {
+                setWorkingStatus(true);
                 processFolder(folderToProcess);
             }
         }
@@ -38,15 +32,11 @@ public class SearchTask implements Runnable {
     }
 
     public boolean isWorking() {
-        synchronized (monitor) {
-            return isWorking;
-        }
+        return isWorking;
     }
 
     private void setWorkingStatus(boolean isWorking) {
-        synchronized (monitor) {
-            this.isWorking = isWorking;
-        }
+        this.isWorking = isWorking;
     }
 
     private void processFolder(File folder) {

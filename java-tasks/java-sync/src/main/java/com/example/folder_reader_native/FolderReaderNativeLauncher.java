@@ -14,8 +14,8 @@ public class FolderReaderNativeLauncher {
         int numberOfThreads = 4;
         long checkDelay = TimeUnit.SECONDS.toMillis(0l);
         // starting manager
-        TaskManager taskManager = new TaskManager(folderToScan, checkDelay);
-        taskManager.startTaskManager(numberOfThreads);
+        TaskManager taskManager = new TaskManager(folderToScan, numberOfThreads, checkDelay);
+        taskManager.run();
 
     }
 
