@@ -1,0 +1,1 @@
+Don't remove this folder - it's needed for auto mounting of MongoDB logs.

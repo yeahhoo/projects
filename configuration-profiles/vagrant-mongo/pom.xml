@@ -8,31 +8,5 @@
     <name>vagrant-mongo</name>
     <url>http://maven.apache.org</url>
 
-    <dependencies>
-    </dependencies>
-
-    <build>
-        <plugins>
-            <!--
-            <plugin>
-                <groupId>net.ju-n.maven.plugins</groupId>
-                <artifactId>vagrant-maven-plugin</artifactId>
-                <version>1.0.2</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>provision</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <box>mongo</box>
-                    <vagrantfile>vagrant/Vagrantfile</vagrantfile>
-                    <url/>
-                </configuration>
-            </plugin>
-            -->
-        </plugins>
-    </build>
 
 </project>

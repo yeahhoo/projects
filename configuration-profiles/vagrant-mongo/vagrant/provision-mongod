@@ -47,8 +47,9 @@ function run_mongod() {
     mongod --config /home/vagrant/mongod.conf
     if [ "$INIT_REPLICA" == "yes" ]; then
         echo "Initializing MongoDB Replica"
+        # waiting until mongod starts
         sleep 2
-        mongo --host 192.168.12.102 --port 40000 /vagrant/init-replica-script.js
+        mongo --host localhost --port 40000 /vagrant/init-replica-script.js
     fi
 }
 
