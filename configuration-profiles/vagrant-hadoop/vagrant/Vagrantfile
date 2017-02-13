@@ -1,0 +1,25 @@
+Vagrant.require_version ">= 1.4.3"
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+	config.vm.define :hadoop do |hadoop|
+		hadoop.vm.box = "ubuntu/trusty64"
+		config.vm.synced_folder "resources/", "/vagrant/resources", create: true, id: "configs"
+		config.vm.synced_folder "../target/", "/mvn-target", create: true, id: "jars"
+		hadoop.vm.provider "vmware_fusion" do |v|
+			v.vmx["memsize"]  = "4096"
+		end
+		hadoop.vm.provider "virtualbox" do |v|
+		  v.name = "hadoop-yarn"
+		  v.customize ["modifyvm", :id, "--memory", "4096"]
+		end
+		hadoop.vm.network :private_network, ip: "10.211.55.101"
+		hadoop.vm.hostname = "hadoop-yarn"
+		hadoop.vm.provision :shell, :path=> 'setup.sh'
+		hadoop.vm.network "forwarded_port", guest: 50070, host: 50070
+		hadoop.vm.network "forwarded_port", guest: 50075, host: 50075
+		hadoop.vm.network "forwarded_port", guest: 8088, host: 8088
+		hadoop.vm.network "forwarded_port", guest: 8042, host: 8042
+		hadoop.vm.network "forwarded_port", guest: 19888, host: 19888
+	end
+end

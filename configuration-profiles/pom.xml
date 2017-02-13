@@ -11,6 +11,7 @@
     <modules>
         <module>docker-mongo</module>
         <module>vagrant-mongo</module>
+		<module>vagrant-hadoop</module>
     </modules>
 
 </project>
