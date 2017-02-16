@@ -18,8 +18,16 @@
 
 <configuration>
  <!-- without this property, mapreduce will not run as a yarn -->
- <property>
-  <name>mapreduce.framework.name</name>
-  <value>yarn</value>
- </property>
+    <property>
+        <name>mapreduce.framework.name</name>
+        <value>yarn</value>
+    </property>
+
+    <!-- needed for map-reduce debug -->
+    <property>
+        <name>mapreduce.map.java.opts</name>
+        <value>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=17414</value>
+    </property>
+
+
 </configuration>

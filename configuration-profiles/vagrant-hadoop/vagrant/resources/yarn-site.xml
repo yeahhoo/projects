@@ -35,4 +35,12 @@
   <name>yarn.log.server.url</name>
   <value>http://hadoop-yarn:19888/jobhistory/logs/</value>
  </property>
+
+ <!-- needed for map-reduce debug -->
+ <property>
+  <name>yarn.nodemanager.vmem-check-enabled</name>
+  <value>false</value>
+  <description>Whether virtual memory limits will be enforced for containers</description>
+ </property>
+
 </configuration>

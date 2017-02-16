@@ -21,5 +21,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 		hadoop.vm.network "forwarded_port", guest: 8088, host: 8088
 		hadoop.vm.network "forwarded_port", guest: 8042, host: 8042
 		hadoop.vm.network "forwarded_port", guest: 19888, host: 19888
+		hadoop.vm.network "forwarded_port", guest: 17412, host: 17412
+		hadoop.vm.network "forwarded_port", guest: 17414, host: 17414
 	end
 end

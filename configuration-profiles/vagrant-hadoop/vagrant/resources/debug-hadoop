@@ -1,0 +1,9 @@
+#!/bin/bash
+
+export DEBUG_OPTS_CORE="-Xdebug -Xrunjdwp:transport=dt_socket,address=17412,server=y,suspend=n"
+#export DEBUG_OPTS_MAP_REDUCT="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=17414 -Dyarn.nodemanager.pmem-check-enabled=false"
+
+echo hadoop "$@"
+hadoop "$@"
+
+

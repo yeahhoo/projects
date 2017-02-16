@@ -29,11 +29,33 @@ vagrant halt
 vagrant destroy
 ```
 
+**Debug:**
+
+for debug your application run the following command: /vagrant/resources/debug-hadoop jar /mvn-target/test-wordcount.jar /test.txt /output
+
+10.211.55.101:17412 - address to debug hadoop core components
+
+10.211.55.101:17414 - address to debug hadoop mappers and reducers (please note it available only at map/reduce stage because suspend=n)
+
+
+
+**Useful Commands:**
+```sh
+hadoop dfs -rmr  /output
+/vagrant/resources/debug-hadoop jar /mvn-target/test-wordcount.jar /test.txt /output
+netstat -atn
+```
+
 **Sources:**
 
 https://github.com/vangj/vagrant-hadoop-2.3.0
 
+https://dzone.com/articles/effective-testing-strategies
+
 http://stayrelevant.globant.com/debug-your-mapreduce-program-locally/
+
+https://pravinchavan.wordpress.com/2013/04/05/remote-debugging-of-hadoop-job-with-eclipse/
 
 https://github.com/tequalsme/hadoop-examples
 
+http://protocolsofmatrix.blogspot.ru/2016/09/install-hadoop-273-on-ubuntu-1604-lts.html
