@@ -23,11 +23,11 @@
         <value>yarn</value>
     </property>
 
-    <!-- needed for map-reduce debug -->
+    <!-- needed for map-reduce debug
     <property>
         <name>mapreduce.map.java.opts</name>
         <value>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=17414</value>
     </property>
-
+    -->
 
 </configuration>

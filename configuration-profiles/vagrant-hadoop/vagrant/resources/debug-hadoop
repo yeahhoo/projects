@@ -1,9 +1,13 @@
 #!/bin/bash
 
 export DEBUG_OPTS_CORE="-Xdebug -Xrunjdwp:transport=dt_socket,address=17412,server=y,suspend=n"
-#export DEBUG_OPTS_MAP_REDUCT="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=17414 -Dyarn.nodemanager.pmem-check-enabled=false"
+#export DEBUG_OPTS_MAP_RED="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=17414"
+DEBUG_OPTS_MAP_RED="-Dmapreduce.map.java.opts=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=17414"
 
-echo hadoop "$@"
-hadoop "$@"
+JAR_LOCATION="$1"
+JAR_ARGS="${@:2}"
+EXEC_COMMAND="hadoop jar $JAR_LOCATION $DEBUG_OPTS_MAP_RED $JAR_ARGS"
 
+echo "$EXEC_COMMAND"
+$EXEC_COMMAND
 
