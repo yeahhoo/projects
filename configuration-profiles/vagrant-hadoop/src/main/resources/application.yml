@@ -1,0 +1,5 @@
+debug: true
+
+server:
+    port: 11091
+    context-path: /server

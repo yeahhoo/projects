@@ -24,7 +24,7 @@ public class WordCount extends Configured implements Tool {
     public int run(String[] args) throws Exception {
         Configuration conf = getConf();
 
-        Job job = new Job(conf);
+        Job job = Job.getInstance(conf);
         job.setJarByClass(WordCount.class);
 
         job.setOutputKeyClass(Text.class);
