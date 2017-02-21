@@ -1,5 +1,6 @@
 package com.example.spring;
 
+import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -12,6 +13,7 @@ import org.springframework.context.annotation.ImportResource;
  */
 @Configuration
 @SpringBootApplication
+@EnableBatchProcessing
 @EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
 @ImportResource("META-INF/spring/application-context.xml")
 public class HadoopSpringBootApplication {

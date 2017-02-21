@@ -20,9 +20,6 @@
              mapper="com.example.WordCountMapper"
              reducer="com.example.WordCountReducer" />
 
-    <!--
-    <hdp:streaming id="myjob2"
-                   input-path="/input/" output-path="/ouput/"
-                   mapper="${path.cat}" reducer="${path.wc}"/>
-    -->
+    <hdp:tool-runner id="myToolRunner" tool-class="com.example.WordCount" run-at-startup="false"></hdp:tool-runner>
+
 </beans>
