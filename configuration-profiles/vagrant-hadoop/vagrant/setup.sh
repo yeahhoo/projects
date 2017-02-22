@@ -116,8 +116,8 @@ function startHadoopService {
 	echo "starting hadoop service"
 	#/usr/local/hadoop-2.7.3/sbin/start-dfs.sh
 	#/usr/local/hadoop-2.7.3/sbin/start-yarn
-	service hadoop start	### todo change it to 2.7.3 version
-	nohup "/vagrant/resources/run-spring-app.sh" > /dev/null 2>&1 & echo $! > run.pid
+	service hadoop start	### todo change it to 2.7.3 version & fix nohup command
+	nohup "/vagrant/resources/run-spring-app.sh" > /mvn-web/out.log 2>&1 & echo $! > run.pid
 }
 
 

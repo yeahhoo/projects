@@ -1,21 +1,16 @@
 package com.example.spring;
 
 import com.example.WordCount;
-import com.example.WordCountMapper;
-import com.example.WordCountReducer;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import org.apache.hadoop.fs.FileStatus;
-import org.springframework.data.hadoop.mapreduce.ToolRunner;
-import org.springframework.batch.core.ExitStatus;
+import org.apache.hadoop.util.ToolRunner;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.StepContribution;
-import org.springframework.batch.core.StepExecution;
-import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.scope.context.ChunkContext;
@@ -25,15 +20,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+
 import org.springframework.data.hadoop.HadoopSystemConstants;
 import org.springframework.data.hadoop.fs.FsShell;
-import org.springframework.data.hadoop.mapreduce.JobRunner;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import javax.batch.api.listener.JobListener;
 
 /**
  * @author Aleksandr_Savchenko
@@ -50,12 +43,6 @@ public class MapReduceJobConfig {
 
     @Autowired
     private org.apache.hadoop.conf.Configuration configuration;
-
-    @Autowired
-    org.apache.hadoop.mapreduce.Job myjob1;
-
-    @Autowired
-    private ToolRunner toolRunner;
 
     @Bean(name = HadoopSystemConstants.DEFAULT_ID_FSSHELL)
     public FsShell fsShell() {
@@ -122,15 +109,7 @@ public class MapReduceJobConfig {
             String inputPath = (String) jobParameters.get("inputPath");
             String outputPath = (String) jobParameters.get("outputPath");
             System.out.println("Executing MapReduceTasklet: map-reducing " + inputPath);
-            JobRunner jobLauncher = new JobRunner();
-            jobLauncher.setRunAtStartup(false);
-            jobLauncher.setJob(myjob1);
-            jobLauncher.call();
-            /*
-            toolRunner.setArguments(inputPath, outputPath);
-            toolRunner.call();
-            */
-            // int res = ToolRunner.run(new WordCount(), new String[] {inputPath, outputPath});
+            int res = ToolRunner.run(configuration, new WordCount(), new String[] {inputPath, outputPath});
             return RepeatStatus.FINISHED;
         }
     }

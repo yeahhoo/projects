@@ -5,7 +5,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 	config.vm.define :hadoop do |hadoop|
 		hadoop.vm.box = "ubuntu/trusty64"
 		config.vm.synced_folder "resources/", "/vagrant/resources", create: true, id: "configs"
-		config.vm.synced_folder "../target/", "/mvn-target", create: true, id: "jars"
+		config.vm.synced_folder "../spring-boot-hadoop-web-module/target/", "/mvn-web", create: true, id: "web"
+		config.vm.synced_folder "../map-reduce-module/target/", "/mvn-target", create: true, id: "jar"
 		hadoop.vm.provider "vmware_fusion" do |v|
 			v.vmx["memsize"]  = "4096"
 		end

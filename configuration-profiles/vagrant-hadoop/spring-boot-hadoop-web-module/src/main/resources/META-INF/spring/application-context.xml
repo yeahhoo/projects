@@ -11,15 +11,17 @@
     <hdp:configuration>
         fs.defaultFS=${spring.hadoop.config.fs.defaultFS}
         hadoop.tmp.dir=${spring.hadoop.tmp.dir}
-        electric=sea
     </hdp:configuration>
+
     <!--
-        <hdp:job-runner id="myjob-runner" job-ref="myjob" run-at-startup="false"/>
-    -->
     <hdp:job id="myjob1"  input-path="/test.txt" output-path="/output/"
              mapper="com.example.WordCountMapper"
              reducer="com.example.WordCountReducer" />
 
-    <hdp:tool-runner id="myToolRunner" tool-class="com.example.WordCount" run-at-startup="false"></hdp:tool-runner>
+    <hdp:tool-runner id="myToolRunner" tool-class="com.example.WordCount" run-at-startup="false">
+        <hdp:arg value="/test.txt"/>
+        <hdp:arg value="/output"/>
+    </hdp:tool-runner>
+    -->
 
 </beans>
