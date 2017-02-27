@@ -17,6 +17,11 @@ function fileExists {
 	fi
 }
 
+function installToFrodos {
+	sudo apt-get install tofrodos
+	sudo ln -s /usr/bin/fromdos /usr/bin/dos2unix
+}
+
 function installRemoteJava {
 	echo "Install Java"
 
@@ -80,6 +85,15 @@ function setupHadoop {
 	mkdir /tmp/hadoop-logs
 	mkdir /tmp/hadoop-datanode
 	ln -s /usr/local/${HADOOP_VERSION} /usr/local/hadoop
+
+    echo "creating hadoop user"
+    /usr/bin/dos2unix /vagrant/resources/create-hadoop-user.sh
+    /vagrant/resources/create-hadoop-user.sh
+
+	echo "generating hadoop keys private rsa keys for ssh localhost"
+	/usr/bin/dos2unix /vagrant/resources/create-private-keys.sh
+    su -c "sh /vagrant/resources/create-private-keys.sh" hadoop
+
 	echo "copying over hadoop configuration files"
 	cp -f /vagrant/resources/core-site.xml /usr/local/hadoop/etc/hadoop
 	cp -f /vagrant/resources/hdfs-site.xml /usr/local/hadoop/etc/hadoop
@@ -92,11 +106,11 @@ function setupHadoop {
 	cp -f /vagrant/resources/mr-jobhistory-daemon.sh /usr/local/hadoop/sbin
 	cp -f /vagrant/resources/hadoop /usr/local/hadoop/bin
 	echo "modifying permissions on local file system"
-	chown -fR vagrant /tmp/hadoop-namenode
-    chown -fR vagrant /tmp/hadoop-logs
-    chown -fR vagrant /tmp/hadoop-datanode
+	chown -fR hadoop /tmp/hadoop-namenode
+    chown -fR hadoop /tmp/hadoop-logs
+    chown -fR hadoop /tmp/hadoop-datanode
 	mkdir /usr/local/${HADOOP_VERSION}/logs
-	chown -fR vagrant /usr/local/${HADOOP_VERSION}/logs
+	chown -fR hadoop /usr/local/${HADOOP_VERSION}/logs
 }
 
 function startHadoopService {
@@ -106,26 +120,30 @@ function startHadoopService {
 	#echo "setting up namenode"
 	export HADOOP=/usr/local/hadoop
 	printf "\nexport PATH=${PATH}:${HADOOP}/bin\n" >> /home/vagrant/.bashrc
+	printf "\nexport PATH=${PATH}:${HADOOP}/bin\n" >> /home/hadoop/.bashrc
 	source ~/.bashrc
-	/usr/local/${HADOOP_VERSION}/bin/hdfs namenode -format myhadoop
+	su -c "/usr/local/${HADOOP_VERSION}/bin/hdfs namenode -format myhadoop" hadoop # todo test it
 
 	echo "setting up hadoop service"
 	cp -f /vagrant/resources/hadoop-service /etc/init.d/hadoop
 	chmod 777 /etc/init.d/hadoop
 
-	echo "starting hadoop service"
-	#/usr/local/hadoop-2.7.3/sbin/start-dfs.sh
-	#/usr/local/hadoop-2.7.3/sbin/start-yarn
-	service hadoop start	### todo change it to 2.7.3 version & fix nohup command
-	nohup "/vagrant/resources/run-spring-app.sh" > /mvn-web/out.log 2>&1 & echo $! > run.pid
-}
+	echo "starting hadoop service on behalf of hadoop"
+	su -c "service hadoop start" hadoop	### todo change it to 2.7.3 version & fix nohup command
 
+    echo "starting spring app on behalf of hadoop"
+	/usr/bin/dos2unix /vagrant/resources/run-spring-app.sh
+	sudo mkdir /app-info
+	sudo chmod 777 /app-info
+    su -c "sh /vagrant/resources/run-spring-app.sh" hadoop
+}
 
 function initHdfsTempDir {
 	$HADOOP_PREFIX/bin/hdfs --config $HADOOP_PREFIX/etc/hadoop dfs -mkdir /tmp
 	$HADOOP_PREFIX/bin/hdfs --config $HADOOP_PREFIX/etc/hadoop dfs -chmod -R 777 /tmp
 }
 
+installToFrodos
 installRemoteJava
 installHadoop
 setupHadoop

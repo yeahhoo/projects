@@ -17,8 +17,14 @@
 <!-- Put site-specific property overrides in this file. -->
 
 <configuration>
- <property>
-  <name>fs.defaultFS</name>
-  <value>hdfs://hadoop-yarn</value>
- </property>
+    <property>
+        <name>fs.defaultFS</name>
+        <value>hdfs://hadoop-yarn</value>
+    </property>
+
+    <property>
+        <name>hadoop.tmp.dir</name>
+        <value>/home/hadoop/single</value>
+    </property>
+
 </configuration>

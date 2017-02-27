@@ -1,6 +1,6 @@
 **Vagrant Hadoop config**
 
-This instruction creates Vagrant with installed Hadoop instance. Follow the below steps to have it:
+This instruction creates Vagrant with installed Hadoop instance. The stack is: Hadoop, Spring Boot, Spring Batch. Follow the below steps to have it:
 
 ```sh
 cd /vagrant-hadoop
@@ -11,18 +11,25 @@ vagrant up
 
 The script comes with 2 modes (standalone jar and spring-boot app) so pick the mode actual for you.
 
+Please note that all operations on Hadoop must be executed on behalf of hadoop/hadoop user.
+
 if you want to execute job by standalone jar
 
 ```sh
 1) reach the url and check that hadoop is up and running: http://localhost:50070/explorer.html/
 2) vagrant ssh hadoop
 3) cd /
-4) check that java -version and hadoop version are available system wide
-5) hdfs dfs -put /vagrant/resources/test.txt /
-6) hadoop jar /mvn-target/map-reduce-module.jar /test.txt /output
-7) hadoop fs -cat /output/part-r-00000
-8) check that the file successfully proceeded: http://localhost:50070/explorer.html#/output
-9) remove HDFS file: hdfs dfs -rm -r  /output
+4) su - hadoop (password hadoop)
+5) check that java -version and hadoop version are available system wide
+6) check that SSH connect is set-up:
+ssh localhost (asked without prompting password)
+exit
+7) hdfs dfs -put /vagrant/resources/test.txt /
+8) hadoop jar /mvn-target/map-reduce-module.jar /test.txt /output
+9) hadoop fs -cat /output/part-r-00000
+10) check that the file successfully proceeded: http://localhost:50070/explorer.html#/output
+11) remove HDFS file: hdfs dfs -rm -r  /output
+12) change user back: su - vagrant (password vagrant)
 ```
 
 **Debug standalone jar**
@@ -39,11 +46,16 @@ if you want to execute job in spring-boot
 1) reach the url and check that hadoop is up and running: http://localhost:50070/explorer.html/
 2) vagrant ssh hadoop
 3) cd /
-4) check that java -version and hadoop version are available system wide
-5) hdfs dfs -put /vagrant/resources/test.txt /
-6) hit the url to check if application is ready: GET http://localhost:11091/server/test
-7) hit the url to execute job: GET http://localhost:11091/server/runJob?isAsync=false
-8) remove HDFS file: hdfs dfs -rm -r  /output
+4) switch to user hadoop: su - hadoop (password hadoop)
+5) check that java -version and hadoop version are available system wide
+6) check that SSH connect is set-up:
+ssh localhost (asked without prompting password)
+exit
+7) hdfs dfs -put /vagrant/resources/test.txt /
+8) hit the url to check if application is ready: GET http://localhost:11091/server/test
+9) hit the url to execute job: GET http://localhost:11091/server/runJob?isAsync=false
+10) remove HDFS file: hdfs dfs -rm -r  /output
+11) change user back: su - vagrant (password vagrant)
 ```
 
 **Debug spring-boot**
