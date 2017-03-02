@@ -17,6 +17,7 @@ import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -42,11 +43,17 @@ public class MapReduceJobConfig {
     private StepBuilderFactory stepBuilders;
 
     @Autowired
-    private org.apache.hadoop.conf.Configuration configuration;
+    private org.apache.hadoop.conf.Configuration workCountConf;
+
+    @Autowired
+    private org.apache.hadoop.conf.Configuration workCountDebugConf;
+
+    @Value("${job.jar.location.wordcount}")
+    private String wordCountJarLocation;
 
     @Bean(name = HadoopSystemConstants.DEFAULT_ID_FSSHELL)
     public FsShell fsShell() {
-        return new FsShell(configuration);
+        return new FsShell(workCountConf);
     }
 
     @Bean
@@ -108,8 +115,15 @@ public class MapReduceJobConfig {
             Map<String, Object> jobParameters = chunkContext.getStepContext().getJobParameters();
             String inputPath = (String) jobParameters.get("inputPath");
             String outputPath = (String) jobParameters.get("outputPath");
+            String isDebug = (String) jobParameters.get("isDebug");
             System.out.println("Executing MapReduceTasklet: map-reducing " + inputPath);
-            int res = ToolRunner.run(configuration, new WordCount(), new String[] {inputPath, outputPath});
+            if (Boolean.parseBoolean(isDebug)) {
+                int res = ToolRunner.run(workCountDebugConf, new WordCount(), new String[]{inputPath, outputPath});
+            } else {
+                org.apache.hadoop.mapreduce.Job job = new WordCount().createJob(workCountConf, new String[] {inputPath, outputPath});
+                job.setJar(wordCountJarLocation);
+                int res = job.waitForCompletion(true) ? 0 : 1;
+            }
             return RepeatStatus.FINISHED;
         }
     }

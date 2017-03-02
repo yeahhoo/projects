@@ -23,7 +23,11 @@ public class WordCount extends Configured implements Tool {
     @Override
     public int run(String[] args) throws Exception {
         Configuration conf = getConf();
+        Job job = createJob(conf, args);
+        return (job.waitForCompletion(true) ? 0 : 1);
+    }
 
+    public Job createJob(Configuration conf, String[] args) throws Exception {
         Job job = Job.getInstance(conf);
         job.setJarByClass(WordCount.class);
 
@@ -40,7 +44,7 @@ public class WordCount extends Configured implements Tool {
         FileInputFormat.setInputPaths(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
 
-        return (job.waitForCompletion(true) ? 0 : 1);
+        return job;
     }
 
 }

@@ -3,3 +3,5 @@ debug: true
 server:
     port: 11091
     context-path: /server
+
+job.jar.location.wordcount: /mvn-target/map-reduce-module.jar

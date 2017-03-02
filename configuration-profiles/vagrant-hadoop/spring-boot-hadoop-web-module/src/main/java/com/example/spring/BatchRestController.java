@@ -53,13 +53,15 @@ public class BatchRestController {
     }
 
     @RequestMapping(value = "/runJob", method = {RequestMethod.GET, RequestMethod.POST})
-    public Map<String, String> runMapReduceJob(@RequestParam boolean isAsync) throws Exception {
+    public Map<String, String> runMapReduceJob(@RequestParam(required = false, defaultValue = "false") boolean isAsync,
+                                               @RequestParam(required = false, defaultValue = "false") boolean isDebug) throws Exception {
         String inputPath = "/test.txt";
         String outputPath = "/output";
 
         JobParameters jobParameters = new JobParametersBuilder()
                 .addString("inputPath", inputPath)
                 .addString("outputPath", outputPath)
+                .addString("isDebug", String.valueOf(isDebug))
                 .addDate("date", new Date())
                 .toJobParameters();
         JobExecution execution = null;

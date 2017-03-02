@@ -8,7 +8,15 @@
         http://www.springframework.org/schema/hadoop http://www.springframework.org/schema/hadoop/spring-hadoop.xsd">
 
     <context:property-placeholder location="classpath:hadoop.properties" />
-    <hdp:configuration>
+    <hdp:configuration id="workCountConf">
+        fs.defaultFS=${spring.hadoop.config.fs.defaultFS}
+        hadoop.tmp.dir=${spring.hadoop.tmp.dir}
+        mapreduce.framework.name=${spring.mapreduce.framework.name}
+        yarn.resourcemanager.address=${spring.yarn.resourcemanager.address}
+        mapreduce.jobtracker.address=${spring.mapreduce.jobtracker.address}
+    </hdp:configuration>
+
+    <hdp:configuration id="workCountDebugConf">
         fs.defaultFS=${spring.hadoop.config.fs.defaultFS}
         hadoop.tmp.dir=${spring.hadoop.tmp.dir}
     </hdp:configuration>

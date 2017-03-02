@@ -55,7 +55,7 @@ ssh localhost (asked without prompting password)
 exit
 7) hdfs dfs -put /vagrant/resources/test.txt /
 8) hit the url to check if application is ready: GET http://localhost:11091/server/test
-9) hit the url to execute job: GET http://localhost:11091/server/runJob?isAsync=false
+9) hit the url to execute job: GET http://localhost:11091/server/runJob?isAsync=false&isDebug=true
 10) remove HDFS file: hdfs dfs -rm -r  /output
 11) change user back: su - vagrant (password vagrant)
 ```
@@ -63,6 +63,8 @@ exit
 **Debug spring-boot**
 
 ```sh
+run job with HTTP GET param isDebug=true, example: http://localhost:11091/server/runJob?isAsync=false&isDebug=true
+Please note that in this case the job won't appear in cluster job list.
 10.211.55.101:8081 - address to debug spring-boot application
 ```
 
@@ -75,9 +77,9 @@ vagrant destroy
 
 **Logging:**
 
-Please note that full-logging works only with jobs ran as standalone jobs: hadoop jar /mvn-target/map-reduce-module.jar /test.txt /output
-
 You can monitor logs here: http://localhost:19888/logs/
+
+You can watch all jobs here: http://localhost:8088/cluster/apps
 
 
 **Useful Commands:**
@@ -110,3 +112,5 @@ http://protocolsofmatrix.blogspot.ru/2016/09/install-hadoop-273-on-ubuntu-1604-l
 http://docs.spring.io/autorepo/docs/spring-hadoop/1.0.0.RC1/reference/htmlsingle/
 
 https://understanding-hadoop-by-mahesh.blogspot.ru/2017/01/hadoop-273-multi-node-cluster-setup-in.html
+
+http://stackoverflow.com/questions/21345022/hadoop-is-not-showing-my-job-in-the-job-tracker-even-though-it-is-running
