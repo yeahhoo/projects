@@ -1,9 +1,10 @@
 #!/bin/bash
+
 export HADOOP_PREFIX=/usr/local/hadoop
 HADOOP_VERSION=hadoop-2.7.3
 HADOOP_ARCHIVE=${HADOOP_VERSION}.tar.gz
+JAVA_ARCHIVE=jdk-8u121-linux-x64.tar.gz
 JDK_VERSION=jdk1.8.0_121
-
 HADOOP_MIRROR_DOWNLOAD=http://apache-mirror.rbc.ru/pub/apache/hadoop/common/hadoop-2.7.3/hadoop-2.7.3.tar.gz
 JDK_DOWNLOAD_LINK=http://download.oracle.com/otn-pub/java/jdk/8u121-b13/e9e7ea248e2c4826b92b3f075a80e441/jdk-8u121-linux-x64.tar.gz
 
@@ -17,46 +18,74 @@ function fileExists {
 	fi
 }
 
-function installToFrodos {
+function installUtils {
+    # installing tofordos
 	sudo apt-get install tofrodos
 	sudo ln -s /usr/bin/fromdos /usr/bin/dos2unix
+
+    # installing curl
+	sudo apt-get install curl -y
+
+    # installing equip
+    wget --no-check-certificate https://github.com/aglover/ubuntu-equip/raw/master/equip_base.sh && bash equip_base.sh
+    rm -f equip_base.sh
+}
+
+function convertFilesUnixFormat {
+    /usr/bin/dos2unix /vagrant/resources/run-spring-app.sh
+    /usr/bin/dos2unix /vagrant/resources/create-hadoop-user.sh
+    /usr/bin/dos2unix /vagrant/resources/setup-run-hadoop.sh
+    /usr/bin/dos2unix /vagrant/resources/create-private-keys.sh
+}
+
+function installJava {
+    sudo mkdir -p /usr/local
+    sudo mkdir -p /usr/lib/jvm
+	if fileExists $JAVA_ARCHIVE; then
+		installLocalJava
+	else
+		installRemoteJava
+	fi
+}
+
+function installLocalJava {
+	echo "install Java from local file"
+	FILE=/vagrant/resources/$JAVA_ARCHIVE
+	tar -xvf $FILE -C /usr/local
+	setUpJava
 }
 
 function installRemoteJava {
-	echo "Install Java"
+	echo "Install Remote Java"
+    curl -L --cookie "oraclelicense=accept-securebackup-cookie" ${JDK_DOWNLOAD_LINK} -o ${JAVA_ARCHIVE}
+	tar -xvf ${JAVA_ARCHIVE} -C /usr/local
+	rm jdk-8u121-linux-x64.tar.gz
+	setUpJava
+	echo "current path"
+	pwd
+}
 
-	wget --no-check-certificate https://github.com/aglover/ubuntu-equip/raw/master/equip_base.sh && bash equip_base.sh
-
-	sudo apt-get install curl -y 
-	curl -L --cookie "oraclelicense=accept-securebackup-cookie" ${JDK_DOWNLOAD_LINK} -o jdk-8u121-linux-x64.tar.gz
-	tar -xvf jdk-8u121-linux-x64.tar.gz
-
-	sudo mkdir -p /usr/lib/jvm
-	sudo mv ./jdk1.8.* /usr/lib/jvm/
-
+function setUpJava {
+    sudo mv /usr/local/jdk1.8.* /usr/lib/jvm/
 	sudo update-alternatives --install "/usr/bin/java" "java" "/usr/lib/jvm/${JDK_VERSION}/bin/java" 1
 	sudo update-alternatives --install "/usr/bin/javac" "javac" "/usr/lib/jvm/${JDK_VERSION}/bin/javac" 1
 	sudo update-alternatives --install "/usr/bin/javaws" "javaws" "/usr/lib/jvm/${JDK_VERSION}/bin/javaws" 1
 
-	sudo chmod a+x /usr/bin/java 
-	sudo chmod a+x /usr/bin/javac 
+	sudo chmod a+x /usr/bin/java
+	sudo chmod a+x /usr/bin/javac
 	sudo chmod a+x /usr/bin/javaws
 	sudo chown -R root:root /usr/lib/jvm/${JDK_VERSION}
-
-	rm jdk-8u121-linux-x64.tar.gz
-	rm -f equip_base.sh 
 
 	export JAVA_HOME=/usr/lib/jvm/${JDK_VERSION}
 	export JAVA=/usr/lib/jvm/${JDK_VERSION}
 	export PATH=$PATH:$JAVA_HOME/bin
-	
+
 	# https://risenfall.wordpress.com/2011/06/28/howto-start-apache-hadoop-in-debug-mode/
 	# https://github.com/vangj/vagrant-hadoop-2.3.0/blob/master/setup.sh
 	ln -s /usr/lib/jvm/${JDK_VERSION} /usr/local/java
 	echo export JAVA_HOME=${JAVA_HOME} >> /etc/profile.d/java.sh
 	echo export JAVA=${JAVA_HOME} >> /etc/profile.d/java.sh
-	echo export PATH=${PATH} >> /etc/profile.d/java.sh	
-	
+	echo export PATH=${PATH} >> /etc/profile.d/myenv.sh
 }
 
 function installLocalHadoop {
@@ -79,20 +108,8 @@ function installHadoop {
 	fi
 }
 
-function setupHadoop {
-	echo "creating hadoop directories"
-	mkdir /tmp/hadoop-namenode
-	mkdir /tmp/hadoop-logs
-	mkdir /tmp/hadoop-datanode
-	ln -s /usr/local/${HADOOP_VERSION} /usr/local/hadoop
-
-    echo "creating hadoop user"
-    /usr/bin/dos2unix /vagrant/resources/create-hadoop-user.sh
-    /vagrant/resources/create-hadoop-user.sh
-
-	echo "generating hadoop keys private rsa keys for ssh localhost"
-	/usr/bin/dos2unix /vagrant/resources/create-private-keys.sh
-    su -c "sh /vagrant/resources/create-private-keys.sh" hadoop
+function setupAndRunHadoop {
+    ln -s /usr/local/${HADOOP_VERSION} /usr/local/hadoop
 
 	echo "copying over hadoop configuration files"
 	cp -f /vagrant/resources/core-site.xml /usr/local/hadoop/etc/hadoop
@@ -105,47 +122,36 @@ function setupHadoop {
 	cp -f /vagrant/resources/yarn-daemon.sh /usr/local/hadoop/sbin
 	cp -f /vagrant/resources/mr-jobhistory-daemon.sh /usr/local/hadoop/sbin
 	cp -f /vagrant/resources/hadoop /usr/local/hadoop/bin
-	echo "modifying permissions on local file system"
-	chown -fR hadoop /tmp/hadoop-namenode
-    chown -fR hadoop /tmp/hadoop-logs
-    chown -fR hadoop /tmp/hadoop-datanode
-	mkdir /usr/local/${HADOOP_VERSION}/logs
-	chown -fR hadoop /usr/local/${HADOOP_VERSION}/logs
+
+    echo "setting up hadoop service"
+    sudo cp -f /vagrant/resources/hadoop.sh /etc/profile.d/hadoop.sh
+    sudo rm /etc/profile.d/myenv.sh
+    echo export PATH=${PATH}:${HADOOP_PREFIX}/bin >> /etc/profile.d/myenv.sh
+
+    sudo cp -f /vagrant/resources/hadoop-service /etc/init.d/hadoop-service
+    chmod 777 /etc/init.d/hadoop-service
+
+	#echo "configuring environment variables"
+	#export HADOOP=/usr/local/hadoop
+	#printf "\nexport PATH=${PATH}:${HADOOP}/bin\n" >> /home/vagrant/.bashrc
+	#printf "\nexport PATH=${PATH}:${HADOOP}/bin\n" >> /home/hadoop/.bashrc
+	#source ~/.bashrc
+
+    echo "creating hadoop user"
+    /vagrant/resources/create-hadoop-user.sh
+
+    echo "modifying rights to hadoop logs"
+    sudo mkdir /usr/local/hadoop/logs
+    sudo chown hadoop:hadoop /usr/local/hadoop/logs
+
+    sudo mkdir /app-info
+    sudo chmod 777 /app-info
+	echo "creating hadoop directories, generating keys and run hadoop on behalf of hadoop"
+    su -c "sh /vagrant/resources/setup-run-hadoop.sh" hadoop
 }
 
-function startHadoopService {
-	echo "creating hadoop environment variables"
-	cp -f /vagrant/resources/hadoop.sh /etc/profile.d/hadoop.sh
-	
-	#echo "setting up namenode"
-	export HADOOP=/usr/local/hadoop
-	printf "\nexport PATH=${PATH}:${HADOOP}/bin\n" >> /home/vagrant/.bashrc
-	printf "\nexport PATH=${PATH}:${HADOOP}/bin\n" >> /home/hadoop/.bashrc
-	source ~/.bashrc
-	su -c "/usr/local/${HADOOP_VERSION}/bin/hdfs namenode -format myhadoop" hadoop # todo test it
-
-	echo "setting up hadoop service"
-	cp -f /vagrant/resources/hadoop-service /etc/init.d/hadoop
-	chmod 777 /etc/init.d/hadoop
-
-	echo "starting hadoop service on behalf of hadoop"
-	su -c "service hadoop start" hadoop	### todo change it to 2.7.3 version & fix nohup command
-
-    echo "starting spring app on behalf of hadoop"
-	/usr/bin/dos2unix /vagrant/resources/run-spring-app.sh
-	sudo mkdir /app-info
-	sudo chmod 777 /app-info
-    su -c "sh /vagrant/resources/run-spring-app.sh" hadoop
-}
-
-function initHdfsTempDir {
-	$HADOOP_PREFIX/bin/hdfs --config $HADOOP_PREFIX/etc/hadoop dfs -mkdir /tmp
-	$HADOOP_PREFIX/bin/hdfs --config $HADOOP_PREFIX/etc/hadoop dfs -chmod -R 777 /tmp
-}
-
-installToFrodos
-installRemoteJava
+installUtils
+convertFilesUnixFormat
+installJava
 installHadoop
-setupHadoop
-startHadoopService
-initHdfsTempDir
+setupAndRunHadoop

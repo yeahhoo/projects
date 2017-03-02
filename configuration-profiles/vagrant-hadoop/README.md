@@ -7,6 +7,8 @@ cd /vagrant-hadoop
 mvn clean install
 cd /vagrant-hadoop/vagrant
 vagrant up
+add redirecting rule to %WinDir%\System32\Drivers\Etc\hosts file or /etc/hosts file:
+10.211.55.101		hadoop-yarn
 ```
 
 The script comes with 2 modes (standalone jar and spring-boot app) so pick the mode actual for you.
@@ -64,13 +66,18 @@ exit
 10.211.55.101:8081 - address to debug spring-boot application
 ```
 
-
 To clean resources run the following commands:
 
 ```sh
 vagrant halt
 vagrant destroy
 ```
+
+**Logging:**
+
+Please note that full-logging works only with jobs ran as standalone jobs: hadoop jar /mvn-target/map-reduce-module.jar /test.txt /output
+
+You can monitor logs here: http://localhost:19888/logs/
 
 
 **Useful Commands:**
@@ -80,11 +87,15 @@ vmstat 1
 hadoop fs -cat /output/part-r-00000
 hadoop fs -ls hdfs://localhost:8020/
 java -jar -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8081 /mvn-web/hadoop-web-app.jar
+hadoop fs -cat /tmp/logs/hadoop/logs/application_1488213410571_0001/hadoop-yarn_50011
+kill -9 $(cat /app-info/run.pid)
 ```
 
 **Sources:**
 
 https://github.com/vangj/vagrant-hadoop-2.3.0
+
+https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/SingleCluster.html
 
 https://dzone.com/articles/effective-testing-strategies
 
@@ -97,3 +108,5 @@ https://github.com/tequalsme/hadoop-examples
 http://protocolsofmatrix.blogspot.ru/2016/09/install-hadoop-273-on-ubuntu-1604-lts.html
 
 http://docs.spring.io/autorepo/docs/spring-hadoop/1.0.0.RC1/reference/htmlsingle/
+
+https://understanding-hadoop-by-mahesh.blogspot.ru/2017/01/hadoop-273-multi-node-cluster-setup-in.html
