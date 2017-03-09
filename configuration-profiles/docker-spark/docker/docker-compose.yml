@@ -1,0 +1,94 @@
+version: '2' 
+services:
+  namenode:
+    image: bde2020/hadoop-namenode:1.0.0
+    hostname: namenode
+    container_name: namenode
+    domainname: hadoop
+    networks:
+      - hadoop
+    volumes:
+      - ./hadoop-data:/hadoop-data #######todo - ./hadoop-data:/tmp
+    environment:
+      - CLUSTER_NAME=test
+    env_file:
+      - ./hadoop.env
+    ports:
+      - "50070:50070"
+      - "8020:8020"
+
+  datanode1:
+    image: bde2020/hadoop-datanode:1.0.0
+    hostname: datanode1
+    container_name: datanode1
+    domainname: hadoop
+    networks:
+      - hadoop
+    volumes:
+      - ./data/datanode1:/hadoop/dfs/data
+    env_file:
+      - ./hadoop.env
+
+  datanode2:
+    image: bde2020/hadoop-datanode:1.0.0
+    hostname: datanode2
+    container_name: datanode2
+    domainname: hadoop
+    networks:
+      - hadoop
+    env_file:
+      - ./hadoop.env
+
+  spark-master:
+    image: gettyimages/spark
+    command: bin/spark-class org.apache.spark.deploy.master.Master -h spark-master
+    hostname: spark-master
+    container_name: spark-master
+    domainname: hadoop
+    networks:
+      - hadoop
+    environment:
+      - CORE_CONF_fs_defaultFS=hdfs://namenode:8020
+      - YARN_CONF_yarn_resourcemanager_hostname=resourcemanager
+      - SPARK_CONF_spark_eventLog_enabled=true
+      - SPARK_CONF_spark_eventLog_dir=hdfs://namenode:8020/spark-logs
+      - SPARK_CONF_spark_history_fs_logDirectory=hdfs://namenode:8020/spark-logs
+      - MASTER=spark://spark-master:7077
+      - SPARK_CONF_DIR=/conf
+      - SPARK_PUBLIC_DNS=localhost
+    volumes:
+      - ./conf/master:/conf
+      - ./hadoop-data:/tmp/data
+      - ../spark-module-jar:/tmp ######todo - ../spark-module-jar:/myjar
+    ports:
+      - "4040:4040"
+      - "6066:6066"
+      - "7077:7077"
+      - "8080:8080"
+
+  spark-worker:
+    image: gettyimages/spark
+    command: bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
+    hostname: spark-worker
+    container_name: spark-worker
+    domainname: hadoop
+    networks:
+      - hadoop
+    environment:
+      - SPARK_CONF_DIR=/conf
+      - SPARK_WORKER_CORES=2
+      - SPARK_WORKER_MEMORY=1g
+      - SPARK_WORKER_PORT=8881
+      - SPARK_WORKER_WEBUI_PORT=8081
+      - SPARK_PUBLIC_DNS=localhost
+    env_file:
+      - ./hadoop.env
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./conf/worker:/conf
+      - ./hadoop-data:/tmp/data
+
+networks:
+  hadoop:
+    external: true
