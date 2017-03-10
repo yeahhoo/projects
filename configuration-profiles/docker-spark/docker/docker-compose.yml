@@ -8,7 +8,7 @@ services:
     networks:
       - hadoop
     volumes:
-      - ./hadoop-data:/hadoop-data #######todo - ./hadoop-data:/tmp
+      - ./hadoop-data:/hadoop-data
     environment:
       - CLUSTER_NAME=test
     env_file:
@@ -58,13 +58,16 @@ services:
       - SPARK_PUBLIC_DNS=localhost
     volumes:
       - ./conf/master:/conf
-      - ./hadoop-data:/tmp/data
-      - ../spark-module-jar:/tmp ######todo - ../spark-module-jar:/myjar
+      - ./hadoop-data:/mydata
+      - ../spark-module-web:/opt/web
+      - ../spark-module-jar:/opt/jar
     ports:
       - "4040:4040"
       - "6066:6066"
       - "7077:7077"
       - "8080:8080"
+      - "11091:11091"
+      - "11092:11092"
 
   spark-worker:
     image: gettyimages/spark
