@@ -13,6 +13,10 @@ mvn clean install docker:build
 docker network create my-mongo-cluster
 ```
 
+After that you can launch docker-compose or create containers manually, pick the way appropriate for you:
+
+**Manual creating**
+
 3) Add Secondary Nodes:
 ```sh
 docker run -d -p 30002:27017 --name mongo2 --net my-mongo-cluster docker-mongo
@@ -24,14 +28,19 @@ docker run -d -p 30003:27017 --name mongo3 --net my-mongo-cluster docker-mongo
 docker run -d -p 30001:27017 -e IS_REPL_INIT='yes' -v /d/data/logs:/data/logs --privileged --name mongo1 --net my-mongo-cluster docker-mongo
 ```
 
-5) If you have mongo installed on your local machine then you can connect with the following way:
+**Docker compose**
+```sh
+docker-compose up -d
+```
+
+
+**Installation checking**
 ```sh
 ## know docker IP
 docker-machine ls
 ## connect via local mongo
 mongo --host 192.168.99.100 --port 30001
 ```
-
 
 **Useful Commands:**
 ```sh
@@ -40,7 +49,7 @@ docker run -i -e IS_REPL_INIT='yes' docker-mongo # good for debug, -e means envi
 docker exec -it <container-id> /bin/bash # connects to a container-id
 docker-machine ls # lists all VMs
 docker-machine ip # gives VM IP
-docker stop $(docker ps -a | grep docker-mongo | awk '{print $1}') # stops all docker-mongo containers
+docker stop $(docker ps -a | grep mongo | awk '{print $1}') # stops all docker-mongo containers
 docker rm mongo1 mongo2 mongo3 # removing all mongo containers
 mongo --host 192.168.99.100 --port 30001 # mongo to connect to a remote server
 ```

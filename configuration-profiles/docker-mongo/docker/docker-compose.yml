@@ -1,0 +1,53 @@
+version: '2'
+services:
+  mongo2:
+    build: .
+    image: mongo2:replica
+    hostname: mongo2
+    container_name: mongo2
+    domainname: mongo
+    networks:
+      - my-mongo-cluster
+    environment:
+      - CLUSTER_NAME=mongo-cluster
+      - IS_REPL_INIT=no
+    ports:
+      - "30002:27017"
+
+  mongo3:
+    build: .
+    image: mongo3:replica
+    hostname: mongo3
+    container_name: mongo3
+    domainname: mongo
+    depends_on:
+      - mongo2
+    networks:
+      - my-mongo-cluster
+    environment:
+      - CLUSTER_NAME=mongo-cluster
+      - IS_REPL_INIT=no
+    ports:
+      - "30003:27017"
+
+  mongo1:
+    build: .
+    image: mongo1:replica
+    hostname: mongo1
+    container_name: mongo1
+    domainname: mongo
+    depends_on:
+      - mongo3
+    networks:
+      - my-mongo-cluster
+    environment:
+      - CLUSTER_NAME=mongo-cluster
+      - IS_REPL_INIT=yes
+    volumes:
+      - /d/data/logs:/data/logs
+    ports:
+      - "30001:27017"
+
+networks:
+  my-mongo-cluster:
+    external: true
