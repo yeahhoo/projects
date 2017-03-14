@@ -24,8 +24,6 @@ services:
     domainname: hadoop
     networks:
       - hadoop
-    volumes:
-      - ./data/datanode1:/hadoop/dfs/data
     env_file:
       - ./hadoop.env
 
@@ -66,8 +64,6 @@ services:
       - "6066:6066"
       - "7077:7077"
       - "8080:8080"
-      - "11091:11091"
-      - "11092:11092"
 
   spark-worker:
     image: gettyimages/spark
@@ -91,6 +87,24 @@ services:
     volumes:
       - ./conf/worker:/conf
       - ./hadoop-data:/tmp/data
+
+  web-app:
+    build: .
+    hostname: web-app
+    container_name: web-app
+    domainname: hadoop
+    networks:
+      - hadoop
+    depends_on:
+      - spark-worker
+      - namenode
+    volumes:
+      - ./hadoop-data:/mydata
+      - ../spark-module-web:/opt/web
+      - ../spark-module-jar:/opt/jar
+    ports:
+      - "11091:11091"
+      - "11092:11092"
 
 networks:
   hadoop:

@@ -8,11 +8,8 @@ mvn clean install
 cd /docker-spark/docker
 docker network create hadoop
 docker-compose up -d
-docker exec -it namenode /bin/bash
 # add data to hdfs
-hdfs dfs -put /hadoop-data/test1.txt /
-hdfs dfs -put /hadoop-data/test2.txt /
-exit
+docker exec web-app sh /scripts/add-data-unix.sh
 ```
 
 The script gives you opportunity to run Spark task whether through spark-submit script or as web - pick one you need.
@@ -30,9 +27,7 @@ HTTP GET http://192.168.99.100:50070/explorer.html
 **Web application mode:**
 
 ```sh
-# run java application
-docker exec -it spark-master /bin/bash
-java -Xmx1024m -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=11092 -jar /opt/web/target/spark-web-app.jar
+# check if application is up and running and then submit job
 HTTP GET check: http://192.168.99.100:11091/server/test
 HTTP GET job run: http://192.168.99.100:11091/server/runJob?input=test2.txt&output=output1
 check spark console: http://192.168.99.100:8080/
@@ -52,13 +47,11 @@ sudo mount -t vboxsf spark-module-jar /d/projects/configuration-profiles/docker-
 **Useful Commands:**
 
 ```sh
-docker exec -it spark-master /bin/bash
-docker stop namenode datanode1 datanode2 spark-master spark-worker
-docker rm namenode datanode1 datanode2 spark-master spark-worker
+docker exec -it web-app /bin/bash
+docker stop namenode datanode1 datanode2 spark-master spark-worker web-app
+docker rm namenode datanode1 datanode2 spark-master spark-worker web-app
 /usr/spark-2.1.0/bin/spark-submit --class org.apache.spark.examples.SparkPi --master spark://spark-master:7077 /usr/spark-2.1.0/examples/jars/spark-examples_2.11-2.1.0.jar 10
 ```
-
-After that one needs to rebuild containers.
 
 **Sources:**
 
@@ -73,3 +66,5 @@ https://databricks.gitbooks.io/databricks-spark-knowledge-base/content/troublesh
 https://spark.apache.org/docs/latest/api/java/index.html?org/apache/spark/launcher/package-summary.html
 
 https://github.com/SpringOne2GX-2014/SparkForSpring
+
+http://bencane.com/2014/09/02/understanding-exit-codes-and-how-to-use-them-in-bash-scripts/
