@@ -17,7 +17,11 @@ The script gives you opportunity to run Spark task whether through spark-submit 
 **Spark-submit script:**
 
 ```sh
-# run java application
+# connect to the container
+docker exec -it web-app /bin/bash
+# please note that it might not work due to lack of resources - Spring app has taken it already. So stop or disable Spring Spark context if you still want to run it.
+/usr/spark-2.1.0/bin/spark-submit --master spark://spark-master:7077 --conf spark.ui.port=10981 /opt/jar/target/spark-jar-module.jar
+# if it didn't work out try to submit it on another machine
 docker exec -it spark-master /bin/bash
 /usr/spark-2.1.0/bin/spark-submit  /opt/jar/target/spark-jar-module.jar
 # check that output folder created and filled with content
@@ -50,7 +54,9 @@ sudo mount -t vboxsf spark-module-jar /d/projects/configuration-profiles/docker-
 docker exec -it web-app /bin/bash
 docker stop namenode datanode1 datanode2 spark-master spark-worker web-app
 docker rm namenode datanode1 datanode2 spark-master spark-worker web-app
-/usr/spark-2.1.0/bin/spark-submit --class org.apache.spark.examples.SparkPi --master spark://spark-master:7077 /usr/spark-2.1.0/examples/jars/spark-examples_2.11-2.1.0.jar 10
+/usr/spark-2.1.0/bin/spark-submit --class org.apache.spark.examples.SparkPi --master spark://spark-master:7077 --conf spark.ui.port=10981 /usr/spark-2.1.0/examples/jars/spark-examples_2.11-2.1.0.jar 10
+spark-shell  --master spark://spark-master:7077 --conf spark.ui.port=10981
+hdfs dfs -rm -r  hdfs://namenode:8020/output
 ```
 
 **Sources:**
