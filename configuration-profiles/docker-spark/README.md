@@ -9,7 +9,7 @@ cd /docker-spark/docker
 docker network create hadoop
 docker-compose up -d
 # add data to hdfs
-docker exec web-app sh /scripts/add-data-unix.sh
+docker exec web-app /scripts/add-data-unix.sh
 ```
 
 The script gives you opportunity to run Spark task whether through spark-submit script or as web - pick one you need.
