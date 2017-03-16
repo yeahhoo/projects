@@ -1,0 +1,124 @@
+package com.example.dependency_resolver.contexts;
+
+import com.example.dependency_resolver.annotations.Autowired;
+import com.example.dependency_resolver.annotations.Bean;
+import com.example.dependency_resolver.utils.Dependency;
+
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+/**
+ * @author Aleksandr_Savchenko
+ */
+public class Context {
+
+    //private final Set<Object> beans = new HashSet<>();
+    private final Map<Class, Object> beans = new HashMap<>();
+    private final Map<Class, Dependency> dependencyPool = new HashMap<>();
+
+    public Context(String packName) {
+        this.scanPackage(packName);
+    }
+
+    public <T> T getBean(Class clazz) {
+        return (T) beans.get(clazz);
+    }
+
+    public void addBean(Class clazz, Object obj) {
+        beans.put(clazz, obj);
+    }
+
+    private void scanPackage(String packName) {
+        try {
+            Class[] classes = getClasses(packName);
+            for (Class c : classes) {
+                if (c.isAnnotationPresent(Bean.class)) {
+                    Dependency dependency = new Dependency(c);
+                    Field[] fields = c.getDeclaredFields();
+                    for (Field field : fields) {
+                        if (field.isAnnotationPresent(Autowired.class)) {
+                            // todo use reflection in one place, add to fields something lime Dependecy.resolve
+                            // todo that will use lazy evaluation
+                            if (!dependencyPool.containsKey(field.getType())) {
+                                Dependency d = new Dependency(field.getDeclaringClass());
+                                dependencyPool.put(field.getType(), d);
+                                dependency.addDependency(d);
+                            } else {
+                                dependency.addDependency(dependencyPool.get(field.getType()));
+                            }
+                        }
+                    }
+                    dependencyPool.put(c, dependency);
+                }
+            }
+            for (Dependency d : dependencyPool.values()) {
+                d.resolve(this);
+                //d.initBean();
+                //beans.put(d.getClazz(), d.getInstance());
+                //d.setResolved(true);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("error appeared while scanning package\n", e);
+        }
+    }
+
+
+    /**
+     * Scans all classes accessible from the context class loader which belong to the given package and subpackages.
+     *
+     * source: https://dzone.com/articles/get-all-classes-within-package
+     *
+     * @param packageName The base package
+     * @return The classes
+     */
+    private static Class[] getClasses(String packageName) throws ClassNotFoundException, IOException {
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        assert classLoader != null;
+        String path = packageName.replace('.', '/');
+        Enumeration<URL> resources = classLoader.getResources(path);
+        List<File> dirs = new ArrayList<File>();
+        while (resources.hasMoreElements()) {
+            URL resource = resources.nextElement();
+            dirs.add(new File(resource.getFile()));
+        }
+        ArrayList<Class> classes = new ArrayList<Class>();
+        for (File directory : dirs) {
+            classes.addAll(findClasses(directory, packageName));
+        }
+        return classes.toArray(new Class[classes.size()]);
+    }
+
+    /**
+     * Recursive method used to find all classes in a given directory and subdirs.
+     *
+     * @param directory   The base directory
+     * @param packageName The package name for classes found inside the base directory
+     * @return The classes
+     */
+    private static List<Class> findClasses(File directory, String packageName) throws ClassNotFoundException {
+        List<Class> classes = new ArrayList<Class>();
+        if (!directory.exists()) {
+            return classes;
+        }
+        File[] files = directory.listFiles();
+        for (File file : files) {
+            if (file.isDirectory()) {
+                assert !file.getName().contains(".");
+                classes.addAll(findClasses(file, packageName + "." + file.getName()));
+            } else if (file.getName().endsWith(".class")) {
+                classes.add(Class.forName(packageName + '.' + file.getName().substring(0, file.getName().length() - 6)));
+            }
+        }
+        return classes;
+    }
+
+}
