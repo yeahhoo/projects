@@ -7,7 +7,7 @@ import com.example.dependency_resolver.annotations.Bean;
  * @author Aleksandr_Savchenko
  */
 @Bean
-public class ClassD {
+public class ClassAA {
 
     @Autowired
     private ClassB b;
@@ -16,14 +16,9 @@ public class ClassD {
     private ClassC c;
 
     @Autowired
+    private ClassD d;
+
+    @Autowired
     private ClassNoBean noBean;
-
-    public ClassB getB() {
-        return b;
-    }
-
-    public ClassC getC() {
-        return c;
-    }
 
 }

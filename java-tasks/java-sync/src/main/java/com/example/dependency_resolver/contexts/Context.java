@@ -23,7 +23,6 @@ public class Context {
 
     //private final Set<Object> beans = new HashSet<>();
     private final Map<Class, Object> beans = new HashMap<>();
-    private final Map<Class, Dependency> dependencyPool = new HashMap<>();
 
     public Context(String packName) {
         this.scanPackage(packName);
@@ -33,42 +32,62 @@ public class Context {
         return (T) beans.get(clazz);
     }
 
-    public void addBean(Class clazz, Object obj) {
-        beans.put(clazz, obj);
-    }
-
     private void scanPackage(String packName) {
         try {
+            final Map<Class, Dependency> dependencyPool = new HashMap<>();
             Class[] classes = getClasses(packName);
             for (Class c : classes) {
                 if (c.isAnnotationPresent(Bean.class)) {
-                    Dependency dependency = new Dependency(c);
+                    Dependency dependency = dependencyPool.get(c);
+                    if (dependency == null) {
+                        dependency = new Dependency(c);
+                        dependencyPool.put(c, dependency);
+                    }
                     Field[] fields = c.getDeclaredFields();
                     for (Field field : fields) {
-                        if (field.isAnnotationPresent(Autowired.class)) {
+                        if (field.isAnnotationPresent(Autowired.class) && isValid(c, field)) {
                             // todo use reflection in one place, add to fields something lime Dependecy.resolve
                             // todo that will use lazy evaluation
+                            field.setAccessible(true);
                             if (!dependencyPool.containsKey(field.getType())) {
-                                Dependency d = new Dependency(field.getDeclaringClass());
+                                Dependency d = new Dependency(field.getType());
                                 dependencyPool.put(field.getType(), d);
-                                dependency.addDependency(d);
+                                dependency.addDependency(d, field);
                             } else {
-                                dependency.addDependency(dependencyPool.get(field.getType()));
+                                dependency.addDependency(dependencyPool.get(field.getType()), field);
                             }
                         }
+
                     }
-                    dependencyPool.put(c, dependency);
                 }
             }
             for (Dependency d : dependencyPool.values()) {
                 d.resolve(this);
-                //d.initBean();
-                //beans.put(d.getClazz(), d.getInstance());
-                //d.setResolved(true);
             }
         } catch (Exception e) {
             throw new RuntimeException("error appeared while scanning package\n", e);
         }
+    }
+
+    private boolean isValid(Class clazz, Field field) {
+        if (!field.getType().isAnnotationPresent(Bean.class)) {
+            System.err.println("field " + field.getName() +  " of " + clazz + " is marked Autowired but that class is not declared as Bean");
+            return false;
+        }
+        return true;
+    }
+
+    public void initDependency(Dependency d) throws IllegalAccessException, InstantiationException {
+        Class clazz = d.getClazz();
+        if (beans.get(clazz) != null) {
+            return;
+        }
+        Object instance = clazz.newInstance();
+        d.setInstance(instance);
+        for (Map.Entry<Dependency, Field> entry : d.getDepMap().entrySet()) {
+            entry.getValue().set(instance,  entry.getKey().getInstance());
+        }
+        beans.put(clazz, instance);
     }
 
 
@@ -120,5 +139,7 @@ public class Context {
         }
         return classes;
     }
+
+
 
 }

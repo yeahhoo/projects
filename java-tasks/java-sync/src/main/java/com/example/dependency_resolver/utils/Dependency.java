@@ -1,19 +1,17 @@
 package com.example.dependency_resolver.utils;
 
-import com.example.dependency_resolver.annotations.Autowired;
 import com.example.dependency_resolver.contexts.Context;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Aleksandr_Savchenko
  */
 public class Dependency {
 
-    private final List<Dependency> dependencies = new ArrayList<>();
-    private boolean isResolved;
+    private final Map<Dependency, Field> depMap = new HashMap<>();
     private Class clazz;
     private Object instance;
 
@@ -21,49 +19,42 @@ public class Dependency {
         this.clazz = clazz;
     }
 
-    public void setResolved(boolean isResolved) {
-        this.isResolved = isResolved;
-    }
-
     public boolean isResolved() {
-        return isResolved;
+        return instance != null;
     }
 
-    public void addDependency(Dependency dependency) {
-        dependencies.add(dependency);
+    public void addDependency(Dependency dependency, Field field) {
+        depMap.put(dependency, field);
     }
 
-    public boolean resolve(Context context) throws IllegalAccessException, InstantiationException  {
-        for (Dependency dependency : dependencies) {
+    public void resolve(Context context) throws IllegalAccessException, InstantiationException  {
+        for (Dependency dependency : depMap.keySet()) {
             if (!dependency.isResolved()) {
                 dependency.resolve(context);
             }
         }
-        initBean(context);
-        isResolved = true;
-        return isResolved;
+        context.initDependency(this);
     }
 
-    private void initBean(Context context) throws IllegalAccessException, InstantiationException  {
-        if (context.getBean(clazz) != null) {
-            return;
-        }
-        instance = clazz.newInstance();
-        for (Field field : instance.getClass().getDeclaredFields()) {
-            if (field.isAnnotationPresent(Autowired.class)) {
-                field.setAccessible(true);
-                field.set(instance, context.getBean(field.getType()));
-            }
-        }
-        context.addBean(clazz, instance);
+    public Map<Dependency, Field> getDepMap() {
+        return depMap;
     }
 
     public Object getInstance() {
         return instance;
     }
 
+    public void setInstance(Object instance) {
+        this.instance = instance;
+    }
+
     public Class getClazz() {
         return clazz;
+    }
+
+    @Override
+    public String toString() {
+        return clazz.getName();
     }
 
     @Override

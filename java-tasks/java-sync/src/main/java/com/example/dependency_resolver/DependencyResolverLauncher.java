@@ -18,13 +18,6 @@ public class DependencyResolverLauncher {
         ClassC c = context.getBean(ClassC.class);
         ClassB b = context.getBean(ClassB.class);
         ClassA a = context.getBean(ClassA.class);
-        /*
-        assert d.getC() != null;
-        assert d.getB() != null;
-        assert c.getB() != null;
-        assert c.getA() != null;
-        assert b.getA() != null;
-        */
         assert c.hashCode() == d.getC().hashCode();
         assert b.hashCode() == d.getB().hashCode();
         assert b.hashCode() == c.getB().hashCode();
