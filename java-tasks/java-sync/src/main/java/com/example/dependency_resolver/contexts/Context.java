@@ -1,19 +1,19 @@
 package com.example.dependency_resolver.contexts;
 
-import com.example.dependency_resolver.annotations.Autowired;
-import com.example.dependency_resolver.annotations.Bean;
+import com.example.dependency_resolver.utils.ClassDependency;
 import com.example.dependency_resolver.utils.ConcurrentListProcessor;
 import com.example.dependency_resolver.utils.Dependency;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author Aleksandr_Savchenko
@@ -33,32 +33,15 @@ public class Context {
     private void scanPackage(String packName, int threadNumber) {
         try {
             final Map<Class, Dependency> dependencyPool = new HashMap<>();
-            Class[] classes = getClasses(packName);
+            List<ClassDependency> classDeps = Arrays.asList(getClasses(packName)).stream()
+                    .map(clazz -> new ClassDependency(dependencyPool, clazz)).collect(Collectors.toList());
             // phase one
-            for (Class c : classes) {
-                if (c.isAnnotationPresent(Bean.class)) {
-                    Dependency dependency = dependencyPool.get(c);
-                    if (dependency == null) {
-                        dependency = new Dependency(c);
-                        dependencyPool.put(c, dependency);
-                    }
-                    Field[] fields = c.getDeclaredFields();
-                    for (Field field : fields) {
-                        if (field.isAnnotationPresent(Autowired.class) && isValid(c, field)) {
-                            if (!dependencyPool.containsKey(field.getType())) {
-                                Dependency d = new Dependency(field.getType());
-                                dependencyPool.put(field.getType(), d);
-                                dependency.addDependency(d, field);
-                            } else {
-                                dependency.addDependency(dependencyPool.get(field.getType()), field);
-                            }
-                        }
-                    }
-                }
-            }
+            ConcurrentListProcessor<ClassDependency> proc1 = new ConcurrentListProcessor<>(classDeps, threadNumber);
+            proc1.processCollection();
+
             // phase two
-            ConcurrentListProcessor<Dependency> proc = new ConcurrentListProcessor<>(dependencyPool.values(), threadNumber);
-            proc.processCollectionConsumingInParallel(d -> {
+            ConcurrentListProcessor<Dependency> proc2 = new ConcurrentListProcessor<>(dependencyPool.values(), threadNumber);
+            proc2.processCollectionConsumingInParallel(d -> {
                 beans.put(d.getClazz(), d.getInstance());
             });
 
@@ -77,14 +60,6 @@ public class Context {
         } catch (Exception e) {
             throw new RuntimeException("error appeared while scanning package\n", e);
         }
-    }
-
-    private boolean isValid(Class clazz, Field field) {
-        if (!field.getType().isAnnotationPresent(Bean.class)) {
-            System.err.println("field " + field.getName() +  " of " + clazz + " is marked Autowired but that class is not declared as Bean");
-            return false;
-        }
-        return true;
     }
 
     /**

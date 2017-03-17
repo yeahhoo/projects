@@ -25,11 +25,6 @@ public class ConcurrentListProcessor<Res> {
         service = Executors.newFixedThreadPool(numberOfThreads);
     }
 
-    public void processCollectionWithPostConsuming(Consumer<Res> consumer) throws InterruptedException, ExecutionException {
-        List<Res> resultList = processCollection();
-        resultList.stream().forEach(consumer);
-    }
-
     public void processCollectionConsumingInParallel(Consumer<Res> consumer) throws InterruptedException, ExecutionException {
         ExecutorCompletionService<Res> executor = new ExecutorCompletionService<>(service);
         for (WorkableItem item : workList) {
