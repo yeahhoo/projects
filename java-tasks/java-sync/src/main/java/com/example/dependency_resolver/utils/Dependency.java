@@ -1,7 +1,5 @@
 package com.example.dependency_resolver.utils;
 
-import com.example.dependency_resolver.contexts.Context;
-
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +17,27 @@ public class Dependency {
         this.clazz = clazz;
     }
 
-    public boolean isResolved() {
+    public void resolve() throws IllegalAccessException, InstantiationException  {
+        for (Dependency dependency : depMap.keySet()) {
+            if (!dependency.isResolved()) {
+                dependency.resolve();
+            }
+        }
+        initDependency();
+    }
+
+    private void initDependency() throws IllegalAccessException, InstantiationException {
+        if (isResolved()) {
+            return;
+        }
+        instance = clazz.newInstance();
+        for (Map.Entry<Dependency, Field> entry : depMap.entrySet()) {
+            entry.getValue().setAccessible(true);
+            entry.getValue().set(instance,  entry.getKey().getInstance());
+        }
+    }
+
+    private boolean isResolved() {
         return instance != null;
     }
 
@@ -27,25 +45,8 @@ public class Dependency {
         depMap.put(dependency, field);
     }
 
-    public void resolve(Context context) throws IllegalAccessException, InstantiationException  {
-        for (Dependency dependency : depMap.keySet()) {
-            if (!dependency.isResolved()) {
-                dependency.resolve(context);
-            }
-        }
-        context.initDependency(this);
-    }
-
-    public Map<Dependency, Field> getDepMap() {
-        return depMap;
-    }
-
     public Object getInstance() {
         return instance;
-    }
-
-    public void setInstance(Object instance) {
-        this.instance = instance;
     }
 
     public Class getClazz() {

@@ -11,17 +11,14 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @author Aleksandr_Savchenko
  */
 public class Context {
 
-    //private final Set<Object> beans = new HashSet<>();
     private final Map<Class, Object> beans = new HashMap<>();
 
     public Context(String packName) {
@@ -46,9 +43,6 @@ public class Context {
                     Field[] fields = c.getDeclaredFields();
                     for (Field field : fields) {
                         if (field.isAnnotationPresent(Autowired.class) && isValid(c, field)) {
-                            // todo use reflection in one place, add to fields something lime Dependecy.resolve
-                            // todo that will use lazy evaluation
-                            field.setAccessible(true);
                             if (!dependencyPool.containsKey(field.getType())) {
                                 Dependency d = new Dependency(field.getType());
                                 dependencyPool.put(field.getType(), d);
@@ -62,7 +56,8 @@ public class Context {
                 }
             }
             for (Dependency d : dependencyPool.values()) {
-                d.resolve(this);
+                d.resolve();
+                beans.put(d.getClazz(), d.getInstance());
             }
         } catch (Exception e) {
             throw new RuntimeException("error appeared while scanning package\n", e);
@@ -76,20 +71,6 @@ public class Context {
         }
         return true;
     }
-
-    public void initDependency(Dependency d) throws IllegalAccessException, InstantiationException {
-        Class clazz = d.getClazz();
-        if (beans.get(clazz) != null) {
-            return;
-        }
-        Object instance = clazz.newInstance();
-        d.setInstance(instance);
-        for (Map.Entry<Dependency, Field> entry : d.getDepMap().entrySet()) {
-            entry.getValue().set(instance,  entry.getKey().getInstance());
-        }
-        beans.put(clazz, instance);
-    }
-
 
     /**
      * Scans all classes accessible from the context class loader which belong to the given package and subpackages.

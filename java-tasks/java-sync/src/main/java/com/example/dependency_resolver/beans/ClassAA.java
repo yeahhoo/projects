@@ -21,4 +21,15 @@ public class ClassAA {
     @Autowired
     private ClassNoBean noBean;
 
+    public ClassB getB() {
+        return b;
+    }
+
+    public ClassC getC() {
+        return c;
+    }
+
+    public ClassD getD() {
+        return d;
+    }
 }
