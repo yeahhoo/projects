@@ -2,6 +2,7 @@ package com.example.dependency_resolver.contexts;
 
 import com.example.dependency_resolver.annotations.Autowired;
 import com.example.dependency_resolver.annotations.Bean;
+import com.example.dependency_resolver.utils.ConcurrentListProcessor;
 import com.example.dependency_resolver.utils.Dependency;
 
 import java.io.File;
@@ -22,17 +23,18 @@ public class Context {
     private final Map<Class, Object> beans = new HashMap<>();
 
     public Context(String packName) {
-        this.scanPackage(packName);
+        this.scanPackage(packName, 3);
     }
 
     public <T> T getBean(Class clazz) {
         return (T) beans.get(clazz);
     }
 
-    private void scanPackage(String packName) {
+    private void scanPackage(String packName, int threadNumber) {
         try {
             final Map<Class, Dependency> dependencyPool = new HashMap<>();
             Class[] classes = getClasses(packName);
+            // phase one
             for (Class c : classes) {
                 if (c.isAnnotationPresent(Bean.class)) {
                     Dependency dependency = dependencyPool.get(c);
@@ -51,14 +53,27 @@ public class Context {
                                 dependency.addDependency(dependencyPool.get(field.getType()), field);
                             }
                         }
-
                     }
                 }
             }
-            for (Dependency d : dependencyPool.values()) {
-                d.resolve();
+            // phase two
+            ConcurrentListProcessor<Dependency> proc = new ConcurrentListProcessor<>(dependencyPool.values(), threadNumber);
+            proc.processCollectionConsumingInParallel(d -> {
                 beans.put(d.getClazz(), d.getInstance());
-            }
+            });
+
+            /*
+            dependencyPool.values().parallelStream().forEach(d -> {
+                try {
+                    d.resolve();
+                    beans.put(d.getClazz(), d.getInstance());
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InstantiationException e) {
+                    e.printStackTrace();
+                }
+            });
+            */
         } catch (Exception e) {
             throw new RuntimeException("error appeared while scanning package\n", e);
         }
