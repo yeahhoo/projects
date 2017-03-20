@@ -4,17 +4,17 @@ import com.example.dependency_resolver.annotations.Autowired;
 import com.example.dependency_resolver.annotations.Bean;
 
 import java.lang.reflect.Field;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Aleksandr_Savchenko
  */
 public class ClassDependency implements WorkableItem<Class> {
 
-    private final Map<Class, Dependency> dependencyPool;
+    private final ConcurrentHashMap<Class, Dependency> dependencyPool;
     private final Class clazz;
 
-    public ClassDependency(Map<Class, Dependency> dependencyPool, Class clazz) {
+    public ClassDependency(ConcurrentHashMap<Class, Dependency> dependencyPool, Class clazz) {
         this.dependencyPool = dependencyPool;
         this.clazz = clazz;
     }
@@ -23,33 +23,35 @@ public class ClassDependency implements WorkableItem<Class> {
     public Class processItem() {
         if (clazz.isAnnotationPresent(Bean.class)) {
             // first atomic
-            Dependency dependency = null;
-            // todo split up synchronization on dependency pool
-            synchronized (dependencyPool) {
-                dependency = dependencyPool.get(clazz);
-                if (dependency == null) {
-                    dependency = new Dependency(clazz);
-                    dependencyPool.put(clazz, dependency);
-                }
+            Dependency dependency = dependencyPool.get(clazz);
+            if (dependency == null) {
+                dependency = putSafelyInMap(clazz, new Dependency(clazz));
             }
+
             Field[] fields = clazz.getDeclaredFields();
             for (Field field : fields) {
                 if (field.isAnnotationPresent(Autowired.class) && isValid(clazz, field)) {
                     // second atomic
-                    synchronized (dependencyPool) {
-                        if (!dependencyPool.containsKey(field.getType())) {
-                            Dependency d = new Dependency(field.getType());
-                            dependencyPool.put(field.getType(), d);
-                            dependency.addDependency(d, field);
-                        } else {
-                            dependency.addDependency(dependencyPool.get(field.getType()), field);
-                        }
+                    Dependency subDep = dependencyPool.get(field.getType());
+                    if (subDep == null) {
+                        subDep = putSafelyInMap(field.getType(), new Dependency(field.getType()));
+                        dependency.addDependency(subDep, field);
+                    } else {
+                        dependency.addDependency(dependencyPool.get(field.getType()), field);
                     }
+
                 }
             }
-
         }
         return clazz;
+    }
+
+    private Dependency putSafelyInMap(Class key, Dependency d) {
+        Dependency actualDep = dependencyPool.putIfAbsent(key, d);
+        if (actualDep != null) {
+            return actualDep;
+        }
+        return d;
     }
 
     private boolean isValid(Class clazz, Field field) {

@@ -87,7 +87,13 @@ public class Dependency implements WorkableItem<Dependency> {
 
     @Override
     public String toString() {
-        return clazz.getName();
+        StringBuilder sb = new StringBuilder(clazz.getName());
+        sb.append("[");
+        for (Dependency dep : depMap.keySet()) {
+            sb.append(dep.clazz).append(", ");
+        }
+        sb.append("]");
+        return sb.toString();
     }
 
     @Override

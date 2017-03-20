@@ -13,6 +13,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -32,7 +33,7 @@ public class Context {
 
     private void scanPackage(String packName, int threadNumber) {
         try {
-            final Map<Class, Dependency> dependencyPool = new HashMap<>();
+            final ConcurrentHashMap<Class, Dependency> dependencyPool = new ConcurrentHashMap<>();
             List<ClassDependency> classDeps = Arrays.asList(getClasses(packName)).stream()
                     .map(clazz -> new ClassDependency(dependencyPool, clazz)).collect(Collectors.toList());
             // phase one
