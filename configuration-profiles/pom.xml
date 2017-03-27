@@ -13,6 +13,7 @@
         <module>vagrant-mongo</module>
 		<module>vagrant-hadoop</module>
         <module>docker-spark</module>
+		<module>docker-spark-streaming</module>
     </modules>
 
 </project>

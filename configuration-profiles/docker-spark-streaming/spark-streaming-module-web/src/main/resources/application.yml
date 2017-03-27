@@ -1,0 +1,9 @@
+debug: true
+
+server:
+    port: 11091
+    context-path: /server
+
+
+spark.master: spark://spark-master:7077
+jar.location.countword: /opt/jar/target/spark-streaming-jar-module.jar
