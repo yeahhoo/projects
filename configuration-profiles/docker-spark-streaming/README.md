@@ -12,21 +12,28 @@ docker-compose up -d
 
 Here are the steps to follow to get set-up streaming
 
-**Spark-submit script:**
+**Spark-streaming by Web-App:**
 
 ```sh
-# connect to the container and start netcat server
-docker exec -it web-app /bin/bash
-nc -l -p 9999
+# check if application is up and running
+HTTP GET check: http://192.168.99.100:11091/server/test
+# run spark streaming
+docker exec -it web-app /usr/spark-2.1.0/bin/spark-submit  /opt/jar/target/spark-streaming-jar-module.jar
+```
+
+You can also do it using netcat
+
+```sh
+# start netcat server
+docker exec -it web-app nc -l -p 9999
 # open second docker terminal and submit Spark job:
-docker exec -it web-app /bin/bash
-/usr/spark-2.1.0/bin/spark-submit  /opt/jar/target/spark-streaming-jar-module.jar
+docker exec -it web-app /usr/spark-2.1.0/bin/spark-submit  /opt/jar/target/spark-streaming-jar-module.jar
 ```
 
 
 **Mounting Troubleshooting :**
 
-The solution described in ../docker-mongo/README.md. For this project is needed to create shares hadoop-data, spark-conf, spark-module-jar and mount them, e.g.
+The solution described in ../docker-mongo/README.md. For this project is needed to create shares spark-streaming-module-jar, spark-streaming-module-web and mount them, e.g.
 
 ```sh
 sudo mount -t vboxsf spark-streaming-module-jar /d/projects/configuration-profiles/docker-spark-streaming/spark-streaming-module-jar
@@ -41,7 +48,6 @@ docker exec -it web-app /bin/bash
 docker stop spark-master spark-worker web-app
 docker rm spark-master spark-worker web-app
 /usr/spark-2.1.0/bin/spark-submit  /opt/jar/target/spark-streaming-jar-module.jar
-
 ```
 
 **Sources:**

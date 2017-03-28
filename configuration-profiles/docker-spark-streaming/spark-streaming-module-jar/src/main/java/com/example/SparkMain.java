@@ -6,9 +6,6 @@ import org.apache.spark.streaming.*;
 import org.apache.spark.streaming.api.java.*;
 import scala.Tuple2;
 
-import java.util.Arrays;
-import java.util.Iterator;
-
 /**
  * @author Aleksandr_Savchenko
  */
@@ -28,23 +25,17 @@ public class SparkMain {
                 //.set("spark.default.parallelism", "3")
                 ;
         JavaStreamingContext jssc = new JavaStreamingContext(conf, Durations.seconds(5));
-        JavaReceiverInputDStream<String> lines = jssc.socketTextStream("web-app", 9999);
-        JavaDStream<String> words = lines.flatMap(
-                new FlatMapFunction<String, String>() {
+        JavaReceiverInputDStream<String> numbers = jssc.socketTextStream("web-app", 9999);
+
+        JavaPairDStream<Integer, Integer> pairs = numbers.mapToPair(
+                new PairFunction<String, Integer, Integer>() {
                     @Override
-                    public Iterator<String> call(String x) {
-                        return Arrays.asList(x.split(" ")).iterator();
+                    public Tuple2<Integer, Integer> call(String s) {
+                        return new Tuple2<>((Integer.parseInt(s) / 10) * 10, 1); // rounding to 10
                     }
                 });
 
-        JavaPairDStream<String, Integer> pairs = words.mapToPair(
-                new PairFunction<String, String, Integer>() {
-                    @Override
-                    public Tuple2<String, Integer> call(String s) {
-                        return new Tuple2<>(s, 1);
-                    }
-                });
-        JavaPairDStream<String, Integer> wordCounts = pairs.reduceByKey(
+        JavaPairDStream<Integer, Integer> wordCounts = pairs.reduceByKey(
                 new Function2<Integer, Integer, Integer>() {
                     @Override
                     public Integer call(Integer i1, Integer i2) {
