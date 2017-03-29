@@ -1,6 +1,7 @@
 package com.example;
 
 import org.apache.spark.*;
+import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.function.*;
 import org.apache.spark.streaming.*;
 import org.apache.spark.streaming.api.java.*;
@@ -43,8 +44,22 @@ public class SparkMain {
                     }
                 });
 
-        // Print the first ten elements of each RDD generated in this DStream to the console
-        wordCounts.print();
+        JavaPairDStream<Integer, Integer> sortedStream = wordCounts.transformToPair(
+                new Function<JavaPairRDD<Integer, Integer>, JavaPairRDD<Integer, Integer>>() {
+                    @Override
+                    public JavaPairRDD<Integer, Integer> call(JavaPairRDD<Integer, Integer> integerIntegerJavaPairRDD) throws Exception {
+                        return integerIntegerJavaPairRDD.sortByKey(true);
+                    }
+                });
+
+        sortedStream.map(new Function<Tuple2<Integer,Integer>, String>() {
+            @Override
+            public String call(Tuple2<Integer, Integer> tupple) throws Exception {
+                String template = "(%d .. %d, %d)";
+                return String.format(template, tupple._1, tupple._1 + 10, tupple._2);
+            }
+        }).print();
+
         jssc.start();              // Start the computation
         jssc.awaitTermination();   // Wait for the computation to terminate
     }

@@ -72,6 +72,7 @@ public class TcpServerBean {
         try {
             if (sparkSocket != null) {
                 sparkSocket.close();
+                sparkSocket = null;
             }
             if (serverSocket != null) {
                 serverSocket.close();

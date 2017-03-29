@@ -1,6 +1,6 @@
 **Docker Spark config**
 
-This instruction creates Docker with installed Spark cluster which processes streaming received by network.
+This instruction creates Docker with installed Spark cluster which processes streaming received over network.
 
 ```sh
 cd /docker-spark-streaming
@@ -38,7 +38,6 @@ The solution described in ../docker-mongo/README.md. For this project is needed 
 ```sh
 sudo mount -t vboxsf spark-streaming-module-jar /d/projects/configuration-profiles/docker-spark-streaming/spark-streaming-module-jar
 sudo mount -t vboxsf spark-streaming-module-web /d/projects/configuration-profiles/docker-spark-streaming/spark-streaming-module-web
-
 ```
 
 **Useful Commands:**

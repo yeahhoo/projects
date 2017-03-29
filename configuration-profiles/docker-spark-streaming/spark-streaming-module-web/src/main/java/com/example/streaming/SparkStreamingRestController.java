@@ -29,4 +29,10 @@ public class SparkStreamingRestController {
         tcpServer.stopServer();
     }
 
+    @RequestMapping(value = "/restartServer", method = {RequestMethod.GET, RequestMethod.POST})
+    public void restartServer() throws Exception {
+        tcpServer.stopServer();
+        tcpServer.runServer();
+    }
+
 }
