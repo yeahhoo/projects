@@ -28,7 +28,13 @@ RUN curl -sL --retry 3 \
 
 WORKDIR $SPARK_HOME
 
+# downloading extra-dependencies needed for spark-streaming
+RUN curl -o /opt/mongo-spark-connector_2.11-2.0.0.jar \
+    "http://central.maven.org/maven2/org/mongodb/spark/mongo-spark-connector_2.11/2.0.0-rc0/mongo-spark-connector_2.11-2.0.0-rc0.jar"
+RUN curl -o /opt/mongo-java-driver-3.4.2.jar \
+    "http://central.maven.org/maven2/org/mongodb/mongo-java-driver/3.4.2/mongo-java-driver-3.4.2.jar"
 
+# installing netcat
 RUN ["apt-get", "update"]
 RUN ["apt-get", "install", "-y", "netcat"]
 
