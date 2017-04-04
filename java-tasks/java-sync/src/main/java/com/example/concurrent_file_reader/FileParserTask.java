@@ -29,9 +29,13 @@ public class FileParserTask implements WorkableItem<Integer> {
         try {
             gaugePosition(start, false);
             gaugePosition(end, true);
-            String result = readInterval();
-            //System.out.println("result: " + result);
-            int sum = Arrays.asList(result.split(",")).stream().map(s -> Integer.parseInt(s)).reduce(0, (x, y) -> x + y);
+            int sum = 0;
+            if (end.getPosition() > start.getPosition()) {
+                String result = readInterval();
+                if (result != null && !"".equals(result)) {
+                    sum = Arrays.asList(result.split(",")).stream().map(s -> Integer.parseInt(s)).reduce(0, (x, y) -> x + y);
+                }
+            }
             return sum;
         } catch (Exception e) {
             throw new RuntimeException("Error occurred while reading file", e);
