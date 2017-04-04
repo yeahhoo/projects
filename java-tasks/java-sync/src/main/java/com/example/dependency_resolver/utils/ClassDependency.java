@@ -1,5 +1,6 @@
 package com.example.dependency_resolver.utils;
 
+import com.example.concurrent_task_lib.WorkableItem;
 import com.example.dependency_resolver.annotations.Autowired;
 import com.example.dependency_resolver.annotations.Bean;
 

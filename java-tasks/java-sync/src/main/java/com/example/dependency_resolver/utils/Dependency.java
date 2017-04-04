@@ -1,5 +1,7 @@
 package com.example.dependency_resolver.utils;
 
+import com.example.concurrent_task_lib.WorkableItem;
+
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;

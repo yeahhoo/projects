@@ -1,7 +1,7 @@
 package com.example.dependency_resolver.contexts;
 
+import com.example.concurrent_task_lib.ConcurrentListProcessor;
 import com.example.dependency_resolver.utils.ClassDependency;
-import com.example.dependency_resolver.utils.ConcurrentListProcessor;
 import com.example.dependency_resolver.utils.Dependency;
 
 import java.io.File;
