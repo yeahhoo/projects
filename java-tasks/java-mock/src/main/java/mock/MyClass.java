@@ -3,13 +3,10 @@ package mock;
 /**
  * @author Aleksandr_Savchenko
  */
-public /*final*/ class MyClass {
+public class MyClass {
 
     public String method1(String arg) {
-        return "hey: " + arg;
+        return "not final";
     }
 
-    public Integer method2(Integer i1, Integer i2) {
-        return i1 + i2;
-    }
 }

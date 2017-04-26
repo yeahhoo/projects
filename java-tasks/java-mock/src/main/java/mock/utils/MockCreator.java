@@ -1,29 +1,31 @@
 package mock.utils;
 
-import net.sf.cglib.proxy.Enhancer;
-import net.sf.cglib.proxy.MethodInterceptor;
-import net.sf.cglib.proxy.MethodProxy;
-
 import mock.states.DoNothingState;
 
 import java.lang.reflect.Method;
+
+import javassist.util.proxy.MethodHandler;
+import javassist.util.proxy.ProxyFactory;
+import javassist.util.proxy.ProxyObject;
 
 /**
  * @author Aleksandr_Savchenko
  */
 public class MockCreator {
 
-    public static <T> T createMock(Class clazz) {
-        Enhancer enhancer = new Enhancer();
-        enhancer.setSuperclass(clazz);
-        enhancer.setCallback(new MethodInterceptor() {
+    public static <T> T createMock(Class<T> clazz) throws Exception {
+        ProxyFactory factory = new ProxyFactory();
+        factory.setSuperclass(clazz);
+        Class enhancedClazz = factory.createClass();
+        MethodHandler handler = new MethodHandler() {
+
             @Override
-            public Object intercept(Object mock, Method method, Object[] args, MethodProxy proxy) throws Throwable {
+            public Object invoke(Object mock, Method method, Method proxy, Object[] args) throws Throwable {
                 if ("equals".equals(method.getName()) ||
                     "hashCode".equals(method.getName()) ||
                     "getClass".equals(method.getName()) ||
                     "toString".equals(method.getName())) {
-                    return proxy.invokeSuper(mock, args);
+                    return proxy.invoke(mock, args);
                 }
 
                 String methodName = method.getName();
@@ -34,7 +36,7 @@ public class MockCreator {
                 if (returnValue == null) {
                     // first call -> try to find onAddingMockValue, if there isn't calling real method
                     if (state.isCallbackStackEmpty()) {
-                        return proxy.invokeSuper(mock, args);
+                        return proxy.invoke(mock, args);
                     }
                     Callback callback = state.popCallback();
                     returnValue = callback.onAddingMockValue(methodName, key);
@@ -44,7 +46,7 @@ public class MockCreator {
                     throw new RuntimeException("Wrong API usage, probably when() doesn't entail method call");
                 }
                 if (returnValue == null) {
-                    return proxy.invokeSuper(mock, args);
+                    return proxy.invoke(mock, args);
                 } else if (DoNothingState.VOID.equals(returnValue)) {
                     return null;
                 } else if (returnValue instanceof Exception) {
@@ -55,10 +57,11 @@ public class MockCreator {
                     return returnValue;
                 }
             }
-        });
-        Object proxy =  enhancer.create();
-        MockCache.putNewObject(proxy);
-        return (T) proxy;
+        };
+        Object instance = enhancedClazz.newInstance();
+        ((ProxyObject) instance).setHandler(handler);
+        MockCache.putNewObject(instance);
+        return (T) instance;
     }
 
 }
