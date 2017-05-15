@@ -1,7 +1,6 @@
 package mock.stubbers;
 
 import mock.states.Statetable;
-import mock.stubbers.MyStubber;
 
 /**
  * @author Aleksandr_Savchenko
@@ -17,6 +16,11 @@ public class MyStubberImpl implements MyStubber {
     public <T> T when(T t) {
         state.registerCallbackForMock(t);
         return t;
+    }
+
+    @Override
+    public <T> void whenStatic(T t) {
+        // just markable method where static call takes place
     }
 
 }
