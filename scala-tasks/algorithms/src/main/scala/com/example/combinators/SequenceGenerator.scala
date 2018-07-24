@@ -1,9 +1,10 @@
 package com.example.combinators
 
-import java.util.concurrent.ConcurrentHashMap
+import scala.annotation.tailrec
 import scala.collection.JavaConverters
+import java.util.concurrent.ConcurrentHashMap
 
-/** Generates sequences from given alphabet. Can be think of as "brute force" algorithm. */
+/** Generates sequences from given alphabet. Can be thought of as "brute force" algorithm. */
 object SequenceGenerator {
 
   /**
@@ -21,20 +22,30 @@ object SequenceGenerator {
     * */
   def seqCombinations[T](alphabet: List[T], size: Int, chunksNumber: Int): List[List[T]] = {
 
-    // todo optimize it to tail recursion
     def _borderCombs(start: List[T], end: List[T], threshold: T): List[List[T]] = {
-      if (start == end) Nil
-      else if (start.forall(_ == threshold)) {
-        start :: _borderCombs(List.fill(start.length + 1)(alphabet(0)), end, threshold)
+
+      @tailrec
+      def _borderCombsOptimized(start: List[T], end: List[T], threshold: T, result: List[List[T]]): List[List[T]] = {
+        if (start == end) start :: result
+        else _borderCombsOptimized(increment(start, threshold), end, threshold, start :: result)
       }
-      else start :: _borderCombs(increment(start, threshold), end, threshold)
+
+      _borderCombsOptimized(increment(start, threshold), end, threshold, Nil).reverse
     }
 
     def increment(list: List[T], threshold: T): List[T] = {
-      list match {
+
+      def _inc(list: List[T], threshold: T): List[T] = list match {
         case Nil => Nil
         case x :: xs => {
           if (x == threshold) alphabet(0) :: increment(xs, threshold) else alphabet(alphabet.indexOf(x) + 1) :: xs
+        }
+      }
+
+      list match {
+        case Nil => Nil
+        case x :: xs => {
+          if (list.forall(_ == threshold)) List.fill(list.length + 1)(alphabet(0)) else _inc(list, threshold)
         }
       }
     }
@@ -44,18 +55,27 @@ object SequenceGenerator {
       else state :: _seqCombinations(increment(state, alphabet.last), alphabet.last)
     }
 
+    @tailrec
+    def _compareCombs(xs: List[T], ys: List[T]): Boolean = {
+      if (xs == Nil && ys == Nil) true
+      else if (xs.length != ys.length) xs.length < ys.length
+      else if (xs.last != ys.last) alphabet.indexOf(xs.last) < alphabet.indexOf(ys.last)
+      else _compareCombs(xs.take(xs.length - 1), ys.take(ys.length - 1))
+    }
+
     val init = List(alphabet(0))
     val end = List.fill(size)(alphabet.last)
+    if (init == end) return List(init)
     val combsCount = combinationsCount(end, alphabet)
     val partsNumber = (combsCount / chunksNumber.toDouble).toInt
     if (partsNumber == 0) {
       println("given chunksNumber is too high for the collection. Going to use default strategy")
-      return _borderCombs(init, List.fill(size)(alphabet.last), alphabet.last) :+ List.fill(size)(alphabet.last)
+      return init :: _borderCombs(init, List.fill(size)(alphabet.last), alphabet.last)
     }
 
     val partsList = ((1 to combsCount by partsNumber).takeWhile(_ <= combsCount) :+ combsCount).distinct.toList
     // val calcList = (0 to partsList.length - 2).map(i => (calculateShift(alphabet, partsList(i)), calculateShift(alphabet, partsList(i + 1)))).toList
-    // return calcList.map(x => _borderCombs(x._1, x._2, alphabet.last)).flatten :+ end
+    // return init :: calcList.map(x => _borderCombs(x._1, x._2, alphabet.last)).flatten
     val resultMap = new ConcurrentHashMap[(Int, Int), List[List[T]]]()
     (0 to partsList.length - 2).foreach(i => resultMap.put((partsList(i), partsList(i + 1)), Nil))
     resultMap.entrySet().stream().forEach(t => {
@@ -66,7 +86,7 @@ object SequenceGenerator {
 
     //val sortedKeys = resultMap.keySet().toList.sortBy(t => t._1)
     val sortedKeys = JavaConverters.asScalaIterator(resultMap.keySet().iterator()).toList.sortBy(t => t._1)
-    sortedKeys.map(t => resultMap.get(t)).flatten :+ end
+    init :: sortedKeys.map(t => resultMap.get(t).sortWith((x, y) => _compareCombs(x, y))).flatten
   }
 
   /**
@@ -129,7 +149,8 @@ object SequenceGenerator {
   }
 
   def main(args : Array[String]) = {
-    seqCombinations(List(1, 2, 3, 4), 4, 10).foreach(println)
+    seqCombinations(List(1, 2, 3, 4), 5, 8).foreach(println)
+    //seqCombinations(List(1), 4, 8).foreach(println)
     //println(combinationsCount(List(1, 2), List(1, 2, 3)))
     //println(calculateShift(List(1, 2, 3), 7))
   }

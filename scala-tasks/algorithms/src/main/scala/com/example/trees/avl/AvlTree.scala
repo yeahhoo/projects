@@ -20,6 +20,63 @@ class AvlTree[T <% Ordered[T]] {
 
   var root : Node[T] = EmptyNode
 
+  /**
+    * Prints tree in human-readable format.
+    * Consider value of "distance" multiplier according to your screen resolution.
+    * Usually it should be value from 4 to 10.
+    **/
+  def printTree(distance: Int): Unit = {
+    def _traverse(node: Node[T], h: Int, shift: Int, parentShift: Int): List[(Int, T, Int, Boolean)] = {
+      val delta = (scala.math.abs(shift - parentShift) / 2).toInt
+      val ls = shift - delta
+      val rs = shift + delta
+      node match {
+        case EmptyNode => Nil
+        case Tree(_, _, ln@Tree(_, _, _, _), rn@Tree(_, _, _, _)) => {
+          ((h, ln.value, ls, false) ::
+            (h, rn.value, rs, true) :: (_traverse(ln, h - 1, ls, shift) ++ _traverse(rn, h - 1, rs, shift)))
+        }
+        case Tree(_, _, ln@Tree(_, _, _, _), EmptyNode) => (h, ln.value, ls, false) :: _traverse(ln, h - 1, ls, shift)
+        case Tree(_, _, EmptyNode, rn@Tree(_, _, _, _)) => (h, rn.value, rs, true) :: _traverse(rn, h - 1, rs, shift)
+        case Tree(_, _, EmptyNode, EmptyNode) => Nil
+      }
+    }
+
+    val res = root match {
+      case EmptyNode => {
+        println("tree is empty")
+        return ()
+      }
+      case Tree(value, _, _, _) => {
+        val shift = height(root) * distance
+        ((height(root), value, shift, true) :: _traverse(root, height(root) - 1, shift, 0))
+          .sortWith((x, y) => {
+            if (x._1 == y._1) x._3 < y._3
+            else x._1 > y._1
+          })
+      }
+    }
+
+    val grouped = res.groupBy(_._1)
+    (height(root) to 1 by -1).toList.foreach(i => {
+      val numberString = grouped(i).map({ case (l, v, s, _) => ((List.fill(s)(" ") :+ v.toString)).mkString("") })
+        .reduceRight((x, y) => {
+          val end = y.slice(x.length, y.length)
+          //if (end(0) != " ") x + " " + end else x + end
+          x + end
+        })
+      val arrowString = grouped(i).map({ case (_, _, s, isRight) => {
+        val arrow = if (isRight) "\\" (0) else "/"
+        ((List.fill(s)(" ") :+ arrow)).mkString("")
+      }
+      }).reduceRight((x, y) => {
+        x + y.slice(x.length, y.length)
+      })
+      println(arrowString)
+      println(numberString)
+    })
+  }
+
   def height[T](node : Node[T]) : Int = {
     node match {
       case EmptyNode => 0
@@ -213,13 +270,14 @@ object AvlTree {
   def main(args : Array[String]): Unit = {
     val tree = new AvlTree[Int]()
 
-    val set = shuffleList((1 to 1000 by 1).toList)
+    val set = shuffleList((1 to 40 by 1).toList)
     println(s"source array: ${set}")
 
     set.foreach(value => {
       tree.insert(value)
     })
 
+    tree.printTree(12)
     set.foreach(value => {
       if (tree.get(value) == EmptyNode) {
         throw new RuntimeException(s"Couldn't find node with value: ${value}")
