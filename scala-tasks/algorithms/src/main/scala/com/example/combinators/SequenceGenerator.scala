@@ -22,37 +22,33 @@ object SequenceGenerator {
     * */
   def seqCombinations[T](alphabet: List[T], size: Int, chunksNumber: Int): List[List[T]] = {
 
-    def _borderCombs(start: List[T], end: List[T], threshold: T): List[List[T]] = {
+    def _borderCombs(start: List[T], end: List[T], alphabet: List[T]): List[List[T]] = {
 
       @tailrec
-      def _borderCombsOptimized(start: List[T], end: List[T], threshold: T, result: List[List[T]]): List[List[T]] = {
-        if (start == end) start :: result
-        else _borderCombsOptimized(increment(start, threshold), end, threshold, start :: result)
+      def _borderCombsOptimized(start: List[T], end: List[T], alphabet: List[T], result: List[List[T]]): List[List[T]] = {
+        if (start == end) result
+        else _borderCombsOptimized(start, decrement(end, alphabet), alphabet, end :: result)
       }
 
-      _borderCombsOptimized(increment(start, threshold), end, threshold, Nil).reverse
+      _borderCombsOptimized(start, decrement(end, alphabet), alphabet, List(end))
     }
 
-    def increment(list: List[T], threshold: T): List[T] = {
+    def decrement(list: List[T], alphabet: List[T]): List[T] = {
 
-      def _inc(list: List[T], threshold: T): List[T] = list match {
+      def _dec(list: List[T], alphabet: List[T]): List[T] = list match {
         case Nil => Nil
         case x :: xs => {
-          if (x == threshold) alphabet(0) :: increment(xs, threshold) else alphabet(alphabet.indexOf(x) + 1) :: xs
+          if (x == alphabet.head) alphabet.last :: decrement(xs, alphabet)
+          else alphabet(alphabet.indexOf(x) - 1) :: xs
         }
       }
 
       list match {
         case Nil => Nil
         case x :: xs => {
-          if (list.forall(_ == threshold)) List.fill(list.length + 1)(alphabet(0)) else _inc(list, threshold)
+          if (list.forall(_ == alphabet.head)) List.fill(list.length - 1)(alphabet.last) else _dec(list, alphabet)
         }
       }
-    }
-
-    def _seqCombinations(state: List[T], threshold: T): List[List[T]] = {
-      if (state.forall(x => x == threshold)) Nil
-      else state :: _seqCombinations(increment(state, alphabet.last), alphabet.last)
     }
 
     @tailrec
@@ -63,30 +59,30 @@ object SequenceGenerator {
       else _compareCombs(xs.take(xs.length - 1), ys.take(ys.length - 1))
     }
 
-    val init = List(alphabet(0))
+    val init = List(alphabet.head)
     val end = List.fill(size)(alphabet.last)
     if (init == end) return List(init)
     val combsCount = combinationsCount(end, alphabet)
     val partsNumber = (combsCount / chunksNumber.toDouble).toInt
     if (partsNumber == 0) {
       println("given chunksNumber is too high for the collection. Going to use default strategy")
-      return init :: _borderCombs(init, List.fill(size)(alphabet.last), alphabet.last)
+      return init :: _borderCombs(init, List.fill(size)(alphabet.last), alphabet)
     }
 
     val partsList = ((1 to combsCount by partsNumber).takeWhile(_ <= combsCount) :+ combsCount).distinct.toList
     // val calcList = (0 to partsList.length - 2).map(i => (calculateShift(alphabet, partsList(i)), calculateShift(alphabet, partsList(i + 1)))).toList
-    // return init :: calcList.map(x => _borderCombs(x._1, x._2, alphabet.last)).flatten
+    // return init :: calcList.map(x => _borderCombs(x._1, x._2, alphabet)).flatten
     val resultMap = new ConcurrentHashMap[(Int, Int), List[List[T]]]()
     (0 to partsList.length - 2).foreach(i => resultMap.put((partsList(i), partsList(i + 1)), Nil))
     resultMap.entrySet().stream().forEach(t => {
       resultMap.put((t.getKey()._1,
         t.getKey()._2),
-        _borderCombs(calculateShift(alphabet, t.getKey()._1), calculateShift(alphabet, t.getKey()._2), alphabet.last))
+        _borderCombs(calculateShift(alphabet, t.getKey()._1), calculateShift(alphabet, t.getKey()._2), alphabet))
     })
 
     //val sortedKeys = resultMap.keySet().toList.sortBy(t => t._1)
     val sortedKeys = JavaConverters.asScalaIterator(resultMap.keySet().iterator()).toList.sortBy(t => t._1)
-    init :: sortedKeys.map(t => resultMap.get(t).sortWith((x, y) => _compareCombs(x, y))).flatten
+    init :: sortedKeys.map(t => resultMap.get(t)).flatten
   }
 
   /**
