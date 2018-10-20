@@ -1,10 +1,10 @@
-package com.example.trees.avl
+package com.example.trees
 
 import scala.util.Random
-import com.example.trees.avl.avltree._
+import com.example.trees.avltree._
 
 /** a little hack to avoid interfering with node classes of other tree types. */
-package com.example.trees.avl.avltree {
+package com.example.trees.avltree {
   sealed abstract class Node[+T]
 
   case object EmptyNode extends Node[Nothing]
@@ -31,7 +31,7 @@ class AvlTree[T <% Ordered[T]] {
     **/
   def printTree(distance: Int): Unit = {
     def _traverse(node: Node[T], h: Int, shift: Int, parentShift: Int): List[(Int, T, Int, Boolean)] = {
-      val delta = (scala.math.abs(shift - parentShift) / 2).toInt
+      val delta = scala.math.abs(shift - parentShift) / 2
       val ls = shift - delta
       val rs = shift + delta
       node match {
@@ -261,7 +261,6 @@ class AvlTree[T <% Ordered[T]] {
   }
 }
 
-
 object AvlTree {
 
   def shuffleList[T](xs : List[T]) : List[T] = {
@@ -279,11 +278,12 @@ object AvlTree {
     val tree = new AvlTree[Int]()
 
     val set = shuffleList((1 to 40 by 1).toList)
-    println(s"source array: ${set}")
+    val removeSet = shuffleList(set)
 
-    set.foreach(value => {
-      tree.insert(value)
-    })
+    println(s"source array: ${set}")
+    println(s"remove array: ${removeSet}")
+
+    set.foreach(value => tree.insert(value))
 
     tree.printTree(12)
     set.foreach(value => {
@@ -292,7 +292,10 @@ object AvlTree {
       }
     })
 
-    shuffleList(set).foreach(value => {
+    removeSet.foreach(value => {
+      println(s"------------------")
+      println(s"removing: ${value}")
+      tree.printTree(12)
       if (!tree.delete(value)) {
         throw new RuntimeException(s"Couldn't remove node with value: ${value}")
       }

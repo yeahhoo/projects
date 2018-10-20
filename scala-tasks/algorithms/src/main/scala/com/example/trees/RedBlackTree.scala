@@ -1,10 +1,10 @@
-package com.example.trees.avl
+package com.example.trees
 
 import scala.util.Random
-import com.example.trees.avl.redblacktree._
+import com.example.trees.redblacktree._
 
 /** a little hack to avoid interfering with node classes of other tree types. */
-package com.example.trees.avl.redblacktree {
+package com.example.trees.redblacktree {
 
   abstract class Node[+T]
 
@@ -328,9 +328,9 @@ class RedBlackTree[T <% Ordered[T]] {
   }
 
   /** Helper handy function that alarms if tree gets out of balance. */
-  private[avl] def isBalanced: Boolean = isBalanced(root)
+  private[trees] def isBalanced: Boolean = isBalanced(root)
 
-  private[avl] def isBalanced(node: Node[T]): Boolean = node match {
+  private[trees] def isBalanced(node: Node[T]): Boolean = node match {
     case EmptyNode => true
     case t@Tree(v, bh, ib, l@EmptyNode, r@EmptyNode) => {
       if (ib && bh != 1) false
@@ -461,7 +461,7 @@ object RedBlackTree {
     removeSet.foreach(value => {
       println(s"------------------")
       println(s"removing: ${value}")
-      tree.printTree(5)
+      tree.printTree(12)
       if (!tree.delete(value) || !tree.isBalanced) {
         throw new RuntimeException(s"Couldn't remove node with value: ${value}")
       }
