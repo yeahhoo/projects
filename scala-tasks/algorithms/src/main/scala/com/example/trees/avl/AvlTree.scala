@@ -1,19 +1,23 @@
 package com.example.trees.avl
 
 import scala.util.Random
+import com.example.trees.avl.avltree._
 
-sealed abstract class Node[+T]
+/** a little hack to avoid interfering with node classes of other tree types. */
+package com.example.trees.avl.avltree {
+  sealed abstract class Node[+T]
 
-case object EmptyNode extends Node[Nothing]
+  case object EmptyNode extends Node[Nothing]
 
-case class Tree[+T](
-                     val value: T,
-                     val height: Int,
-                     val left: Node[T],
-                     val right: Node[T]
-                   ) extends Node[T] {
+  case class Tree[+T](
+                       val value: T,
+                       val height: Int,
+                       val left: Node[T],
+                       val right: Node[T]
+                     ) extends Node[T] {
 
-  def this(value: T) = this(value, 1, EmptyNode, EmptyNode)
+    def this(value: T) = this(value, 1, EmptyNode, EmptyNode)
+  }
 }
 
 class AvlTree[T <% Ordered[T]] {
@@ -77,6 +81,7 @@ class AvlTree[T <% Ordered[T]] {
     })
   }
 
+  /** Returns the height of the tree */
   def height[T](node : Node[T]) : Int = {
     node match {
       case EmptyNode => 0
@@ -84,13 +89,7 @@ class AvlTree[T <% Ordered[T]] {
     }
   }
 
-  def balance[T](node : Node[T]) : Int = {
-    node match {
-      case EmptyNode => 0
-      case Tree(_, _, left, right) => height(right) - height(left)
-    }
-  }
-
+  /** Extract node by given value out of the tree. */
   def get(value : T) : Node[T] = {
 
     def get(value : T, node : Node[T]) : Node[T] = {
@@ -110,6 +109,7 @@ class AvlTree[T <% Ordered[T]] {
     }
   }
 
+  /** Inserts given value into the tree. */
   def insert(value : T) : Node[T] = {
 
     def insert(value : T, node : Node[T]) : Tree[T] = {
@@ -138,6 +138,7 @@ class AvlTree[T <% Ordered[T]] {
     root
   }
 
+  /** Removes node from the tree by given value. */
   def delete(value : T) : Boolean = {
 
     def delete(node : Node[T], value : T) : (Node[T], Boolean) = {
@@ -201,7 +202,7 @@ class AvlTree[T <% Ordered[T]] {
     }
   }
 
-  def rebalance(tree : Tree[T]) : Tree[T] = {
+  private def rebalance(tree : Tree[T]) : Tree[T] = {
     val nodeBalance = balance(tree)
     if (nodeBalance > 1) {
       val rightBalance = balance(tree.right)
@@ -220,21 +221,21 @@ class AvlTree[T <% Ordered[T]] {
     } else tree
   }
 
-  def leftRightRotate(node : Tree[T]) : Tree[T] = {
+  private def leftRightRotate(node : Tree[T]) : Tree[T] = {
     val newNode@Tree(value, h, left@Tree(leftValue, _, leftSubTree, rightSubTree), right) = node
     val rotatedLeft = Tree(value, h, leftRotate(left), right)
     val rotatedRight = rightRotate(rotatedLeft)
     rotatedRight
   }
 
-  def rightLeftRotate(node : Tree[T]) : Tree[T] = {
+  private def rightLeftRotate(node : Tree[T]) : Tree[T] = {
     val newNode@Tree(value, h, left, right@Tree(leftValue, _, leftSubTree, rightSubTree)) = node
     val rotatedRight = Tree(value, h, left, rightRotate(right))
     val rotatedLeft = leftRotate(rotatedRight)
     rotatedLeft
   }
 
-  def rightRotate(node : Tree[T]) : Tree[T] = {
+  private def rightRotate(node : Tree[T]) : Tree[T] = {
     val newNode@Tree(value, _, Tree(leftValue, _, leftSubTree, rightSubTree), right) = node
     val rightHeight = 1 + math.max(height(rightSubTree), height(right))
     val newRight = Tree(value, rightHeight, rightSubTree, right)
@@ -243,13 +244,20 @@ class AvlTree[T <% Ordered[T]] {
     tree
   }
 
-  def leftRotate(node : Tree[T]) : Tree[T] = {
+  private def leftRotate(node : Tree[T]) : Tree[T] = {
     val newNode@Tree(value, _, left, Tree(rightValue, _, leftSubTree, rightSubTree)) = node
     val leftHeight = 1 + math.max(height(leftSubTree), height(left))
     val newLeft = Tree(value, leftHeight, left, leftSubTree)
     val newParentHeight = 1 + math.max(height(rightSubTree), height(newLeft))
     val tree = Tree(rightValue, newParentHeight, newLeft, rightSubTree)
     tree
+  }
+
+  private def balance[T](node : Node[T]) : Int = {
+    node match {
+      case EmptyNode => 0
+      case Tree(_, _, left, right) => height(right) - height(left)
+    }
   }
 }
 
