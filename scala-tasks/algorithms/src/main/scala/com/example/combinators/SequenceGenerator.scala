@@ -267,8 +267,5 @@ object SequenceGenerator {
 
   def main(args: Array[String]) = {
     seqCombinations(List(1, 2, 3, 4), 5, 4, 10, Timeout(30 seconds)).foreach(println)
-    //println(generateCombsOnInterval(List(1, 2), List(2, 1, 1), List(1, 2)))
-    //println(combinationsCount(List(1, 2), List(1, 2, 3)))
-    //println(calculateShift(List(1, 2, 3), 7))
   }
 }

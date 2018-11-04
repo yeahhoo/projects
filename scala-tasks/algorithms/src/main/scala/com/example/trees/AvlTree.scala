@@ -89,28 +89,28 @@ class AvlTree[T <% Ordered[T]] {
     }
   }
 
-  /** Extract node by given value out of the tree. */
-  def get(value : T) : Node[T] = {
+  /** Checks whether given value exists in the tree. */
+  def contains(value : T): Boolean = {
 
-    def get(value : T, node : Node[T]) : Node[T] = {
+    def contains(value : T, node : Node[T]) : Boolean = {
       node match {
-        case EmptyNode => EmptyNode
+        case EmptyNode => false
         case current@Tree(v, _, left, right) => {
-          if (value < v) get(value, left)
-          else if (value > v) get(value, right)
-          else current
+          if (value < v) contains(value, left)
+          else if (value > v) contains(value, right)
+          else true
         }
       }
     }
 
     root match {
-      case EmptyNode => EmptyNode
-      case Tree(_, _, _, _) => get(value, root)
+      case EmptyNode => false
+      case Tree(_, _, _, _) => contains(value, root)
     }
   }
 
   /** Inserts given value into the tree. */
-  def insert(value : T) : Node[T] = {
+  def insert(value : T): Node[T] = {
 
     def insert(value : T, node : Node[T]) : Tree[T] = {
       val tree : Tree[T] = node match {
@@ -287,7 +287,7 @@ object AvlTree {
 
     tree.printTree(12)
     set.foreach(value => {
-      if (tree.get(value) == EmptyNode) {
+      if (!tree.contains(value)) {
         throw new RuntimeException(s"Couldn't find node with value: ${value}")
       }
     })

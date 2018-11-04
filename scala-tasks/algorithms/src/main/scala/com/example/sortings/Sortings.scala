@@ -1,7 +1,5 @@
 package com.example.sortings
 
-import scala.util.Random
-
 object Sortings {
 
   def bubbleSort[T <% Ordered[T]](xs : List[T]) : List[T] = {
@@ -69,34 +67,5 @@ object Sortings {
       case Nil => Nil
       case x :: xs => quickSort(xs.filter(_ < x)) ++ (x :: Nil) ++ quickSort(xs.filter(_ > x))
     }
-  }
-
-  private def isListSorted[T <% Ordered[T]](list : List[T]) : Boolean = {
-    list match {
-      case Nil => true
-      case x :: Nil => true
-      case x :: y :: xs => if (x <= y) isListSorted(y :: xs) else false
-    }
-  }
-
-  private def shuffleList[T](xs : List[T]) : List[T] = {
-    xs match {
-      case Nil => Nil
-      case x :: Nil => x :: Nil
-      case x :: xs => {
-        val randomIndex = Random.nextInt(xs.length + 1)
-        (x :: xs)(randomIndex) :: shuffleList((x :: xs).patch(randomIndex, Nil, 1))
-      }
-    }
-  }
-
-  def main(args: Array[String]): Unit = {
-
-    val list = shuffleList((1 to 10 by 1).toList)
-    println(s"source list: ${list}")
-    println(s"bubble sort: ${Sortings.bubbleSort(list)} / is sorted: ${isListSorted(bubbleSort(list))}")
-    println(s"merge sort: ${Sortings.mergeSort(list)} / is sorted: ${isListSorted(mergeSort(list))}")
-    println(s"insertSort sort: ${Sortings.insertSort(list)} / is sorted: ${isListSorted(insertSort(list))}")
-    println(s"quickSort sort: ${Sortings.quickSort(list)} / is sorted: ${isListSorted(quickSort(list))}")
   }
 }

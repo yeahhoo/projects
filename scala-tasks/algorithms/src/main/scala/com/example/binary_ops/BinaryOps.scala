@@ -4,7 +4,7 @@ package com.example.binary_ops
 	* Contains functions to operate on bits. Inspired by:
 	* http://www.oxfordmathcenter.com/drupal7/node/43
 	* https://www.h-schmidt.net/FloatConverter/IEEE754.html
-	* */
+	**/
 object BinaryOps {
 
 	/** Finds value of bit in given number by index. Index is 0 based */
@@ -38,14 +38,14 @@ object BinaryOps {
 	}
 
 	/** Converts given number from 2-base to 10-base system. */
-  def fromBinary(s : String) : Long = {
+	def fromBinary(s: String): Long = {
 		import scala.math.pow
 		s match {
 			case "0" => 0
 			case "1" => 1
 			case _ => (Integer.parseInt(s(0).toString) * pow(2, s.length - 1)).toLong + fromBinary(s.substring(1))
 		}
-  }
+	}
 
 	/** Converts positive and negative decimal numbers to binary format with given capacity. */
 	def toBinaryWithNegativeValues(n: Int, capacity: Int): String = {
@@ -107,35 +107,5 @@ object BinaryOps {
 			a + m * scala.math.pow(2, -1 * p._2.toInt - 1).toFloat
 		})
 		return sign * (1 + decValue) * scala.math.pow(2, bias).toFloat
-	}
-
-	private def convertValueTest(value: Float) = {
-		val binValue = toIEEE754BinaryFormat(value)
-		val restoredDecValue = fromIEEE754BinaryFormat(binValue)
-		val difference = value - restoredDecValue
-
-		println(s"---------- TEST -----------")
-		println(s"decValue: ${value}")
-		println(s"binValue: ${binValue}")
-		println(s"restoredDecValue: ${restoredDecValue}")
-		println(s"difference: ${difference}")
-	}
-
-	def main(args: Array[String]): Unit = {
-		val value = 85
-		val replacement = 7
-		val bits = replaceBitsByRange(value, replacement, 2, 4)
-		println(s"value: ${value.toBinaryString}")
-		println(s"replacement: ${replacement.toBinaryString}")
-		println(s"result: ${bits.toBinaryString}")
-
-		convertValueTest(23.125f)
-		convertValueTest(-4.87f)
-		convertValueTest(0.14f)
-		convertValueTest(-0.23f)
-		convertValueTest(100000000000.23f)
-		convertValueTest(10000000000.23231f)
-		convertValueTest(8000000000.384f)
-		convertValueTest(0.00030f)
 	}
 }

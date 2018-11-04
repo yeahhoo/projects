@@ -91,18 +91,18 @@ class RedBlackTree[T <% Ordered[T]] {
     })
   }
 
-  /** Extract node by given value out of the tree. */
-  def get(value: T): Node[T] = {
-    def _get(node: Node[T], value: T): Node[T] = node match {
-      case EmptyNode => EmptyNode
+  /** Checks whether given value is presented in the tree. */
+  def contains(value: T): Boolean = {
+    def _contains(node: Node[T], value: T): Boolean = node match {
+      case EmptyNode => false
       case t@Tree(v, _, _, l, r) => {
-        if (v == value) t
-        else if (v > value) _get(l, value)
-        else _get(r, value)
+        if (v == value) true
+        else if (v > value) _contains(l, value)
+        else _contains(r, value)
       }
     }
 
-    _get(root, value)
+    _contains(root, value)
   }
 
   /** Inserts given value into the tree. */
@@ -453,7 +453,7 @@ object RedBlackTree {
 
     tree.printTree(12)
     set.foreach(value => {
-      if (tree.get(value) == EmptyNode) {
+      if (!tree.contains(value)) {
         throw new RuntimeException(s"Couldn't find node with value: ${value}")
       }
     })

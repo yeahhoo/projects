@@ -167,16 +167,4 @@ object Combinator {
       case x :: xs => List(List(x)) ++ combinations(xs) ++ combinations(xs).map(x :: _)
     }
   }
-
-  def main(args : Array[String]) = {
-    //println(s"${combinations(List(1, 2, 3))}")
-    //println(s"${combinations(List(1, 2, 3), 2)}")
-    //println(s"${variations(List(1, 2, 3), 2)}")
-    //println(s"${permutations(List(1, 2, 3))}")
-    //println(s"${subsets(List(1, 2, 3), 3)}")
-    println(s"${subsets(List(1, 2, 3, 4), 2)}")
-    //println(s"${subsetsWithRepeats("abc".toList)}")
-    //println(s"${comboSets(List(0, 1, 2), 3)}")
-    //println(s"${listWithThresholdCombos(3, 2)}")
-  }
 }
