@@ -24,12 +24,8 @@ class AvlTree[T <% Ordered[T]] {
 
   var root : Node[T] = EmptyNode
 
-  /**
-    * Prints tree in human-readable format.
-    * Consider value of "distance" multiplier according to your screen resolution.
-    * Usually it should be value from 4 to 10.
-    **/
-  def printTree(distance: Int): Unit = {
+  /** Prints tree in human-readable format. */
+  def printTree(): Unit = {
     def _traverse(node: Node[T], h: Int, shift: Int, parentShift: Int): List[(Int, T, Int, Boolean)] = {
       val delta = scala.math.abs(shift - parentShift) / 2
       val ls = shift - delta
@@ -46,13 +42,21 @@ class AvlTree[T <% Ordered[T]] {
       }
     }
 
+    def _calcMaxSpan(node: Node[T]): Int = {
+      def _findLongest(node: Node[T]): Int = node match {
+        case EmptyNode => 0
+        case Tree(v, _, l, r) => math.max(v.toString.length, math.max(_findLongest(l), _findLongest(r)))
+      }
+      math.pow(2, height(node) - 1).toInt * (_findLongest(node) + 2)
+    }
+
     val res = root match {
       case EmptyNode => {
         println("tree is empty")
         return ()
       }
       case Tree(value, _, _, _) => {
-        val shift = height(root) * distance
+        val shift: Int = _calcMaxSpan(root) / 2
         ((height(root), value, shift, true) :: _traverse(root, height(root) - 1, shift, 0))
           .sortWith((x, y) => {
             if (x._1 == y._1) x._3 < y._3
@@ -285,7 +289,7 @@ object AvlTree {
 
     set.foreach(value => tree.insert(value))
 
-    tree.printTree(12)
+    tree.printTree()
     set.foreach(value => {
       if (!tree.contains(value)) {
         throw new RuntimeException(s"Couldn't find node with value: ${value}")
@@ -295,7 +299,7 @@ object AvlTree {
     removeSet.foreach(value => {
       println(s"------------------")
       println(s"removing: ${value}")
-      tree.printTree(12)
+      tree.printTree()
       if (!tree.delete(value)) {
         throw new RuntimeException(s"Couldn't remove node with value: ${value}")
       }
