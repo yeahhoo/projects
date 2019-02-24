@@ -25,12 +25,20 @@ class AvlTreeTest extends FlatSpec {
   }
 
   private def testItems[T <% Ordered[T]](set: List[T]): Unit = {
-    val tree = new AvlTree[T]()
-    val removeSet = TestUtil.shuffleList(set)
+    val tree = set.foldLeft(AvlTree[T]())((t, value) => {
+      val (newTree, isAdded) = t.insert(value)
+      if (!isAdded) fail(s"Couldn't insert value: ${value} ")
+      newTree
+    })
 
-    set.foreach(value => tree.insert(value))
+    assert(!tree.isEmpty())
     set.foreach(value => if (!tree.contains(value)) fail(s"Couldn't find node with value: ${value}"))
 
-    removeSet.foreach(value => if (!tree.delete(value)) fail(s"Couldn't remove node with value: ${value}"))
+    val newTree = TestUtil.shuffleList(set).foldLeft(tree)((t, value) => {
+      val (newTree, isRemoved) = t.delete(value)
+      if (!isRemoved) fail(s"Couldn't remove node with value: ${value}")
+      newTree
+    })
+    assert(newTree.isEmpty())
   }
 }

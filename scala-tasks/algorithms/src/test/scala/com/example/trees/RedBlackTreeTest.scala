@@ -82,16 +82,23 @@ class RedBlackTreeTest extends FlatSpec {
   }
 
   private def testItems[T <% Ordered[T]](set: List[T], removeSet: List[T] = Nil): Unit = {
-    val tree = new RedBlackTree[T]()
-    val removeSet = TestUtil.shuffleList(set)
+    val tree = set.foldLeft(RedBlackTree[T]())((t, i) => {
+      val (newTree, isAdded) = t.insert(i)
+      if (!isAdded) throw new RuntimeException(s"couldn't insert item: ${i}")
+      newTree
+    })
 
-    set.foreach(value => tree.insert(value))
+    assert(!tree.isEmpty())
     set.foreach(value => if (!tree.contains(value)) fail(s"Couldn't find node with value: ${value}"))
 
-    if (removeSet == Nil) {
-      TestUtil.shuffleList(set).foreach(value => if (!tree.delete(value)) fail(s"Couldn't remove node with value: ${value}"))
-    } else {
-      removeSet.foreach(value => if (!tree.delete(value)) fail(s"Couldn't remove node with value: ${value}"))
-    }
+    val setToRemove = if (removeSet == Nil) TestUtil.shuffleList(set) else removeSet
+    val newTree = setToRemove.foldLeft(tree)((t, value) => {
+      val (newTree, isRemoved) = t.delete(value)
+      if (!isRemoved) {
+        throw new RuntimeException(s"Couldn't remove node with value: ${value}")
+      }
+      newTree
+    })
+    assert(newTree.isEmpty())
   }
 }

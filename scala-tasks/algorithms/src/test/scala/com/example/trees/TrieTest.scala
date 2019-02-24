@@ -4,11 +4,7 @@ import com.example.trees.Trie
 class TrieTest extends FlatSpec {
 
   "Trie" should "correctly insert and find words" in {
-    val trie = new Trie[Char]
-    trie.insert("this".toList)
-    trie.insert("is".toList)
-    trie.insert("simple".toList)
-    trie.insert("sentence".toList)
+    val trie = Trie[Char](List("this", "is", "simple", "sentence").map(_.toList))
 
     assert(trie.contains("this".toList))
     assert(trie.contains("is".toList))
@@ -21,10 +17,7 @@ class TrieTest extends FlatSpec {
   }
 
   "Trie" should "correctly distinguish words with the same beginnings" in {
-    val trie = new Trie[Char]
-    trie.insert("aaaa".toList)
-    trie.insert("a".toList)
-    trie.insert("abc".toList)
+    val trie = Trie[Char](List("aaaa", "a", "abc").map(_.toList))
 
     assert(trie.contains("a".toList))
     assert(trie.contains("aaaa".toList))
@@ -35,10 +28,7 @@ class TrieTest extends FlatSpec {
   }
 
   "Trie" should "correctly remove words with the same beginnings" in {
-    val trie = new Trie[Char]
-    trie.insert("keys".toList)
-    trie.insert("key".toList)
-    trie.delete("keys".toList)
+    val trie = Trie[Char](List("keys", "key").map(_.toList)).delete("keys".toList)._1
 
     assert(!trie.contains("keys".toList))
     assert(!trie.containsAsSubWord("keys".toList))
@@ -46,22 +36,23 @@ class TrieTest extends FlatSpec {
   }
 
   "Trie" should "correctly remove words" in {
-    val trie = new Trie[Char]
     val words = List("abc", "abb", "cda", "aaa", "aa")
-    words.foreach(word => if (!trie.insert(word.toList)) {
-      fail(s"couldn't insert the word ${word}")
+    val trie = words.foldLeft(Trie[Char](List.empty))((t, word) => {
+      val (newTree, isAdded) = t.insert(word.toList)
+      if (!isAdded) fail(s"couldn't insert the word ${word}")
+      newTree
     })
 
     words.foreach(word => if (!trie.contains(word.toList)) {
       fail(s"couldn't find the word ${word}")
     })
 
-    trie.delete("aa".toList)
+    val resTrie = trie.delete("aa".toList)._1
 
-    assert(trie.contains("aaa".toList))
-    assert(!trie.contains("a".toList))
-    assert(trie.contains("abb".toList))
-    assert(!trie.contains("aa".toList))
+    assert(resTrie.contains("aaa".toList))
+    assert(!resTrie.contains("a".toList))
+    assert(resTrie.contains("abb".toList))
+    assert(!resTrie.contains("aa".toList))
   }
 
   "Trie" should "correctly process text" in {
@@ -81,13 +72,20 @@ class TrieTest extends FlatSpec {
   }
 
   def testText[T](words: List[List[T]]): Unit = {
-    val trie = new Trie[T]
-    words.foreach(word => if (!trie.insert(word)) fail(s"trie couldn't insert the word: ${word}"))
-    words.foreach(word => {
-      if (!trie.contains(word)) fail(s"Trie doesn't contain word: ${word}")
-      if (!trie.delete(word)) fail(s"Trie didn't remove the word: ${word}")
-      if (trie.contains(word)) fail(s"Trie contains word after it was removed: ${word}")
+    val trie = words.foldLeft(Trie[T](List.empty))((t, word) => {
+      val (newTree, isAdded) = t.insert(word)
+      if (!isAdded) fail(s"trie couldn't insert the word: ${word}")
+      newTree
     })
-    assert(trie.isEmpty())
+
+
+    val resTrie = words.foldLeft(trie)((t, word) => {
+      if (!t.contains(word)) fail(s"Trie doesn't contain word: ${word}")
+      val (newTree, isRemoved) = t.delete(word)
+      if (!isRemoved) fail(s"Trie didn't remove the word: ${word}")
+      if (newTree.contains(word)) fail(s"Trie contains word after it was removed: ${word}")
+      newTree
+    })
+    assert(resTrie.isEmpty())
   }
 }

@@ -27,9 +27,9 @@ package com.example.trees.redblacktree {
   * https://www.cs.usfca.edu/~galles/visualization/RedBlack.html
   * https://www.geeksforgeeks.org/red-black-tree-set-1-introduction-2/
   **/
-class RedBlackTree[T <% Ordered[T]] {
+class RedBlackTree[T <% Ordered[T]] private (val root: Node[T]) {
 
-  var root: Node[T] = EmptyNode
+  private def this() = this(EmptyNode)
 
   private val DOUBLE_BLACK = -1
 
@@ -95,6 +95,9 @@ class RedBlackTree[T <% Ordered[T]] {
     })
   }
 
+  /** Checks if tree is empty. */
+  def isEmpty(): Boolean = root.isInstanceOf[EmptyNode.type]
+
   /** Checks whether given value is presented in the tree. */
   def contains(value: T): Boolean = {
     def _contains(node: Node[T], value: T): Boolean = node match {
@@ -110,39 +113,38 @@ class RedBlackTree[T <% Ordered[T]] {
   }
 
   /** Inserts given value into the tree. */
-  def insert(value: T): Node[T] = {
+  def insert(value: T): (RedBlackTree[T], Boolean) = {
 
-    def _insert(node: Node[T], value: T): Tree[T] = {
-      val tree: Tree[T] = node match {
-        case EmptyNode => return new Tree[T](value)
+    def _insert(node: Node[T], value: T): (Tree[T], Boolean) = {
+      val (tree, isAdded) = node match {
+        case EmptyNode => return (new Tree[T](value), true)
         case current@Tree(nodeValue, h, ib, left, right) => {
           if (value < nodeValue) {
-            val leftNode = _insert(left, value)
+            val (leftNode, isAdded) = _insert(left, value)
             val newHeight = if (current.blackHeight == leftNode.blackHeight && leftNode.isBlack && ib) h + 1 else h
-            new Tree(nodeValue, newHeight, ib, leftNode, right)
-          } else {
-            val rightNode = _insert(right, value)
+            (new Tree(nodeValue, newHeight, ib, leftNode, right), isAdded)
+          } else if (value > nodeValue) {
+            val (rightNode, isAdded) = _insert(right, value)
             val newHeight = if (current.blackHeight == rightNode.blackHeight && rightNode.isBlack && ib) h + 1 else h
-            new Tree(nodeValue, newHeight, ib, left, rightNode)
-          }
+            (new Tree(nodeValue, newHeight, ib, left, rightNode), isAdded)
+          } else (current, false)
         }
       }
-      balanceInsert(tree)
+      (balanceInsert(tree), isAdded)
     }
 
-    val Tree(v, h, ib, l, r) = _insert(root, value)
-    root = new Tree(v, if (h == 0) 1 else h, ib, l, r)
+    val (Tree(v, h, ib, l, r), isAdded) = _insert(root, value)
     if (!ib) {
       (l, r) match {
-        case (EmptyNode, EmptyNode) => root = new Tree(v, 1, true, l, r)
-        case (Tree(_, lh, _, _, _), EmptyNode) => root = new Tree(v, lh + 1, true, l, r)
-        case (EmptyNode, Tree(_, rh, _, _, _)) => root = new Tree(v, rh + 1, true, l, r)
-        case (Tree(_, _, _, _, _), Tree(_, rh, _, _, _)) => root = new Tree(v, rh + 1, true, l, r)
+        case (EmptyNode, EmptyNode) => (new RedBlackTree(new Tree(v, 1, true, l, r)), isAdded)
+        case (Tree(_, lh, _, _, _), EmptyNode) => (new RedBlackTree(new Tree(v, lh + 1, true, l, r)), isAdded)
+        case (EmptyNode, Tree(_, rh, _, _, _)) => (new RedBlackTree(new Tree(v, rh + 1, true, l, r)), isAdded)
+        case (Tree(_, _, _, _, _), Tree(_, rh, _, _, _)) => (new RedBlackTree(new Tree(v, rh + 1, true, l, r)), isAdded)
         case (_, _) => throw new IllegalStateException("Unexpected result for \"insert\" operation")
       }
+    } else {
+      (new RedBlackTree(new Tree(v, if (h == 0) 1 else h, ib, l, r)), isAdded)
     }
-
-    root
   }
 
   private def balanceInsert(tree: Tree[T]): Tree[T] = {
@@ -173,7 +175,7 @@ class RedBlackTree[T <% Ordered[T]] {
   }
 
   /** Removes node from the tree by given value. */
-  def delete(value: T): Boolean = {
+  def delete(value: T): (RedBlackTree[T], Boolean) = {
 
     def _delete(node: Node[T], value: T): (Node[T], Boolean) = {
       val removedNode: (Node[T], Boolean) = node match {
@@ -224,14 +226,13 @@ class RedBlackTree[T <% Ordered[T]] {
     }
 
     root match {
-      case EmptyNode => false
+      case EmptyNode => (this, false)
       case Tree(_, _, _, _, _) => {
         val (newNode, wasRemoved) = _delete(root, value)
         newNode match {
-          case EmptyNode => root = EmptyNode
-          case t@Tree(_, _, _, _, _) => if (isRed(t)) root = changeColour(t) else root = t
+          case EmptyNode => (new RedBlackTree(), wasRemoved)
+          case t@Tree(_, _, _, _, _) => (if (isRed(t)) new RedBlackTree(changeColour(t)) else new RedBlackTree(t), wasRemoved)
         }
-        wasRemoved
       }
     }
   }
@@ -443,18 +444,17 @@ object RedBlackTree {
     }
   }
 
+  def apply[T <% Ordered[T]](xs: T*): RedBlackTree[T] = xs.foldLeft(new RedBlackTree[T]())((t, i) => t.insert(i)._1)
+
   def main(args: Array[String]): Unit = {
     println(s"----- Red Black Tree -------")
-    val tree = new RedBlackTree[Int]()
 
     val set = shuffleList((1 to 40 by 1).toList)
     val removeSet = shuffleList(set)
-
     println(s"source array: ${set}")
     println(s"remove array: ${removeSet}")
 
-    set.foreach(value => tree.insert(value))
-
+    val tree = RedBlackTree[Int](set:_*)
     tree.printTree()
     set.foreach(value => {
       if (!tree.contains(value)) {
@@ -462,13 +462,15 @@ object RedBlackTree {
       }
     })
 
-    removeSet.foreach(value => {
+    removeSet.foldLeft(tree)((t, value) => {
       println(s"------------------")
       println(s"removing: ${value}")
-      tree.printTree()
-      if (!tree.delete(value) || !tree.isBalanced) {
+      t.printTree()
+      val (newTree, isRemoved) = t.delete(value)
+      if (!isRemoved || !newTree.isBalanced) {
         throw new RuntimeException(s"Couldn't remove node with value: ${value}")
       }
+      newTree
     })
   }
 }

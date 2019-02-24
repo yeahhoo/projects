@@ -6,35 +6,23 @@ class BTreeTest extends FlatSpec {
 
   "BTree(3)" should "correctly insert given list of items" in {
     val data = List(10, 20, 30, 15, 40, 50, 35, 45, 55, 60, 70, 46, 47, 17, 19, 37, 48, 5)
-    val btree = new BTree[Int](3)
 
-    data.foreach(i => if (!btree.insert(i)) fail(s"${i} wasn't properly inserted into the tree"))
-    data.foreach(i => if (!btree.contains(i)) fail(s"Couldn't find value ${i} after inserting"))
+    testInsertItems(3, data)
   }
 
   "BTree(5)" should "correctly insert given list of items" in {
     val data = List(10, 20, 30, 15, 40, 50, 35, 45, 55, 60, 70, 46, 47, 17, 19, 37, 48, 5)
-    val btree = new BTree[Int](5)
 
-    data.foreach(i => if (!btree.insert(i)) fail(s"${i} wasn't properly inserted into the tree"))
-    data.foreach(i => if (!btree.contains(i)) fail(s"Couldn't find value ${i} after inserting"))
+    testInsertItems(5, data)
   }
 
   "BTree(3)" should "correctly insert random list of items of size 100" in {
-    val data = TestUtil.shuffleList((1 to 100 by 1).toList)
-    val btree = new BTree[Int](3)
-
-    data.foreach(i => if (!btree.insert(i)) fail(s"${i} wasn't properly inserted into the tree"))
-    data.foreach(i => if (!btree.contains(i)) fail(s"Couldn't find value ${i} after inserting"))
+    testInsertItems(3, TestUtil.shuffleList((1 to 100 by 1).toList))
   }
 
 
   "BTree(9)" should "correctly insert random list of items of size 1000" in {
-    val data = TestUtil.shuffleList((1 to 1000 by 1).toList)
-    val btree = new BTree[Int](9)
-
-    data.foreach(i => if (!btree.insert(i)) fail(s"${i} wasn't properly inserted into the tree"))
-    data.foreach(i => if (!btree.contains(i)) fail(s"Couldn't find value ${i} after inserting"))
+    testInsertItems(9, TestUtil.shuffleList((1 to 1000 by 1).toList))
   }
 
   "BTree(3)" should "correctly insert and then remove prepared data set 1" in {
@@ -77,16 +65,34 @@ class BTreeTest extends FlatSpec {
     testItems(128, TestUtil.shuffleList((1 to 10000 by 1).toList))
   }
 
-  private def testItems[T <% Ordered[T]](degree: Int, set: List[T], removeSet: List[T] = Nil): Unit = {
-    val tree = new BTree[T](degree)
+  private def testInsertItems[T <% Ordered[T]](degree: Int, set: List[T]): Unit = {
+    val tree = set.foldLeft(BTree[T](degree))((t, i) => {
+      val (newTree, isAdded) = t.insert(i)
+      if (!isAdded) fail(s"Couldn't insert value: ${i}")
+      newTree
+    })
+    assert(!tree.isEmpty())
+    set.foreach(value => if (!tree.contains(value)) fail(s"Couldn't find node with value: ${value}"))
+  }
 
-    set.foreach(value => tree.insert(value))
+  private def testItems[T <% Ordered[T]](degree: Int, set: List[T], removeSet: List[T] = Nil): Unit = {
+    val tree = set.foldLeft(BTree[T](degree))((t, i) => {
+      val (newTree, isAdded) = t.insert(i)
+      if (!isAdded) fail(s"Couldn't insert value: ${i}")
+      newTree
+    })
+
+    assert(!tree.isEmpty())
     set.foreach(value => if (!tree.contains(value)) fail(s"Couldn't find node with value: ${value}"))
 
-    if (removeSet == Nil) {
-      TestUtil.shuffleList(set).foreach(value => if (!tree.delete(value)) fail(s"Couldn't remove node with value: ${value}"))
-    } else {
-      removeSet.foreach(value => if (!tree.delete(value)) fail(s"Couldn't remove node with value: ${value}"))
-    }
+    val setToRemove = if (removeSet == Nil) TestUtil.shuffleList(set) else removeSet
+    val newTree = setToRemove.foldLeft(tree)((t, value) => {
+      val (newTree, isRemoved) = t.delete(value)
+      if (!isRemoved) {
+        throw new RuntimeException(s"Couldn't remove node with value: ${value}")
+      }
+      newTree
+    })
+    assert(newTree.isEmpty())
   }
 }

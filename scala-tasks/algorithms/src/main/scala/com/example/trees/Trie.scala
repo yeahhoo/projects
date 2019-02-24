@@ -14,14 +14,14 @@ package com.example.trees.trie {
 }
 
 /** Trie implementation. */
-class Trie[T] {
+class Trie[T] private (val root: Node[T]) {
 
-  var root = new Node[T]()
+  private def this() = this(new Node[T]())
 
   /** Inserts given value into the trie. */
-  def insert(items: List[T]): Boolean = {
+  def insert(items: Seq[T]): (Trie[T], Boolean) = {
 
-    def _insert(node: Node[T], items: List[T]): (Node[T], Boolean) = {
+    def _insert(node: Node[T], items: Seq[T]): (Node[T], Boolean) = {
       items match {
         case Nil => (new Node(node.map, true), true)
         case x :: xs => {
@@ -44,17 +44,16 @@ class Trie[T] {
     }
 
     items match {
-      case Nil => false
+      case Nil => (this, false)
       case _ => {
         val (newRoot, isAdded) = _insert(root, items)
-        root = newRoot
-        isAdded
+        (new Trie(newRoot), isAdded)
       }
     }
   }
 
   /** Checks whether given value is presented in the tree by full match. */
-  def contains(items: List[T]): Boolean = {
+  def contains(items: Seq[T]): Boolean = {
     contains(root, items, true)
   }
 
@@ -63,11 +62,11 @@ class Trie[T] {
     * It means that returns true even if given value is just a subset of another item.
     * Simple speaking strict full match is not mandatory.
     * */
-  def containsAsSubWord(items: List[T]): Boolean = {
+  def containsAsSubWord(items: Seq[T]): Boolean = {
     contains(root, items, false)
   }
 
-  private def contains(node: Node[T], items: List[T], isFullMatch: Boolean): Boolean = items match {
+  private def contains(node: Node[T], items: Seq[T], isFullMatch: Boolean): Boolean = items match {
     case Nil => node.isWord | !isFullMatch
     case x :: xs => node.map.get(x) match {
       case None => false
@@ -76,9 +75,9 @@ class Trie[T] {
   }
 
   /** Removes given node out of the trie. */
-  def delete(items: List[T]): Boolean = {
+  def delete(items: Seq[T]): (Trie[T], Boolean) = {
 
-    def _delete(node: Node[T], items: List[T]): (Node[T], Boolean) = items match {
+    def _delete(node: Node[T], items: Seq[T]): (Node[T], Boolean) = items match {
       case Nil => {
         if (node.isWord) {
           if (node.map.isEmpty) (new Node(false), true) else (new Node(node.map, false), true)
@@ -102,10 +101,15 @@ class Trie[T] {
     }
 
     val (newNode, isRemoved) = _delete(root, items)
-    if (isRemoved) root = newNode
-    isRemoved
+    if (isRemoved) (new Trie(newNode), true) else (this, false)
   }
 
   /** Checks if trie is empty. */
   def isEmpty(): Boolean = root.map.isEmpty && !root.isWord
+}
+
+object Trie {
+  def apply[T](xs: Seq[Seq[T]]): Trie[T] = {
+    xs.foldLeft(new Trie[T](new Node[T]()))((t, i) => t.insert(i)._1)
+  }
 }

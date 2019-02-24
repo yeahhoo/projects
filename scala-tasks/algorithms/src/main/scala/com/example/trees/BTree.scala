@@ -25,8 +25,9 @@ package com.example.trees.btree {
   * https://www.cs.usfca.edu/~galles/visualization/BTree.html
   * https://en.wikipedia.org/wiki/B-tree
   **/
-class BTree[T <% Ordered[T]](degree: Int) {
-  var root : Node[T] = EmptyNode
+class BTree[T <% Ordered[T]] private (val degree: Int, val root: Node[T]) {
+
+  private def this(degree: Int) = this(degree, EmptyNode)
 
   /** Prints tree in human-readable format. */
   def printTree(): Unit = {
@@ -119,6 +120,9 @@ class BTree[T <% Ordered[T]](degree: Int) {
     }
   }
 
+  /** Checks if tree is empty. */
+  def isEmpty(): Boolean = root.isInstanceOf[EmptyNode.type]
+
   /** Checks whether given value is presented in the tree. */
   def contains(value: T): Boolean = {
 
@@ -142,7 +146,7 @@ class BTree[T <% Ordered[T]](degree: Int) {
   }
 
   /** Inserts given value into the tree. */
-  def insert(value: T): Boolean = {
+  def insert(value: T): (BTree[T], Boolean) = {
 
     def insert(value: T, node: Tree[T]): (Tree[T], Boolean) = {
       node.children match {
@@ -187,15 +191,13 @@ class BTree[T <% Ordered[T]](degree: Int) {
       new Tree(List(tree.keys(headIndex)), List(leftTree, rightTree), tree.height + 1)
     }
 
-    val (newRoot, isInserted) = root match {
-      case EmptyNode => (new Tree(List(value)), true)
+    root match {
+      case EmptyNode => (new BTree(degree, new Tree(List(value))), true)
       case t@Tree(_, _, _) => {
         val res = insert(value, t)
-        (res._1, res._2)
+        (new BTree(degree, res._1), res._2)
       }
     }
-    root = newRoot
-    isInserted
   }
 
   /**
@@ -222,7 +224,7 @@ class BTree[T <% Ordered[T]](degree: Int) {
   }
 
   /** Removes node from the tree by given value. */
-  def delete(value: T): Boolean = {
+  def delete(value: T): (BTree[T], Boolean) = {
 
     def delete(value: T, node: Tree[T]): (Tree[T], Boolean) = {
       findIndexInBlockToInsert(value, node.keys) match {
@@ -304,17 +306,16 @@ class BTree[T <% Ordered[T]](degree: Int) {
     }
 
     root match {
-      case EmptyNode => false
+      case EmptyNode => (this, false)
       case t@Tree(_, _, _) => {
         val (newRoot, isRemoved) = delete(value, t)
         if (newRoot.keys.isEmpty && !newRoot.children.isEmpty && isRemoved) {
-          root = newRoot.children.head
+          (new BTree(degree, newRoot.children.head), isRemoved)
         } else if (newRoot.keys.isEmpty && newRoot.children.isEmpty) {
-          root = EmptyNode
+          (new BTree(degree, EmptyNode), isRemoved)
         } else {
-          root = newRoot
+          (new BTree(degree, newRoot), isRemoved)
         }
-        isRemoved
       }
     }
   }
@@ -343,6 +344,8 @@ class BTree[T <% Ordered[T]](degree: Int) {
 
 object BTree {
 
+  def apply[T <% Ordered[T]](degree: Int, xs: T*) = xs.foldLeft(new BTree[T](degree))((t, i) => t.insert(i)._1)
+
   def shuffleList[T](xs : List[T]) : List[T] = {
     xs match {
       case Nil => Nil
@@ -356,29 +359,26 @@ object BTree {
 
   def main(args: Array[String]): Unit = {
     println(s"----- BTree -------")
-    val btree = new BTree[Int](3)
-
     val set = shuffleList((1 to 40 by 1).toList)
     val removeSet = shuffleList(set)
-
     println(s"source array: ${set}")
     println(s"remove array: ${removeSet}")
 
-    set.foreach(value => btree.insert(value))
-
+    val tree = BTree[Int](3, set:_*)
+    tree.printTree()
     set.foreach(value => {
-      if (!btree.contains(value)) {
+      if (!tree.contains(value)) {
         throw new RuntimeException(s"Couldn't find node with value: ${value}")
       }
     })
 
-    removeSet.foreach(value => {
+    removeSet.foldLeft(tree)((t, value) => {
       println(s"------------------")
-      btree.printTree()
-      println(s"\nremoving: ${value}")
-      if (!btree.delete(value)) {
-        throw new RuntimeException(s"Couldn't remove node with value: ${value}")
-      }
+      println(s"removing: ${value}")
+      t.printTree()
+      val (newTree, isRemoved) = t.delete(value)
+      if (!isRemoved) throw new RuntimeException(s"Couldn't remove node with value: ${value}")
+      newTree
     })
   }
 }
