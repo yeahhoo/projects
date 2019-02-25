@@ -21,4 +21,11 @@ object TestUtil {
 
     _shuffleList(xs, Nil)
   }
+
+  @tailrec
+  def isListSorted[T <% Ordered[T]](list: List[T]): Boolean = list match {
+    case Nil => true
+    case x :: Nil => true
+    case x :: y :: xs => if (x > y) false else isListSorted(y :: xs)
+  }
 }
