@@ -27,9 +27,9 @@ package com.example.trees.redblacktree {
   * https://www.cs.usfca.edu/~galles/visualization/RedBlack.html
   * https://www.geeksforgeeks.org/red-black-tree-set-1-introduction-2/
   **/
-class RedBlackTree[T <% Ordered[T]] private (val root: Node[T]) {
+class RedBlackTree[T] private (val root: Node[T])(implicit ord: Ordering[T]) {
 
-  private def this() = this(EmptyNode)
+  private def this()(implicit ord: Ordering[T]) = this(EmptyNode)
 
   private val DOUBLE_BLACK = -1
 
@@ -104,7 +104,7 @@ class RedBlackTree[T <% Ordered[T]] private (val root: Node[T]) {
       case EmptyNode => false
       case t@Tree(v, _, _, l, r) => {
         if (v == value) true
-        else if (v > value) _contains(l, value)
+        else if (ord.gt(v, value)) _contains(l, value)
         else _contains(r, value)
       }
     }
@@ -119,11 +119,11 @@ class RedBlackTree[T <% Ordered[T]] private (val root: Node[T]) {
       val (tree, isAdded) = node match {
         case EmptyNode => return (new Tree[T](value), true)
         case current@Tree(nodeValue, h, ib, left, right) => {
-          if (value < nodeValue) {
+          if (ord.lt(value, nodeValue)) {
             val (leftNode, isAdded) = _insert(left, value)
             val newHeight = if (current.blackHeight == leftNode.blackHeight && leftNode.isBlack && ib) h + 1 else h
             (new Tree(nodeValue, newHeight, ib, leftNode, right), isAdded)
-          } else if (value > nodeValue) {
+          } else if (ord.gt(value, nodeValue)) {
             val (rightNode, isAdded) = _insert(right, value)
             val newHeight = if (current.blackHeight == rightNode.blackHeight && rightNode.isBlack && ib) h + 1 else h
             (new Tree(nodeValue, newHeight, ib, left, rightNode), isAdded)
@@ -185,7 +185,7 @@ class RedBlackTree[T <% Ordered[T]] private (val root: Node[T]) {
         }
         case t@Tree(v, bh, ib, l@Tree(_, _, _, _, _), r@EmptyNode) => {
           if (v == value) if (ib && isRed(l)) (changeColour(l), true) else (l, true)
-          else if (v < value) (EmptyNode, false)
+          else if (ord.lt(v, value)) (EmptyNode, false)
           else {
             val (repNode, isRemoved) = _delete(l, value)
             if (isRemoved) (new Tree(v, bh, ib, repNode, r), isRemoved) else (repNode, isRemoved)
@@ -193,17 +193,17 @@ class RedBlackTree[T <% Ordered[T]] private (val root: Node[T]) {
         }
         case t@Tree(v, bh, ib, l@EmptyNode, r@Tree(_, _, _, _, _)) => {
           if (v == value) if (ib && isRed(r)) (changeColour(r), true) else (r, true)
-          else if (v > value) (EmptyNode, false)
+          else if (ord.gt(v, value)) (EmptyNode, false)
           else {
             val (repNode, isRemoved) = _delete(r, value)
             if (isRemoved) (new Tree(v, bh, ib, l, repNode), isRemoved) else (repNode, isRemoved)
           }
         }
         case t@Tree(v, bh, ib, l@Tree(_, _, _, _, _), r@Tree(_, _, _, _, _)) => {
-          if (v > value) {
+          if (ord.gt(v, value)) {
             val (newLeft, isRemoved) = _delete(l, value)
             if (isRemoved) (new Tree(v, bh, ib, newLeft, r), true) else (t, isRemoved)
-          } else if (v < value) {
+          } else if (ord.lt(v, value)) {
             val (newRight, isRemoved) = _delete(r, value)
             if (isRemoved) (new Tree(v, bh, ib, l, newRight), true) else (t, isRemoved)
           } else {
@@ -444,7 +444,7 @@ object RedBlackTree {
     }
   }
 
-  def apply[T <% Ordered[T]](xs: T*): RedBlackTree[T] = xs.foldLeft(new RedBlackTree[T]())((t, i) => t.insert(i)._1)
+  def apply[T](xs: T*)(implicit ord: Ordering[T]): RedBlackTree[T] = xs.foldLeft(new RedBlackTree[T]())((t, i) => t.insert(i)._1)
 
   def main(args: Array[String]): Unit = {
     println(s"----- Red Black Tree -------")

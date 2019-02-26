@@ -3,7 +3,7 @@ package com.example.trees
 import scala.util.Random
 
 /** Max Heap implementation. */
-class Heap[T <% Ordered[T]] private (val data: Seq[T]) {
+class Heap[T] private (val data: Seq[T])(implicit ord: Ordering[T]) {
 
   /** Inserts given value in the heap. */
   def insert(value: T): Heap[T] = {
@@ -11,7 +11,7 @@ class Heap[T <% Ordered[T]] private (val data: Seq[T]) {
     def _insert(value: T, data: Seq[T], idx: Int): Heap[T] = idx match {
       case idx if idx <= 0 => new Heap(data)
       case _ => {
-        if (data(getParentIndex(idx)) >= data(idx)) new Heap(data)
+        if (ord.gteq(data(getParentIndex(idx)), data(idx))) new Heap(data)
         else _insert(value, swap(data, idx, getParentIndex(idx)), getParentIndex(idx))
       }
     }
@@ -26,11 +26,11 @@ class Heap[T <% Ordered[T]] private (val data: Seq[T]) {
       case idx if getLeftChildIndex(idx) >= data.length => new Heap(data)
       case _ => {
         val isRightChildExist = getLeftChildIndex(idx) + 1 <= data.length - 1
-        if (isRightChildExist && data(getLeftChildIndex(idx) + 1) > data(getLeftChildIndex(idx))
-          && data(getLeftChildIndex(idx) + 1) > data(idx)) {
+        if (isRightChildExist && ord.gt(data(getLeftChildIndex(idx) + 1), data(getLeftChildIndex(idx)))
+          && ord.gt(data(getLeftChildIndex(idx) + 1), data(idx))) {
           _delete(swap(data, getLeftChildIndex(idx) + 1, idx), getLeftChildIndex(idx) + 1)
         }
-        else if (data(getLeftChildIndex(idx)) > data(idx)) {
+        else if (ord.gt(data(getLeftChildIndex(idx)), data(idx))) {
           _delete(swap(data, getLeftChildIndex(idx), idx), getLeftChildIndex(idx))
         } else new Heap(data)
       }
@@ -83,7 +83,7 @@ object Heap {
     }
   }
 
-  def apply[T <% Ordered[T]](xs: T*): Heap[T] = xs.foldLeft(new Heap[T](Seq.empty))((h, i) => h.insert(i))
+  def apply[T](xs: T*)(implicit ord: Ordering[T]): Heap[T] = xs.foldLeft(new Heap[T](Seq.empty))((h, i) => h.insert(i))
 
   def main(args: Array[String]): Unit = {
     val heap = Heap[Int](shuffleList((1 to 20 by 1).toList):_*)

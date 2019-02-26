@@ -25,9 +25,9 @@ package com.example.trees.btree {
   * https://www.cs.usfca.edu/~galles/visualization/BTree.html
   * https://en.wikipedia.org/wiki/B-tree
   **/
-class BTree[T <% Ordered[T]] private (val degree: Int, val root: Node[T]) {
+class BTree[T] private (val degree: Int, val root: Node[T])(implicit ord: Ordering[T]) {
 
-  private def this(degree: Int) = this(degree, EmptyNode)
+  private def this(degree: Int)(implicit ord: Ordering[T]) = this(degree, EmptyNode)
 
   /** Prints tree in human-readable format. */
   def printTree(): Unit = {
@@ -210,13 +210,13 @@ class BTree[T <% Ordered[T]] private (val degree: Int, val root: Node[T]) {
       // if value is already contained in the list then mark it as non-appropriate since duplicates are prohibited
       if (list(low) == value || list(high) == value) return None
       if (low >= high) {
-        if (list(low) > value) return Some(low) else return Some(low + 1)
+        if (ord.gt(list(low), value)) return Some(low) else return Some(low + 1)
       }
 
       val middle = (low + high) / 2
       val size = list.length
       if (list(middle) == value) None
-      else if (list(middle) < value) _find(value, list, if (middle + 1 >= size) size - 1 else middle + 1, high)
+      else if (ord.lt(list(middle), value)) _find(value, list, if (middle + 1 >= size) size - 1 else middle + 1, high)
       else _find(value, list, low, if (middle - 1 < 0) 0 else middle - 1)
     }
 
@@ -328,7 +328,7 @@ class BTree[T <% Ordered[T]] private (val degree: Int, val root: Node[T]) {
 
       val middle = (low + high) / 2
       if (list(middle) == value) Some(middle)
-      else if (list(middle) > value) _find(value, list, low, middle - 1)
+      else if (ord.gt(list(middle), value)) _find(value, list, low, middle - 1)
       else _find(value, list, middle + 1, high)
     }
 
@@ -344,7 +344,9 @@ class BTree[T <% Ordered[T]] private (val degree: Int, val root: Node[T]) {
 
 object BTree {
 
-  def apply[T <% Ordered[T]](degree: Int, xs: T*) = xs.foldLeft(new BTree[T](degree))((t, i) => t.insert(i)._1)
+  def apply[T](degree: Int, xs: T*)(implicit ord: Ordering[T]): BTree[T] = {
+    xs.foldLeft(new BTree[T](degree))((t, i) => t.insert(i)._1)
+  }
 
   def shuffleList[T](xs : List[T]) : List[T] = {
     xs match {

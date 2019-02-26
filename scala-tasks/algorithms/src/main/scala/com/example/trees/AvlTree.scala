@@ -20,9 +20,11 @@ package com.example.trees.avltree {
   }
 }
 
-class AvlTree[T <% Ordered[T]] private (val root: Node[T]) {
+/** AvlTree immutable implementation. */
+class AvlTree[T] private (val root: Node[T])(implicit ord: Ordering[T]) {
 
-  private def this() = this(EmptyNode)
+  // Ordering to Order conversion: scala.Ordered.orderingToOrdered
+  private def this()(implicit ord: Ordering[T]) = this(EmptyNode)
 
   /** Prints tree in human-readable format. */
   def printTree(): Unit = {
@@ -95,8 +97,8 @@ class AvlTree[T <% Ordered[T]] private (val root: Node[T]) {
       node match {
         case EmptyNode => false
         case Tree(v, _, left, right) => {
-          if (value < v) contains(value, left)
-          else if (value > v) contains(value, right)
+          if (ord.lt(value, v)) contains(value, left)
+          else if (ord.gt(value, v)) contains(value, right)
           else true
         }
       }
@@ -115,11 +117,11 @@ class AvlTree[T <% Ordered[T]] private (val root: Node[T]) {
       val (tree, isAdded) = node match {
         case EmptyNode => (Tree[T](value, 1, EmptyNode, EmptyNode), true)
         case current@Tree(nodeValue, _, left, right) => {
-          if (nodeValue < value) {
+          if (ord.lt(nodeValue, value)) {
             val (rightNode, isAdded) = insert(value, right)
             val newHeight = 1 + math.max(height(left), height(rightNode))
             (Tree(nodeValue, newHeight, left, rightNode), isAdded)
-          } else if (nodeValue > value) {
+          } else if (ord.gt(nodeValue, value)) {
             val (leftNode, isAdded) = insert(value, left)
             val newHeight = 1 + math.max(height(leftNode), height(right))
             (Tree(nodeValue, newHeight, leftNode, right), isAdded)
@@ -150,7 +152,7 @@ class AvlTree[T <% Ordered[T]] private (val root: Node[T]) {
           else (t, false)
         }
         case Tree(currentValue, h, left, EmptyNode) => {
-          if (currentValue > value) {
+          if (ord.gt(currentValue, value)) {
             val (newNode, isRemoved) = delete(left, value)
             (Tree(currentValue, 1, newNode, EmptyNode), isRemoved)
           }
@@ -158,7 +160,7 @@ class AvlTree[T <% Ordered[T]] private (val root: Node[T]) {
           else (EmptyNode, false)
         }
         case Tree(currentValue, h, EmptyNode, right) => {
-          if (currentValue < value) {
+          if (ord.lt(currentValue, value)) {
             val (newNode, isRemoved) = delete(right, value)
             (Tree(currentValue, 1, EmptyNode, newNode), isRemoved)
           }
@@ -166,11 +168,11 @@ class AvlTree[T <% Ordered[T]] private (val root: Node[T]) {
           else (EmptyNode, false)
         }
         case Tree(currentValue, h, left@Tree(_, _, _, _), right@Tree(_, _, _, _)) => {
-          if (currentValue > value) {
+          if (ord.gt(currentValue, value)) {
             val (nodeRemovedLeft, isRemoved) = delete(left, value)
             (Tree(currentValue, 1 + math.max(height(nodeRemovedLeft), height(right)), nodeRemovedLeft, right), isRemoved)
           }
-          else if (currentValue < value) {
+          else if (ord.lt(currentValue, value)) {
             val (nodeRemovedRight, isRemoved) = delete(right, value)
             (Tree(currentValue, 1 + math.max(height(left), height(nodeRemovedRight)), left, nodeRemovedRight), isRemoved)
           } else {
@@ -271,7 +273,7 @@ class AvlTree[T <% Ordered[T]] private (val root: Node[T]) {
 
 object AvlTree {
 
-  def apply[T <% Ordered[T]](xs: T*): AvlTree[T] = xs.foldLeft(new AvlTree[T]())((t, i) => t.insert(i)._1)
+  def apply[T](xs: T*)(implicit ord: Ordering[T]): AvlTree[T] = xs.foldLeft(new AvlTree[T]())((t, i) => t.insert(i)._1)
 
   def shuffleList[T](xs : List[T]) : List[T] = {
     xs match {
