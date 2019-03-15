@@ -1,8 +1,6 @@
 package mock;
 
-/**
- * @author Aleksandr_Savchenko
- */
+/** Example class with no default constructor for testing. */
 public class MyEntityClass {
 
     private String name;

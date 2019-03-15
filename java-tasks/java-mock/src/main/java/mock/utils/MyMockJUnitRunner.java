@@ -9,10 +9,7 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-/**
- * analogue of {@link org.powermock.modules.junit4.PowerMockRunner}
- * @author Aleksandr_Savchenko
- */
+/** Analogue of {@link org.powermock.modules.junit4.PowerMockRunner}. */
 public class MyMockJUnitRunner extends BlockJUnit4ClassRunner {
 
     public MyMockJUnitRunner(Class<?> clazz) throws InitializationError {
@@ -39,5 +36,4 @@ public class MyMockJUnitRunner extends BlockJUnit4ClassRunner {
         }
         return set;
     }
-
 }

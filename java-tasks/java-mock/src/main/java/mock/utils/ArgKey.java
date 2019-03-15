@@ -2,12 +2,10 @@ package mock.utils;
 
 import java.util.Arrays;
 
-/**
- * @author Aleksandr_Savchenko
- */
-public class ArgKey {
+/** Contains arguments with which mocked method was called. Something similar to the "Matcher" concept in Mockito. */
+public final class ArgKey {
 
-    private Object[] keys;
+    private final Object[] keys;
 
     public ArgKey(Object[] keys) {
         this.keys = keys;
@@ -24,7 +22,6 @@ public class ArgKey {
 
         ArgKey argKey = (ArgKey) o;
 
-        // Probably incorrect - comparing Object[] arrays with Arrays.equals
         if (!Arrays.equals(keys, argKey.keys)) {
             return false;
         }

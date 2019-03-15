@@ -1,19 +1,12 @@
 package mock.utils;
 
-import javassist.CannotCompileException;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtMethod;
-import javassist.CtPrimitiveType;
-import javassist.Modifier;
-import javassist.NotFoundException;
+import javassist.*;
 
 import java.util.Set;
 
 /**
- * analogue of {@link org.powermock.core.classloader.MockClassLoader}
+ * Analogue of {@link org.powermock.core.classloader.MockClassLoader}.
  * http://stackoverflow.com/questions/42102/using-different-classloaders-for-different-junit-tests
- * @author Aleksandr_Savchenko
  */
 public class MyMockClassLoader extends ClassLoader {
 
@@ -23,6 +16,7 @@ public class MyMockClassLoader extends ClassLoader {
     public MyMockClassLoader(Set<String> classesToMock) {
         this.classesToMock = classesToMock;
         pool = ClassPool.getDefault();
+        pool.insertClassPath(new ClassClassPath(this.getClass()));
     }
 
     @Override
@@ -134,5 +128,4 @@ public class MyMockClassLoader extends ClassLoader {
         }
         return returnTypeAsString;
     }
-
 }

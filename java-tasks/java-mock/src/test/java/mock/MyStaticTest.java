@@ -3,43 +3,62 @@ package mock;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-import org.junit.Before;
+import mock.stubbers.MockUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import mock.annotations.PrepareFinalClassMock;
-import mock.stubbers.StubUtil;
 import mock.utils.MockCreator;
 import mock.utils.MyMockJUnitRunner;
 
-/**
- * @author Aleksandr_Savchenko
- */
+/** Example tests for static methods. */
 @RunWith(MyMockJUnitRunner.class)
 @PrepareFinalClassMock(classes = {MyFinalClass.class})
 public class MyStaticTest {
 
-    @Before
-    public void setUp() throws Exception {
+    @Test
+    public void testMockStaticClass() {
         MockCreator.mockStatic(MyFinalClass.class);
-        StubUtil.doStaticReturn(9).whenStatic(MyFinalClass.staticMethod(2));
-        StubUtil.doStaticReturn(new MyEntityClass("me", 28)).whenStatic(MyFinalClass.createEntity("pale", 19));
-        StubUtil.doStaticThrow(new IllegalArgumentException("static exception")).whenStatic(MyFinalClass.staticMethod(89));
-        StubUtil.doStaticNothing().whenStatic(MyFinalClass.createEntity("rogue", 15));
-        //StubUtil.doStaticReturn(2);
+        MockUtil.when(() -> MyFinalClass.incStaticMethod(2)).thenReturn(9);
+        assertEquals(9, MyFinalClass.incStaticMethod(2));
+        assertEquals(8, MyFinalClass.incStaticMethod(7)); // test real method
     }
 
     @Test
-    public void testStaticClass() {
-        assertEquals(9, MyFinalClass.staticMethod(2)); // test mock
+    public void testNonStatic() throws Exception {
+        MyFinalClass myObject = MockCreator.createMock(MyFinalClass.class);
+        MockUtil.when(() -> myObject.method1("hey")).thenReturn("yeah");
+        assertEquals("yeah", myObject.method1("hey"));
+    }
+
+
+    @Test
+    public void testMyFinalClassMocks() {
+        MockCreator.mockStatic(MyFinalClass.class);
+        MockUtil.when(() -> MyFinalClass.createEntity("pale", 19)).thenReturn(new MyEntityClass("me", 28));
+        MockUtil.when(() -> MyFinalClass.createEntity("rogue", 15)).thenReturn(null);
         assertEquals(new MyEntityClass("me", 28), MyFinalClass.createEntity("pale", 19)); // test mock
         assertNull(MyFinalClass.createEntity("rogue", 15));
-        assertEquals(0, MyFinalClass.staticMethod(8)); // test real -> always return 'default' type values
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testStaticFinalException() {
-        MyFinalClass.staticMethod(89); // test exception
+        MockCreator.mockStatic(MyFinalClass.class);
+        MockUtil.when(() -> MyFinalClass.incStaticMethod(89)).thenThrowException(new IllegalArgumentException("static exception"));
+        MyFinalClass.incStaticMethod(89);
     }
 
+    @Test(expected = IllegalStateException.class)
+    public void staticVoidMethodThrowsException() {
+        MockCreator.mockStatic(MyFinalClass.class);
+        MockUtil.when(() -> MyFinalClass.voidMethodThrowsException("oops")).thenThrowException(new IllegalStateException("why not"));
+        MyFinalClass.voidMethodThrowsException("oops");
+    }
+
+    @Test
+    public void staticDoNothing() {
+        MockCreator.mockStatic(MyFinalClass.class);
+        MockUtil.when(() -> MyFinalClass.voidMethodThrowsException("oops")).thenDoNothing();
+        MyFinalClass.voidMethodThrowsException("oops");
+    }
 }
