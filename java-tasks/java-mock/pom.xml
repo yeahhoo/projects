@@ -29,6 +29,11 @@
             <artifactId>byte-buddy</artifactId>
             <version>1.9.10</version>
         </dependency>
+        <dependency>
+            <groupId>org.objenesis</groupId>
+            <artifactId>objenesis</artifactId>
+            <version>3.0.1</version>
+        </dependency>
         <!--
         cucumber
         <dependency>

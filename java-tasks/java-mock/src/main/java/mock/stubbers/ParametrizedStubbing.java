@@ -2,7 +2,7 @@ package mock.stubbers;
 
 import mock.actions.ReturnMockAction;
 import mock.actions.ThrowExceptionMockAction;
-import mock.utils.MockCreator;
+import mock.utils.MockCreatorDelegator;
 
 import java.util.function.Supplier;
 
@@ -17,11 +17,11 @@ public final class ParametrizedStubbing<T> implements Stubbing {
 
     /** Finish mocking flow with returning given value. */
     public void thenReturn(T value) {
-        MockCreator.registerMockAction(() -> action.get(), new ReturnMockAction(value));
+        MockCreatorDelegator.registerMockAction(() -> action.get(), new ReturnMockAction(value));
     }
 
     @Override
     public <T extends Throwable> void thenThrowException(T exception) {
-        MockCreator.registerMockAction(() -> action.get(), new ThrowExceptionMockAction(exception));
+        MockCreatorDelegator.registerMockAction(() -> action.get(), new ThrowExceptionMockAction(exception));
     }
 }

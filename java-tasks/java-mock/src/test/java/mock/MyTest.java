@@ -11,26 +11,27 @@ import org.junit.runner.RunWith;
 
 import mock.annotations.PrepareFinalClassMock;
 import mock.utils.MockCreator;
-import mock.utils.MyMockJUnitRunner;
+import mock.utils.MockActionJUnitRunner;
 
 /** Test demonstrates basic mock scenarios with extendable and final classes. */
-@RunWith(MyMockJUnitRunner.class)
+@RunWith(MockActionJUnitRunner.class)
 @PrepareFinalClassMock(classes = {MyFinalClass.class})
 public class MyTest {
 
-    /*
     @Test
-    public void mockObjectWithNoDefaultConstructor() throws Exception {
-        // todo find a way to create the object
-        //Mockito.mock(MyFinalClass.class);
-        MyEntityClass entity = MockCreator.createMock(MyEntityClass.class);
-        MockUtil.when(() -> entity.getAge()).thenReturn(1);
-        assertEquals(entity.getAge(), 1);
+    public void mockObjectWithNoDefaultConstructor() {
+
+        MyEntityClass entity1 = MockCreator.createMock(MyEntityClass.class);
+        MockUtil.when(() -> entity1.getAge()).thenReturn(1);
+        MyEntityClass entity2 = MockCreator.createMock(MyEntityClass.class);
+        MockUtil.when(() -> entity2.getAge()).thenReturn(2);
+
+        assertEquals(entity1.getAge(), 1);
+        assertEquals(entity2.getAge(), 2);
     }
-    */
 
     @Test
-    public void testClass() throws Exception {
+    public void testClass() {
         MyClass myClass = MockCreator.createMock(MyClass.class);
         MockUtil.when(() -> myClass.method1("something")).thenReturn("mock");
         assertEquals("mock", myClass.method1("something")); // test mock
@@ -38,28 +39,27 @@ public class MyTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testFinalException() throws Exception {
+    public void testFinalException() {
         MyFinalClass myFinalClass = MockCreator.createMock(MyFinalClass.class);
-        MockUtil.when(() -> myFinalClass.method1("error")).thenThrowException(new IllegalArgumentException("why not"));
-        myFinalClass.method1("error"); // test exception
+        MockUtil.when(() -> myFinalClass.nonStaticSayHey("error")).thenThrowException(new IllegalArgumentException("why not"));
+        myFinalClass.nonStaticSayHey("error"); // test exception
     }
 
     @Test
-    public void testMyFinalClassMethod1() throws Exception {
+    public void testMyFinalClassMethod1() {
         MyFinalClass myFinalClass = MockCreator.createMock(MyFinalClass.class);
-        MockUtil.when(() -> myFinalClass.method1("b")).thenReturn("a");
-        MockUtil.when(() -> myFinalClass.method1("c")).thenReturn(null);
-        assertEquals("a", myFinalClass.method1("b")); // test mock
-        assertNull(myFinalClass.method1("c")); // test mock
-        assertEquals("hey: pale", myFinalClass.method1("pale")); // test real
-
+        MockUtil.when(() -> myFinalClass.nonStaticSayHey("b")).thenReturn("a");
+        MockUtil.when(() -> myFinalClass.nonStaticSayHey("c")).thenReturn(null);
+        assertEquals("a", myFinalClass.nonStaticSayHey("b")); // test mock
+        assertNull(myFinalClass.nonStaticSayHey("c")); // test mock
+        assertEquals("hey: pale", myFinalClass.nonStaticSayHey("pale")); // test real
     }
 
     @Test
-    public void testMyFinalClassMethod2() throws Exception {
+    public void testMyFinalClassMethod2() {
         MyFinalClass myFinalClass = MockCreator.createMock(MyFinalClass.class);
-        MockUtil.when(() -> myFinalClass.method2(2, 1)).thenReturn(4);
-        assertTrue(4 == myFinalClass.method2(2, 1)); // test mock
-        assertTrue(8 == myFinalClass.method2(4, 4));  // test real
+        MockUtil.when(() -> myFinalClass.nonStaticSum(2, 1)).thenReturn(4);
+        assertTrue(4 == myFinalClass.nonStaticSum(2, 1)); // test mock
+        assertTrue(8 == myFinalClass.nonStaticSum(4, 4));  // test real
     }
 }

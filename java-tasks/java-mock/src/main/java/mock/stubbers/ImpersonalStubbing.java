@@ -2,7 +2,7 @@ package mock.stubbers;
 
 import mock.actions.DoNothingMockAction;
 import mock.actions.ThrowExceptionMockAction;
-import mock.utils.MockCreator;
+import mock.utils.MockCreatorDelegator;
 
 /** Implementation of {@link Stubbing} for methods which don't return values. */
 public final class ImpersonalStubbing implements Stubbing {
@@ -15,11 +15,11 @@ public final class ImpersonalStubbing implements Stubbing {
 
     /** Finishes mock flow with NO_OP. */
     public void thenDoNothing() {
-        MockCreator.registerMockAction(action, new DoNothingMockAction());
+        MockCreatorDelegator.registerMockAction(action, new DoNothingMockAction());
     }
 
     @Override
     public <T extends Throwable> void thenThrowException(T exception) {
-        MockCreator.registerMockAction(action, new ThrowExceptionMockAction(exception));
+        MockCreatorDelegator.registerMockAction(action, new ThrowExceptionMockAction(exception));
     }
 }

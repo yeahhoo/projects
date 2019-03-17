@@ -11,12 +11,12 @@ public final class MockCache {
     private static Map<Object, MockState> mockStates = new HashMap<>();
 
     /** Registers new mock for recording. */
-    public static void putNewObject(Object mock) {
+    public static void putNewObject(String mock) {
         mockStates.put(mock, new MockState());
     }
 
     /** Returns recording for requested mock object. */
-    public static MockState getState(Object mock) {
+    public static MockState getState(String mock) {
         return mockStates.get(mock);
     }
 

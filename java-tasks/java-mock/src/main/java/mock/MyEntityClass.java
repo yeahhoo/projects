@@ -7,8 +7,7 @@ public class MyEntityClass {
     private int age;
 
     public MyEntityClass(String name, int age) {
-        this.name = name;
-        this.age = age;
+        throw new IllegalArgumentException("The world is rough so if you're going to make it you have to be tough");
     }
 
     public String getName() {

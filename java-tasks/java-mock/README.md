@@ -2,7 +2,7 @@
 
 Yet another small library for creating mocks to be used in testing. Developed just for fun.
 Main motivation for me was curiosity about how popular frameworks such as Mockito and PowerMock deal with it.
-So I simple wanted to practice developing fluent API and proxying over existing classes.
+So I simply wanted to practice development of fluent API and proxying over existing classes.
 I will try to make it less buggy with time.
 
 **Mocking not final class**
@@ -20,10 +20,10 @@ Typical usage for mocking a non-final class shown below:
 
 **Mocking final classes and static methods**
 
-At first you need to mark the problematic classes with annotation @PrepareFinalClassMock and set runner to MyMockJUnitRunner
+At first you need to mark the problematic classes with annotation @PrepareFinalClassMock and set runner to MockActionJUnitRunner
 
 ```java
-    @RunWith(MyMockJUnitRunner.class)
+    @RunWith(MockActionJUnitRunner.class)
     @PrepareFinalClassMock(classes = {MyFinalClass.class})
 ```
 
@@ -36,7 +36,7 @@ MockCreator.mockStatic(MyFinalClass.class);
 Api for mocking static and object methods are the same which is a good thing about it. Full examples of doing this shown below:
 
 ```java
-@RunWith(MyMockJUnitRunner.class)
+@RunWith(MockActionJUnitRunner.class)
 @PrepareFinalClassMock(classes = {MyFinalClass.class})
 public class MyStaticTest {
 
@@ -57,6 +57,28 @@ public class MyStaticTest {
 }
 ```
 
+**Tested**
+
+Last version of JVM it was tested on was "10.0.1".
+
+**Known issues**
+
+Classes pre-processed by javassist are shared which makes it impossible to run the test in parallel mode
+so you need to prohibit parallel test execution. If you have Maven you can do it by adding the following plugin:
+
+```xml
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M3</version>
+                <configuration>
+                    <forkCount>1</forkCount>
+                    <reuseForks>false</reuseForks>
+                    <useUnlimitedThreads>false</useUnlimitedThreads>
+                </configuration>
+            </plugin>
+```
+
 **Plans**
 
-Migrate to ByteBuddy to get rid of bugs related to mocking non-trivial classes.
+Make tests be possible to run tests in parallel mode.

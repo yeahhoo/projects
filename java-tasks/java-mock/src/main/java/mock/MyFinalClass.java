@@ -3,11 +3,11 @@ package mock;
 /** Example final class for testing. */
 public final class MyFinalClass {
 
-    public String method1(String arg) {
+    public final String nonStaticSayHey(String arg) {
         return "hey: " + arg;
     }
 
-    public Integer method2(Integer i1, Integer i2) {
+    public final Integer nonStaticSum(Integer i1, Integer i2) {
         return i1 + i2;
     }
 

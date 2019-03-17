@@ -8,12 +8,12 @@ import java.util.Set;
  * Analogue of {@link org.powermock.core.classloader.MockClassLoader}.
  * http://stackoverflow.com/questions/42102/using-different-classloaders-for-different-junit-tests
  */
-public class MyMockClassLoader extends ClassLoader {
+public final class MockActionClassLoader extends ClassLoader {
 
     private ClassPool pool;
     private Set<String> classesToMock;
 
-    public MyMockClassLoader(Set<String> classesToMock) {
+    public MockActionClassLoader(Set<String> classesToMock) {
         this.classesToMock = classesToMock;
         pool = ClassPool.getDefault();
         pool.insertClassPath(new ClassClassPath(this.getClass()));
@@ -40,10 +40,15 @@ public class MyMockClassLoader extends ClassLoader {
             if (Modifier.isFinal(type.getModifiers())) {
                 type.setModifiers(type.getModifiers() ^ Modifier.FINAL);
             }
-            // mocking static methods
+            // mocking methods
             for (CtMethod method : type.getMethods()) {
-                if (Modifier.isStatic(method.getModifiers())) {
+                // removing all finals
+                if (Modifier.isFinal(method.getModifiers())) {
                     method.setModifiers(method.getModifiers() ^ Modifier.FINAL);
+                }
+
+                // proxying statics
+                if (Modifier.isStatic(method.getModifiers())) {
                     modifyMethod(name, method);
                 }
             }
@@ -72,14 +77,14 @@ public class MyMockClassLoader extends ClassLoader {
             final String returnValue = getCorrectReturnValueType(returnTypeAsCtClass);
 
             /**
-             * The code proxies static method. Instead of calling static method it calls method MockCreator.proxyStaticMethodCall().
+             * The code proxies static method. Instead of calling static method it calls method {@link MockCreatorDelegator#proxyStaticMethodCall}.
              * If proxyStaticMethodCall returns "PROCEED" object then it means call has been mocked and default type value returned.
              * Otherwise returns mocked value.
              * Note that this feature never calls original code - on any unplanned issues default type value returned.
              * */
-            String code = "Object value = " + MockCreator.class.getName() + ".proxyStaticMethodCall(\"" + mockName + "\" , \"" + method.getName()
+            String code = "Object value = " + MockCreatorDelegator.class.getName() + ".proxyStaticMethodCall(\"" + mockName + "\" , \"" + method.getName()
                           + "\", \"" + returnTypeAsString + "\", $args);"
-                          + "if (value == " + MockCreator.class.getName() + ".PROCEED) "
+                          + "if (value == " + MockCreatorDelegator.class.getName() + ".PROCEED) "
                           + "return " + getDefaultValueForReturnType(returnValue) + ";"
                           + "else return " + returnValue + ";";
             method.setBody("{ " + code + "}");

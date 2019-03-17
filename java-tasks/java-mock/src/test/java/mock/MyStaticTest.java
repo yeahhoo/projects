@@ -9,12 +9,25 @@ import org.junit.runner.RunWith;
 
 import mock.annotations.PrepareFinalClassMock;
 import mock.utils.MockCreator;
-import mock.utils.MyMockJUnitRunner;
+import mock.utils.MockActionJUnitRunner;
 
 /** Example tests for static methods. */
-@RunWith(MyMockJUnitRunner.class)
+@RunWith(MockActionJUnitRunner.class)
 @PrepareFinalClassMock(classes = {MyFinalClass.class})
 public class MyStaticTest {
+
+    @Test
+    public void testMockStaticMethodAndPlainClass() {
+        MockCreator.mockStatic(MyFinalClass.class);
+        MyFinalClass finalClass = MockCreator.createMock(MyFinalClass.class);
+        MockUtil.when(() -> MyFinalClass.incStaticMethod(3)).thenReturn(1);
+        MockUtil.when(() -> finalClass.nonStaticSum(3, 1)).thenReturn(9);
+
+        assertEquals(1, MyFinalClass.incStaticMethod(3));
+        assertEquals(Integer.valueOf(9), finalClass.nonStaticSum(3, 1));
+        assertEquals(2, MyFinalClass.incStaticMethod(1)); // test real
+        assertEquals(Integer.valueOf(4), finalClass.nonStaticSum(1, 3)); // test real
+    }
 
     @Test
     public void testMockStaticClass() {
@@ -25,19 +38,23 @@ public class MyStaticTest {
     }
 
     @Test
-    public void testNonStatic() throws Exception {
+    public void testNonStatic() {
         MyFinalClass myObject = MockCreator.createMock(MyFinalClass.class);
-        MockUtil.when(() -> myObject.method1("hey")).thenReturn("yeah");
-        assertEquals("yeah", myObject.method1("hey"));
+        MockUtil.when(() -> myObject.nonStaticSayHey("hey")).thenReturn("yeah");
+        assertEquals("yeah", myObject.nonStaticSayHey("hey"));
     }
 
 
     @Test
     public void testMyFinalClassMocks() {
         MockCreator.mockStatic(MyFinalClass.class);
-        MockUtil.when(() -> MyFinalClass.createEntity("pale", 19)).thenReturn(new MyEntityClass("me", 28));
+        MyEntityClass entity = MockCreator.createMock(MyEntityClass.class);
+        MockUtil.when(() -> entity.getAge()).thenReturn(28);
+        MockUtil.when(() -> entity.getName()).thenReturn("me");
+        MockUtil.when(() -> MyFinalClass.createEntity("pale", 19)).thenReturn(entity);
         MockUtil.when(() -> MyFinalClass.createEntity("rogue", 15)).thenReturn(null);
-        assertEquals(new MyEntityClass("me", 28), MyFinalClass.createEntity("pale", 19)); // test mock
+        assertEquals(28, entity.getAge());
+        assertEquals("me", entity.getName());
         assertNull(MyFinalClass.createEntity("rogue", 15));
     }
 

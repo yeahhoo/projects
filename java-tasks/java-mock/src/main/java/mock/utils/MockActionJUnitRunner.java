@@ -10,16 +10,16 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /** Analogue of {@link org.powermock.modules.junit4.PowerMockRunner}. */
-public class MyMockJUnitRunner extends BlockJUnit4ClassRunner {
+public class MockActionJUnitRunner extends BlockJUnit4ClassRunner {
 
-    public MyMockJUnitRunner(Class<?> clazz) throws InitializationError {
+    public MockActionJUnitRunner(Class<?> clazz) throws InitializationError {
         super(getFromMockClassloader(clazz));
     }
 
     private static Class<?> getFromMockClassloader(Class<?> clazz) throws InitializationError {
         try {
             Set<String> classesToMock = findClassesToMock(clazz);
-            ClassLoader classLoader = new MyMockClassLoader(classesToMock);
+            ClassLoader classLoader = new MockActionClassLoader(classesToMock);
             return Class.forName(clazz.getName(), true, classLoader);
         } catch (Exception e) {
             throw new InitializationError(e);
