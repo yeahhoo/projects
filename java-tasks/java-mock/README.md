@@ -5,6 +5,9 @@ Main motivation for me was curiosity about how popular frameworks such as Mockit
 So I simply wanted to practice development of fluent API and proxying over existing classes.
 I will try to make it less buggy with time.
 
+The main benefit of the approach applied in this implementation consists in using "actions" in mocking.
+It enables to control mocking flow and makes the API for mocking static methods and final classes the same.
+
 **Mocking not final class**
 
 Typical usage for mocking a non-final class shown below:
@@ -33,7 +36,8 @@ If you need to mock static method you need to create proxy for it as follows:
 MockCreator.mockStatic(MyFinalClass.class);
 ```
 
-Api for mocking static and object methods are the same which is a good thing about it. Full examples of doing this shown below:
+The API for mocking static and object methods are the same which is a good thing about it.
+Full examples of doing this shown below:
 
 ```java
 @RunWith(MockActionJUnitRunner.class)
@@ -60,7 +64,3 @@ public class MyStaticTest {
 **Tested**
 
 Last version of JVM it was tested on was "10.0.1".
-
-**Plans**
-
-Make an wrapper over Runnable and Supplier to suppress checked exceptions. Also mentioned in documentation why "action".

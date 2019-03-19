@@ -28,6 +28,7 @@ public final class ObjectFactory {
     private static final Map<Class, Object> DEFAULT_VALS_OF_PRIMITIVES = new HashMap<>();
 
     static {
+        DEFAULT_VALS_OF_PRIMITIVES.put(void.class, new Object());
         DEFAULT_VALS_OF_PRIMITIVES.put(short.class, 0);
         DEFAULT_VALS_OF_PRIMITIVES.put(int.class, 0);
         DEFAULT_VALS_OF_PRIMITIVES.put(long.class, 0L);

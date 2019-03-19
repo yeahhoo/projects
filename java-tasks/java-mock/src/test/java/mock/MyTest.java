@@ -13,6 +13,8 @@ import mock.annotations.PrepareFinalClassMock;
 import mock.utils.MockCreator;
 import mock.utils.MockActionJUnitRunner;
 
+import java.io.IOException;
+
 /** Test demonstrates basic mock scenarios with extendable and final classes. */
 @RunWith(MockActionJUnitRunner.class)
 @PrepareFinalClassMock(classes = {MyFinalClass.class})
@@ -33,9 +35,9 @@ public class MyTest {
     @Test
     public void testClass() {
         MyClass myClass = MockCreator.createMock(MyClass.class);
-        MockUtil.when(() -> myClass.method1("something")).thenReturn("mock");
-        assertEquals("mock", myClass.method1("something")); // test mock
-        assertNotEquals("mock", myClass.method1("everything")); // // test real
+        MockUtil.when(() -> myClass.nonStaticSayHi("something")).thenReturn("mock");
+        assertEquals("mock", myClass.nonStaticSayHi("something")); // test mock
+        assertNotEquals("mock", myClass.nonStaticSayHi("everything")); // // test real
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -61,5 +63,21 @@ public class MyTest {
         MockUtil.when(() -> myFinalClass.nonStaticSum(2, 1)).thenReturn(4);
         assertTrue(4 == myFinalClass.nonStaticSum(2, 1)); // test mock
         assertTrue(8 == myFinalClass.nonStaticSum(4, 4));  // test real
+    }
+
+    @Test
+    public void throwsNonStaticException() throws IOException {
+        MyClass myClass = MockCreator.createMock(MyClass.class);
+        MockUtil.when(() -> myClass.throwException()).thenDoNothing();
+        myClass.throwException();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testTwoActionsInOneMock() {
+        MyClass myClass = MockCreator.createMock(MyClass.class);
+        MockUtil.when(() -> {
+            myClass.nonStaticSayHi("arg1");
+            return myClass.nonStaticSayHi("arg2");
+        }).thenReturn("exception");
     }
 }

@@ -7,9 +7,9 @@ import mock.utils.MockCreatorDelegator;
 /** Implementation of {@link Stubbing} for methods which don't return values. */
 public final class ImpersonalStubbing implements Stubbing {
 
-    private final Runnable action;
+    private final RunnableWithException action;
 
-    public ImpersonalStubbing(Runnable action) {
+    public ImpersonalStubbing(RunnableWithException action) {
         this.action = action;
     }
 
