@@ -36,33 +36,39 @@ public final class MockActionClassLoader extends ClassLoader {
         byte[] clazz = null;
         try {
             CtClass type = pool.get(name);
-            // removing all final class modifiers if there any
-            if (Modifier.isFinal(type.getModifiers())) {
-                type.setModifiers(type.getModifiers() ^ Modifier.FINAL);
-            }
-            // mocking methods
-            for (CtMethod method : type.getMethods()) {
-                // removing all finals
-                if (Modifier.isFinal(method.getModifiers())) {
-                    method.setModifiers(method.getModifiers() ^ Modifier.FINAL);
+            // type is singleton and shared across all tests
+            synchronized (type) {
+                if (type.isFrozen()) {
+                    // defrosting class in synchronized mode to reload it for new test
+                    type.defrost();
                 }
+                // removing all final class modifiers if there any
+                if (Modifier.isFinal(type.getModifiers())) {
+                    type.setModifiers(type.getModifiers() ^ Modifier.FINAL);
+                }
+                // mocking methods
+                for (CtMethod method : type.getMethods()) {
+                    // removing all finals
+                    if (Modifier.isFinal(method.getModifiers())) {
+                        method.setModifiers(method.getModifiers() ^ Modifier.FINAL);
+                    }
 
-                // proxying statics
-                if (Modifier.isStatic(method.getModifiers())) {
-                    modifyMethod(name, method);
+                    // proxying statics
+                    if (Modifier.isStatic(method.getModifiers())) {
+                        modifyMethod(name, method);
+                    }
                 }
+                /*
+                // right way to do it
+                for (MockTransformer transformer : mockTransformerChain) {
+                    type = transformer.transform(type);
+                }
+                */
+                clazz = type.toBytecode();
             }
-            /*
-            // right way to do it
-            for (MockTransformer transformer : mockTransformerChain) {
-                type = transformer.transform(type);
-            }
-            */
-            clazz = type.toBytecode();
         } catch (Exception e) {
             throw new IllegalStateException("Failed to transform class with name " + name + ". Reason: " + e.getMessage(), e);
         }
-
         return defineClass(name, clazz, 0, clazz.length);
     }
 

@@ -61,24 +61,6 @@ public class MyStaticTest {
 
 Last version of JVM it was tested on was "10.0.1".
 
-**Known issues**
-
-Classes pre-processed by javassist are shared which makes it impossible to run the test in parallel mode
-so you need to prohibit parallel test execution. If you have Maven you can do it by adding the following plugin:
-
-```xml
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M3</version>
-                <configuration>
-                    <forkCount>1</forkCount>
-                    <reuseForks>false</reuseForks>
-                    <useUnlimitedThreads>false</useUnlimitedThreads>
-                </configuration>
-            </plugin>
-```
-
 **Plans**
 
-Make tests be possible to run tests in parallel mode.
+Make an wrapper over Runnable and Supplier to suppress checked exceptions. Also mentioned in documentation why "action".
